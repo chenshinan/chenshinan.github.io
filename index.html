@@ -232,6 +232,272 @@
   
   
   <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2018/12/27/Portfolio文档阅读/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">
+                
+                <a class="post-title-link" href="/2018/12/27/Portfolio文档阅读/" itemprop="url">Portfolio文档阅读</a></h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-27T21:00:12+08:00">
+                2018-12-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        
+          
+            <h2 id="开始Portfolio之前"><a href="#开始Portfolio之前" class="headerlink" title="开始Portfolio之前"></a>开始Portfolio之前</h2><h3 id="考虑三要素"><a href="#考虑三要素" class="headerlink" title="考虑三要素"></a>考虑三要素</h3><ul>
+<li>The work that you’re planning for</li>
+<li>the people to do that work</li>
+<li>the time it takes to complete it</li>
+</ul>
+<h3 id="issue等级"><a href="#issue等级" class="headerlink" title="issue等级"></a>issue等级</h3><ul>
+<li>Epics</li>
+<li>Stories</li>
+<li>自定义更大</li>
+</ul>
+<h3 id="整合jira项目"><a href="#整合jira项目" class="headerlink" title="整合jira项目"></a>整合jira项目</h3><ul>
+<li><code>jira项目直接影响portfolio（对issue的预估/修改等），若有新增项（版本、issue）需要从计划源中重新导入到portfolio</code></li>
+<li>portfolio修改需要commit才能影响jira项目</li>
+</ul>
+<h3 id="支持不同模式的团队"><a href="#支持不同模式的团队" class="headerlink" title="支持不同模式的团队"></a>支持不同模式的团队</h3><ul>
+<li>支持kanban/scrum</li>
+<li>支持配置point/hours/days的转换</li>
+</ul>
+<p><code>专注于jira项目的数据质量比任何理论都重要</code></p>
+<blockquote>
+<p>SAFe</p>
+</blockquote>
+<p>SAFe是目前国际上最流行的规模化敏捷方法，将敏捷实践从团队级（team level）有效扩展到项目群级（program level）乃至企业级（portfolio level）；SAFe也是一套开放的精益-敏捷知识体系，基于客户的实践与反馈来快速迭代完善并吸收新的最佳实践</p>
+<h2 id="实践portfolio"><a href="#实践portfolio" class="headerlink" title="实践portfolio"></a>实践portfolio</h2><h3 id="team"><a href="#team" class="headerlink" title="team"></a>team</h3><ul>
+<li>可以自动评估或填写团队的速率（根据故事点和能力）以便推测完成日期</li>
+<li>Scrum团队是根据过去的冲刺自动算出平均的速率，或手动填写</li>
+<li>Kanban团队是根据团队的每周平均工作时间算出的速率（是完成的工作时间并非工作中的工作时间）</li>
+<li>更关注团队的成果并非个人</li>
+</ul>
+<h3 id="release"><a href="#release" class="headerlink" title="release"></a>release</h3><ul>
+<li>计划的时间元素，三种开始方式：固定时间、尽快、接上个版本</li>
+<li>两种结束方式：动态结束日期（一个节点）、固定结束日期（两个节点）</li>
+<li><p>later release：代表这个发布在计划之内，但还没分配的版本</p>
+</li>
+<li><p>Server users can also utilize the Programs feature to create a high level view of multiple plans</p>
+</li>
+</ul>
+<h3 id="scope"><a href="#scope" class="headerlink" title="scope"></a>scope</h3><ul>
+<li>调整issue</li>
+<li>白色背景（自己设置）、蓝色背景（时间表算法自动帮你算出合适的值）</li>
+<li>可以配置issue的详细信息（父级、相关、最早的时间限制）</li>
+<li>可以设置issue等级更大的（大于epic），当安装portfolio时会多出一个parent-link字段，可以关联父级</li>
+</ul>
+<blockquote>
+<p>建议issue的时间区间不超过3个月</p>
+</blockquote>
+<h2 id="如何运作Portfolio"><a href="#如何运作Portfolio" class="headerlink" title="如何运作Portfolio"></a>如何运作Portfolio</h2><h3 id="Create-a-roadmap"><a href="#Create-a-roadmap" class="headerlink" title="Create a roadmap"></a>Create a roadmap</h3><ul>
+<li>通过排序任务的优先级、设置任务的工作量、团队的速率来创建一个路线图</li>
+<li>可以给【未预估的工作】设置默认值，以便生成路线图</li>
+</ul>
+<blockquote>
+<p>设置默认值：Scheduling &gt; Unestimated item scheduling &gt; Check Base on default estimates</p>
+</blockquote>
+<h3 id="Release-forecasting"><a href="#Release-forecasting" class="headerlink" title="Release forecasting"></a>Release forecasting</h3><ul>
+<li>可以自动计算任务需要放在哪个发布下</li>
+<li>最佳实践是发布按顺序与每个发布的开始日期(在其上一个发布的结束日期之后)对齐，Portfolio可以建议哪些版本仍然具有附加范围的能力。注意:这只适用于固定的截止日期版本</li>
+</ul>
+<h3 id="What-if-scenario-planning（假设场景计划）"><a href="#What-if-scenario-planning（假设场景计划）" class="headerlink" title="What-if scenario planning（假设场景计划）"></a>What-if scenario planning（假设场景计划）</h3><ul>
+<li>可以在沙盒模式中进行计划，然后做取舍，基于场景的计划允许您根据团队的活动进行计划和(最重要的)重新计划</li>
+<li>为您的计划引入新的范围，并查看对发布日期和现有工作的影响</li>
+<li>可以在构思阶段去评估功能对团队/发布的影响（确保功能要有预估时间）</li>
+<li>计算计划，portfolio将根据你当前的工作量预测工作何时开始和完成</li>
+</ul>
+<h2 id="成为计划负责人"><a href="#成为计划负责人" class="headerlink" title="成为计划负责人"></a>成为计划负责人</h2><p>路线图可以简单地使用评估和团队速度来生成，但是随着您的提供，它会变得更细粒度更多的变量</p>
+<h3 id="调度算法受影响的因素："><a href="#调度算法受影响的因素：" class="headerlink" title="调度算法受影响的因素："></a>调度算法受影响的因素：</h3><ul>
+<li>工作量的预估</li>
+<li>团队的速率</li>
+<li>优先级（scope items的排序）</li>
+<li>发布</li>
+<li>相关性</li>
+<li>配置的限制（例如一个故事的最早开始时间）</li>
+<li>团队和团队成员的可用性</li>
+<li>团队成员的技能</li>
+<li>工作阶段（可以设置并行的工作）</li>
+</ul>
+<h3 id="了解团队的能力"><a href="#了解团队的能力" class="headerlink" title="了解团队的能力"></a>了解团队的能力</h3><p>通过view capacity，过度的工作量不仅意味着任务可能在sprint结束时仍然不完整，还会影响到其他对工作有依赖的团队</p>
+<blockquote>
+<p>要了解团队之间的依赖关系，请查看Portfolio中Jira的依赖关系报告</p>
+</blockquote>
+<h3 id="提升数据的质量"><a href="#提升数据的质量" class="headerlink" title="提升数据的质量"></a>提升数据的质量</h3><p>Portfolio是一个敏捷调度工具，对于成熟的敏捷团队能更好的去做预估，还通过默认值来填充未预估的工作，如果规划的时间预估的过长，需要好好评估回顾一下任务</p>
+<h3 id="分享路线规划图给更多的利益相关者"><a href="#分享路线规划图给更多的利益相关者" class="headerlink" title="分享路线规划图给更多的利益相关者"></a>分享路线规划图给更多的利益相关者</h3><p>更多人接受你的计划就是成功的表现，通过Portfolio的报告来分享计划的专门实时视图的好方法</p>
+<h3 id="使用主题报告"><a href="#使用主题报告" class="headerlink" title="使用主题报告"></a>使用主题报告</h3><p>如果希望报告路线图项目如何连接回组织范围的焦点区域，可以使用主题报告。可以跟踪您的工作如何针对战略目标进行度量。实时比较您的目标工作分配和即将到来的计划工作。可以自定义主题，然后在范围中关联issue与相关的主题，在主题报告中就会得到反馈</p>
+<h2 id="Portfolio计算逻辑"><a href="#Portfolio计算逻辑" class="headerlink" title="Portfolio计算逻辑"></a>Portfolio计算逻辑</h2><h3 id="技能"><a href="#技能" class="headerlink" title="技能"></a>技能</h3><p>1、通过配置每个计划板的技能与阶段，以便为评估好故事点的待办事项进行人员分配<br><img src="http://note.youdao.com/yws/res/8113/836C694B6C1042A7B24130DA18960F60" alt="image"><br><img src="http://note.youdao.com/yws/res/8119/153C27E6DDB9475EAC39D0474C50BA17" alt="image"><br>2、设置计划单位为故事点<br><img src="http://note.youdao.com/yws/res/8127/2C7DF92734324720A09031A77BF97371" alt="image"><br>3、设置团队的速度，成员的技能和每周工作时间<br><img src="http://note.youdao.com/yws/res/8132/3A4B28C8A84C45B8992392056D6BD8BD" alt="image"><br>4、给待办事项预估好故事点后，点击calculate会自动分配给成员，并按默认的技能划分故事点<br><img src="http://note.youdao.com/yws/res/8138/DB0391ED4DA946C48F432FD6059AE6ED" alt="image"><br><img src="http://note.youdao.com/yws/res/8135/0252B53976F747DD9FF3234C70949EA5" alt="image"></p>
+<blockquote>
+<p>团队成员每周能完成的故事点</p>
+</blockquote>
+<p><code>团队成员每周能完成的故事点 = （该成员每周工作时间/团队总工作时间）*（团队速度/迭代长度）</code></p>
+<p>团队中只有一个人有UI技能，该UI每周能完成的故事点：(10/(10+40+40+40))*30 = 2.3个故事点，由于第一个冲刺中UI完成前两个故事就耗费了<code>1.33+0.67=2</code>个故事点，剩余0.3无法完成下一个故事，因此第一个冲刺只计划了6个工作量<code>（前两个故事的开发阶段故事点总和）</code>，可以从成员纬度看成员的工作计划</p>
+<p><img src="https://note.youdao.com/src/3215798089BE4488B7BD64E2FA61C622" alt="image"><br><img src="http://note.youdao.com/yws/res/8181/4333C90ECBE540A790300AB843792B50" alt="image"></p>
+<p>5、可以手动设置故事需要的技能故事点分配，并且故事点维度无法给子任务设置故事点<br><img src="https://note.youdao.com/src/8170F9030D83488383B27DC1C70D9F86" alt="image"><br><img src="https://note.youdao.com/src/6669E524198B4780BB3E568CDFE7D20F" alt="image"></p>
+<p>6、待办事项的任务分配可以指定团队成员，可以选择“无约束自动分配”或“特定成员”<code>（特定成员需要有相应技能）</code><br><img src="https://note.youdao.com/src/E8517C2E05D5490EB20EADF1ACD2D2AE" alt="image"><br><img src="https://note.youdao.com/src/2F47B9073C134A089DDA56B87E9BC441" alt="image"><br><img src="https://note.youdao.com/src/30FDF2CA60774C788DE1A19145674BEC" alt="image"></p>
+<h3 id="阶段"><a href="#阶段" class="headerlink" title="阶段"></a>阶段</h3><p>1、设置阶段后，每个故事会分多阶段来计划<br><img src="http://note.youdao.com/yws/res/8113/836C694B6C1042A7B24130DA18960F60" alt="image"><br><img src="https://note.youdao.com/src/251AB6F02C3F4F9B9551652F0946972B" alt="image"></p>
+<p>2、当在计划板设置中设置了<code>阶段拆分到不同冲刺</code>，一个故事的不同阶段会在不同冲刺中进行，并且阶段存在顺序关系，可以调整<br><img src="https://note.youdao.com/src/421F1A782FEE408FB41F059C10B42210" alt="image"></p>
+<p>3、可以通过排期筛选来看issue的阶段计划<br><img src="http://note.youdao.com/yws/res/8200/AC66636F7AAC4F068053FB0C71A4AF65" alt="image"></p>
+<p>4、设置<code>阶段拆分到不同冲刺</code>为OFF，则不分冲刺按容量依次完成<br><img src="https://note.youdao.com/src/F9F77636BADD431B9325F35E26CDE9A5" alt="image"></p>
+<p>5、当团队分配到Jira项目中已存在的冲刺时，若有计划的待办事项在该冲刺中，则会一次性完成这个故事<code>（s即使设置了“阶段拆分到不同冲刺”）</code><br><img src="https://note.youdao.com/src/14BA2F2984BF4C8EBCEFF2124E4A1C42" alt="image"><br><img src="https://note.youdao.com/src/021F5BECA9F24E468C77B9D5A306FD0F" alt="image"><br><img src="https://note.youdao.com/src/984C53F9957A48E69945D545EFA1CB4B" alt="image"><br><img src="http://note.youdao.com/yws/res/8221/1D8AF96964904F5C812D1533D2D4ED33" alt="image"></p>
+<p>6、因为是自定义的冲刺，不能直接按周看，要算出成员每天能完成的故事点来算成员这个冲刺能完成的故事点，因此需要知道每周的工作日天数，也可以设置节假日<br><img src="https://note.youdao.com/src/91CD0808F5E647728502F97F012F0541" alt="image"></p>
+<blockquote>
+<p>团队成员每天能完成的故事点</p>
+</blockquote>
+<p><code>团队成员每天能完成的故事点 = （该成员每周工作时间/团队总工作时间）*（团队速度/迭代长度）/每周的工作日天数</code></p>
+<p>团队中只有一个人有UI技能，该UI每天能完成的故事点：(10/(10+40+40+40))<em>30/5 = 0.46个故事点，该自定义冲刺包含了11个工作日，即总故事点`11</em>0.46=5.06<code>，由于该冲刺中只有一个故事需要UI</code>（耗费1.3故事点）<code>，因此剩余</code>3.7故事点`</p>
+<p><img src="http://note.youdao.com/yws/res/8241/ACA6A725D09844F490C23732706FE4F2" alt="image"></p>
+<p>7、自定义冲刺的工作日较多，所以预测的第一个冲刺的速度也会较大<br><img src="https://note.youdao.com/src/584C2D7D90AC4F348030898AB77FDE7C" alt="image"></p>
+<p>8、瓶颈：由于这些技能导致当前冲刺无法完成更多待办事项，可能由于其中某个技能团队中没有足够的能力去完成导致整个故事无法完成，这个故事的所有技能就是当前冲刺的瓶颈<br><img src="https://note.youdao.com/src/0BA4075B8C8F40AC8923160AC6714876" alt="image"><br><img src="https://note.youdao.com/src/A816252830B046B0B10218AEED4E5573" alt="image"></p>
+<p>9、在工作量的计划中，如果成员拥有相同的技能，会优先排满靠前成员的工作容量，以便于更直观的计算<br><img src="https://note.youdao.com/src/7AC24457DF73466F80452A36DEE26B83" alt="image"><br><img src="https://note.youdao.com/src/38C3256BE42B4B368DADDD1E5E042D49" alt="image"><br><img src="http://note.youdao.com/yws/res/8316/58CDC4BEB78A46DB8C4C4A2B37183870" alt="image"></p>
+<p>10、成员可以在多个团队间协作，需要手动评估该成员在每个团队的每周工作时间<br><img src="https://note.youdao.com/src/54BBCE7E03304BAB815C9AB4C3918753" alt="image"></p>
+<p>11、一个团队可以在多个面板（项目）中计划<br><img src="https://note.youdao.com/src/FB5978C4DB8E40F8B5D95F01C95D2BE2" alt="image"><br><img src="https://note.youdao.com/src/A0C67978BB1643D294E327DE880F25E1" alt="image"><br><img src="https://note.youdao.com/src/5851758EAB704B92BDF7C09673221F5A" alt="image"></p>
+<h3 id="相关性"><a href="#相关性" class="headerlink" title="相关性"></a>相关性</h3><p>1、待办事项之间可以有阻塞关系<code>（要求开发有先后顺序）</code>，示例中，“方案协同”被“状态机方案”与“问题类型方案”阻塞，需要先完成后两者，因此在计算后，计划会自动安排先后顺序<br><img src="https://note.youdao.com/src/A3EF7823752F4FCDA5962669AA43575C" alt="image"><br><img src="https://note.youdao.com/src/3E4C2CF539424A3B9F0BCBD83CB93C93" alt="image"><br><img src="https://note.youdao.com/src/4FEAF9DBC13F4299A853EBD5D6F1D6D9" alt="image"><br><img src="https://note.youdao.com/src/8856D33B7FC24285BD10A6D70E145FDA" alt="image"></p>
+<p>2、设置<code>阶段拆分到不同冲刺</code>为ON和OFF</p>
+<ul>
+<li>拆分<br><img src="https://note.youdao.com/src/15528359E3BB4FDCB92FD1AB4FDC9048" alt="image"></li>
+<li>不拆分<br><img src="https://note.youdao.com/src/4E6B7C83F9804CBC81C4ADC182DE6C9A" alt="image"></li>
+</ul>
+<p>3、若现有冲刺<code>（并且是已开启的冲刺）</code>中包含了被阻塞的待办事项“方案协同”，而阻塞项不再现有冲刺中，这样计算后，计划会忽略相关性正常去规划，当时在范围中会有错误提醒<br><img src="https://note.youdao.com/src/3B5729472CAF4935B61490EC7866FB3B" alt="image"><br><img src="https://note.youdao.com/src/9639DF34924B443BB8DB012F681AAEDB" alt="image"><br><img src="http://note.youdao.com/yws/res/8379/193470FBFF014B99BF7ED61B8DBA380B" alt="image"></p>
+<h2 id="计划配置"><a href="#计划配置" class="headerlink" title="计划配置"></a>计划配置</h2><h3 id="Stage-and-skills：阶段与技能"><a href="#Stage-and-skills：阶段与技能" class="headerlink" title="Stage and skills：阶段与技能"></a>Stage and skills：阶段与技能</h3><p>配置完成该计划需要的技能及阶段，配置技能占比<code>（用于拆分默认故事点）</code><br><img src="https://note.youdao.com/src/0ABA6AC786854C41AB647A3F7FA965A0" alt="image"></p>
+<h3 id="Scenarios：假设场景"><a href="#Scenarios：假设场景" class="headerlink" title="Scenarios：假设场景"></a>Scenarios：假设场景</h3><p>可以作出不同的计划场景，以此选出最佳计划<br><img src="https://note.youdao.com/src/9412B7B20A6040D69B9828997EF0A1F3" alt="image"></p>
+<h3 id="Scheduling：时间规划"><a href="#Scheduling：时间规划" class="headerlink" title="Scheduling：时间规划"></a>Scheduling：时间规划</h3><p>影响到计划面板的一些配置<br><img src="https://note.youdao.com/src/C58A55CB813F4F6991B6AEB5913ECB5E" alt="image"></p>
+<ul>
+<li>Warning levels：警告等级</li>
+</ul>
+<p>错误和警告是否显示在计划面板上<br><img src="https://note.youdao.com/src/B55ACCECB98445F797238BD82F049EA0" alt="image"></p>
+<ul>
+<li>Planning unit：计划单位</li>
+</ul>
+<p>计划单位分为：天、小时、故事点，会影响计划板的自动计算<br><img src="http://note.youdao.com/yws/res/8507/9853D71BBE4F4D699579348BED9E0C4A" alt="image"></p>
+<ul>
+<li>Spring length：冲刺长度</li>
+</ul>
+<p>默认冲刺长度<br><img src="https://note.youdao.com/src/C2DFF6FC88BB42F29AB15EE1FA5E544A" alt="image"></p>
+<ul>
+<li>Default velocity：默认速度</li>
+</ul>
+<p>团队的默认速度<br><img src="https://note.youdao.com/src/728D68ADBEA64F1ABC2097830C3A418B" alt="image"></p>
+<h3 id="Working-hours-and-days：工作时间及工作日"><a href="#Working-hours-and-days：工作时间及工作日" class="headerlink" title="Working hours and days：工作时间及工作日"></a>Working hours and days：工作时间及工作日</h3><p>设置工作时间及工作日，会影响到计划的自动计算<br><img src="http://note.youdao.com/yws/res/8436/75B4A0030E434D6EB1F557391593410D" alt="image"></p>
+<h3 id="Issue-sources：issue资源"><a href="#Issue-sources：issue资源" class="headerlink" title="Issue sources：issue资源"></a>Issue sources：issue资源</h3><p>可以重现调整计划板的issue资源，包括：面板<code>（项目）</code>、版本、待办事项<code>（史诗、故事等）</code><br><img src="https://note.youdao.com/src/636F6391D05A40FA9147C1E09E7302A2" alt="image"><br>还可以设置开启自动将时间转为故事点<br><img src="https://note.youdao.com/src/5A5785A4253F468DA4F1D0957C2BA35A" alt="image"></p>
+<h3 id="Custom-fields：自定义字段"><a href="#Custom-fields：自定义字段" class="headerlink" title="Custom fields：自定义字段"></a>Custom fields：自定义字段</h3><p>可以配置计划的待办事项显示Jira中issue配置的新增的字段<code>（通过方案配置的字段）</code><br><img src="https://note.youdao.com/src/7BA3D285587046AD951BABC0CF2C69AE" alt="image"><br><img src="https://note.youdao.com/src/CB7DD790EC7742B68895E068A3E7BB57" alt="image"></p>
+<h3 id="Commit-of-changes：提交改变"><a href="#Commit-of-changes：提交改变" class="headerlink" title="Commit of changes：提交改变"></a>Commit of changes：提交改变</h3><p>提交计划中的改变到Jira项目中<br><img src="https://note.youdao.com/src/80AEEB7C7D8F4E698CB129A602BA54F4" alt="image"></p>
+<ul>
+<li>Commit issue assignee：提交问题经办人</li>
+</ul>
+<p>当在计划中手动分配给成员某个待办事项，提交计划后会直接让该成员成为Jira中的issue的经办人<br><img src="https://note.youdao.com/src/34200899ED6340A2821396FBD9042B83" alt="image"><br><img src="https://note.youdao.com/src/E84050C9216C4FF0957527C78AA42980" alt="image"></p>
+<ul>
+<li>Date linking：链接日期</li>
+</ul>
+<p>链接Jira中issue的“截止日期”字段与portfolio中issue的“目标截止日期”字段，会相互同步</p>
+<h3 id="Permissions：权限"><a href="#Permissions：权限" class="headerlink" title="Permissions：权限"></a>Permissions：权限</h3><p>可以设置该计划的权限：查看权限、编辑权限<br><img src="https://note.youdao.com/src/F824759D4BEB4B3291B3F4E681FC4D31" alt="image"></p>
+
+          
+        
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+
+      
+
+      
+      
+        <div class="post-eof"></div>
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+    
+      
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
     <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2018/12/26/Hexo博客搭建教程/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
@@ -928,7 +1194,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-count">4</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -1000,7 +1266,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共2.7k字</span>
+  <span class="post-count">博客全站共5.5k字</span>
 </div>
 
 
