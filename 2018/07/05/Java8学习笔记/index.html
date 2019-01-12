@@ -82,11 +82,11 @@
 <meta name="description" content="概念 谓词：类似函数的东西，接受一个参数值，返回true或false (Predicate )  流，内部迭代  函数式接口：只定义一个抽象方法的接口（@FunctionalInterface注解注释的接口表示为函数式接口，若不是会报错）  Comparator 比较器：Comparator.comparing(User::getAge)   行为参数化原本一个函数通过传递一个接口的实现类，通过传">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java8学习笔记">
-<meta property="og:url" content="http://chenshinan.github.io/2018/12/25/Java8学习笔记/index.html">
+<meta property="og:url" content="http://chenshinan.github.io/2018/07/05/Java8学习笔记/index.html">
 <meta property="og:site_name" content="大艺术家_SN">
 <meta property="og:description" content="概念 谓词：类似函数的东西，接受一个参数值，返回true或false (Predicate )  流，内部迭代  函数式接口：只定义一个抽象方法的接口（@FunctionalInterface注解注释的接口表示为函数式接口，若不是会报错）  Comparator 比较器：Comparator.comparing(User::getAge)   行为参数化原本一个函数通过传递一个接口的实现类，通过传">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-12-25T13:26:40.234Z">
+<meta property="og:updated_time" content="2019-01-12T04:20:04.370Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Java8学习笔记">
 <meta name="twitter:description" content="概念 谓词：类似函数的东西，接受一个参数值，返回true或false (Predicate )  流，内部迭代  函数式接口：只定义一个抽象方法的接口（@FunctionalInterface注解注释的接口表示为函数式接口，若不是会报错）  Comparator 比较器：Comparator.comparing(User::getAge)   行为参数化原本一个函数通过传递一个接口的实现类，通过传">
@@ -129,7 +129,7 @@
 
 
 
-  <link rel="canonical" href="http://chenshinan.github.io/2018/12/25/Java8学习笔记/">
+  <link rel="canonical" href="http://chenshinan.github.io/2018/07/05/Java8学习笔记/">
 
 
 
@@ -242,7 +242,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2018/12/25/Java8学习笔记/">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2018/07/05/Java8学习笔记/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chenshinan">
@@ -271,8 +271,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-12-25T21:18:34+08:00">
-                2018-12-25
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-05T21:18:34+08:00">
+                2018-07-05
               </time>
             
 
@@ -565,6 +565,9 @@
 <li><p>thenAccept方法：接受CompletableFuture执行完毕后的返回值做参数</p>
 </li>
 </ul>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li>【java8实战】书籍</li>
+</ul>
 
       
     </div>
@@ -589,18 +592,14 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/12/25/hello-world/" rel="next" title="Hello World">
-                <i class="fa fa-chevron-left"></i> Hello World
-              </a>
-            
           </div>
 
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/12/26/Hexo博客搭建教程/" rel="prev" title="Hexo博客搭建教程">
-                Hexo博客搭建教程 <i class="fa fa-chevron-right"></i>
+              <a href="/2018/08/06/Java设计模式/" rel="prev" title="Java设计模式">
+                Java设计模式 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -727,7 +726,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行为参数化"><span class="nav-number">2.</span> <span class="nav-text">行为参数化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lambda表达式"><span class="nav-number">3.</span> <span class="nav-text">Lambda表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#语法"><span class="nav-number">3.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#局部变量必须显式声明为final或者事实上是final，不可二次赋值"><span class="nav-number">3.2.</span> <span class="nav-text">局部变量必须显式声明为final或者事实上是final，不可二次赋值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设计模式："><span class="nav-number">3.3.</span> <span class="nav-text">设计模式：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数式接口"><span class="nav-number">4.</span> <span class="nav-text">函数式接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法引用"><span class="nav-number">5.</span> <span class="nav-text">方法引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流"><span class="nav-number">6.</span> <span class="nav-text">流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#想利用多核架构并行执行，只需要把stream-换成parallelStream"><span class="nav-number">6.1.</span> <span class="nav-text">想利用多核架构并行执行，只需要把stream()换成parallelStream()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#与集合的区别：集合讲的是数据，流讲的是计算，流利用了内部迭代"><span class="nav-number">6.2.</span> <span class="nav-text">与集合的区别：集合讲的是数据，流讲的是计算，流利用了内部迭代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#只能遍历一遍，和迭代器一样"><span class="nav-number">6.3.</span> <span class="nav-text">只能遍历一遍，和迭代器一样</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分为两大操作：中间操作、终端操作"><span class="nav-number">6.4.</span> <span class="nav-text">分为两大操作：中间操作、终端操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中间操作："><span class="nav-number">6.5.</span> <span class="nav-text">中间操作：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#终端操作："><span class="nav-number">6.6.</span> <span class="nav-text">终端操作：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原始流：IntStream、DoubleStream、LongStream"><span class="nav-number">6.7.</span> <span class="nav-text">原始流：IntStream、DoubleStream、LongStream</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建流"><span class="nav-number">6.8.</span> <span class="nav-text">创建流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用流收集数据"><span class="nav-number">6.9.</span> <span class="nav-text">用流收集数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#collect：方法"><span class="nav-number">6.9.1.</span> <span class="nav-text">collect：方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Collector：收集器接口"><span class="nav-number">6.9.2.</span> <span class="nav-text">Collector：收集器接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#归约和汇总"><span class="nav-number">6.9.3.</span> <span class="nav-text">归约和汇总</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分组"><span class="nav-number">6.9.4.</span> <span class="nav-text">分组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分区"><span class="nav-number">6.9.5.</span> <span class="nav-text">分区</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流的日志调试"><span class="nav-number">6.10.</span> <span class="nav-text">流的日志调试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并行流"><span class="nav-number">7.</span> <span class="nav-text">并行流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#默认方法"><span class="nav-number">8.</span> <span class="nav-text">默认方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行为的多继承：这样一来一个类可以实现多个接口，就可以实现接口默认方法的多继承"><span class="nav-number">8.1.</span> <span class="nav-text">行为的多继承：这样一来一个类可以实现多个接口，就可以实现接口默认方法的多继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决冲突的三条原则："><span class="nav-number">8.2.</span> <span class="nav-text">解决冲突的三条原则：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Optional取代null"><span class="nav-number">9.</span> <span class="nav-text">Optional取代null</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建Optional对象"><span class="nav-number">9.1.</span> <span class="nav-text">创建Optional对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过map取值"><span class="nav-number">9.2.</span> <span class="nav-text">通过map取值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flatMap扁平化"><span class="nav-number">9.3.</span> <span class="nav-text">flatMap扁平化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无法直接序列化"><span class="nav-number">9.4.</span> <span class="nav-text">无法直接序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#行为"><span class="nav-number">9.5.</span> <span class="nav-text">行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不推荐使用基础类型的Optional，很多方法不能用"><span class="nav-number">9.6.</span> <span class="nav-text">不推荐使用基础类型的Optional，很多方法不能用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CompletableFuture组合式异步编程"><span class="nav-number">10.</span> <span class="nav-text">CompletableFuture组合式异步编程</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#行为参数化"><span class="nav-number">2.</span> <span class="nav-text">行为参数化</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Lambda表达式"><span class="nav-number">3.</span> <span class="nav-text">Lambda表达式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#语法"><span class="nav-number">3.1.</span> <span class="nav-text">语法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#局部变量必须显式声明为final或者事实上是final，不可二次赋值"><span class="nav-number">3.2.</span> <span class="nav-text">局部变量必须显式声明为final或者事实上是final，不可二次赋值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#设计模式："><span class="nav-number">3.3.</span> <span class="nav-text">设计模式：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#函数式接口"><span class="nav-number">4.</span> <span class="nav-text">函数式接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#方法引用"><span class="nav-number">5.</span> <span class="nav-text">方法引用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#流"><span class="nav-number">6.</span> <span class="nav-text">流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#想利用多核架构并行执行，只需要把stream-换成parallelStream"><span class="nav-number">6.1.</span> <span class="nav-text">想利用多核架构并行执行，只需要把stream()换成parallelStream()</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#与集合的区别：集合讲的是数据，流讲的是计算，流利用了内部迭代"><span class="nav-number">6.2.</span> <span class="nav-text">与集合的区别：集合讲的是数据，流讲的是计算，流利用了内部迭代</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#只能遍历一遍，和迭代器一样"><span class="nav-number">6.3.</span> <span class="nav-text">只能遍历一遍，和迭代器一样</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#分为两大操作：中间操作、终端操作"><span class="nav-number">6.4.</span> <span class="nav-text">分为两大操作：中间操作、终端操作</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#中间操作："><span class="nav-number">6.5.</span> <span class="nav-text">中间操作：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#终端操作："><span class="nav-number">6.6.</span> <span class="nav-text">终端操作：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#原始流：IntStream、DoubleStream、LongStream"><span class="nav-number">6.7.</span> <span class="nav-text">原始流：IntStream、DoubleStream、LongStream</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#创建流"><span class="nav-number">6.8.</span> <span class="nav-text">创建流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#用流收集数据"><span class="nav-number">6.9.</span> <span class="nav-text">用流收集数据</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#collect：方法"><span class="nav-number">6.9.1.</span> <span class="nav-text">collect：方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Collector：收集器接口"><span class="nav-number">6.9.2.</span> <span class="nav-text">Collector：收集器接口</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#归约和汇总"><span class="nav-number">6.9.3.</span> <span class="nav-text">归约和汇总</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分组"><span class="nav-number">6.9.4.</span> <span class="nav-text">分组</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分区"><span class="nav-number">6.9.5.</span> <span class="nav-text">分区</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流的日志调试"><span class="nav-number">6.10.</span> <span class="nav-text">流的日志调试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#并行流"><span class="nav-number">7.</span> <span class="nav-text">并行流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#默认方法"><span class="nav-number">8.</span> <span class="nav-text">默认方法</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#行为的多继承：这样一来一个类可以实现多个接口，就可以实现接口默认方法的多继承"><span class="nav-number">8.1.</span> <span class="nav-text">行为的多继承：这样一来一个类可以实现多个接口，就可以实现接口默认方法的多继承</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解决冲突的三条原则："><span class="nav-number">8.2.</span> <span class="nav-text">解决冲突的三条原则：</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Optional取代null"><span class="nav-number">9.</span> <span class="nav-text">Optional取代null</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#创建Optional对象"><span class="nav-number">9.1.</span> <span class="nav-text">创建Optional对象</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过map取值"><span class="nav-number">9.2.</span> <span class="nav-text">通过map取值</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#flatMap扁平化"><span class="nav-number">9.3.</span> <span class="nav-text">flatMap扁平化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#无法直接序列化"><span class="nav-number">9.4.</span> <span class="nav-text">无法直接序列化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#行为"><span class="nav-number">9.5.</span> <span class="nav-text">行为</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#不推荐使用基础类型的Optional，很多方法不能用"><span class="nav-number">9.6.</span> <span class="nav-text">不推荐使用基础类型的Optional，很多方法不能用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CompletableFuture组合式异步编程"><span class="nav-number">10.</span> <span class="nav-text">CompletableFuture组合式异步编程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">11.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -768,7 +767,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共6.8k字</span>
+  <span class="post-count">博客全站共15.3k字</span>
 </div>
 
 
