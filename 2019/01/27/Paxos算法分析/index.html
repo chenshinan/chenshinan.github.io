@@ -1,0 +1,767 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="追本溯源Lamport在1990年提出了一个理论上的一致性解决方案，同时给出了严谨的数学证明。为描述 Paxos 算法，Lamport 虚拟了一个叫做 Paxos 的希腊小岛：岛上采用议会的形式来通过法令，议会中的议员通过信使进行消息的传递，而议员和信使都是兼职的，他们随时有可能离开议会厅，并且信使可能会重复的传递消息，也可能一去不复返，此处假设没有拜占庭将军问题（消息不会被篡改）。这样的环境下，">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Paxos算法分析">
+<meta property="og:url" content="http://chenshinan.github.io/2019/01/27/Paxos算法分析/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="追本溯源Lamport在1990年提出了一个理论上的一致性解决方案，同时给出了严谨的数学证明。为描述 Paxos 算法，Lamport 虚拟了一个叫做 Paxos 的希腊小岛：岛上采用议会的形式来通过法令，议会中的议员通过信使进行消息的传递，而议员和信使都是兼职的，他们随时有可能离开议会厅，并且信使可能会重复的传递消息，也可能一去不复返，此处假设没有拜占庭将军问题（消息不会被篡改）。这样的环境下，">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-01-27T03:32:06.920Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Paxos算法分析">
+<meta name="twitter:description" content="追本溯源Lamport在1990年提出了一个理论上的一致性解决方案，同时给出了严谨的数学证明。为描述 Paxos 算法，Lamport 虚拟了一个叫做 Paxos 的希腊小岛：岛上采用议会的形式来通过法令，议会中的议员通过信使进行消息的传递，而议员和信使都是兼职的，他们随时有可能离开议会厅，并且信使可能会重复的传递消息，也可能一去不复返，此处假设没有拜占庭将军问题（消息不会被篡改）。这样的环境下，">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2019/01/27/Paxos算法分析/">
+
+
+
+
+
+  <title>Paxos算法分析 | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2019/01/27/Paxos算法分析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Paxos算法分析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-01-27T10:50:08+08:00">
+                2019-01-27
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  2.4k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  8 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="追本溯源"><a href="#追本溯源" class="headerlink" title="追本溯源"></a>追本溯源</h2><p>Lamport在1990年提出了一个理论上的一致性解决方案，同时给出了严谨的数学证明。为描述 Paxos 算法，Lamport 虚拟了一个叫做 Paxos 的希腊小岛：岛上采用议会的形式来通过法令，议会中的议员通过信使进行消息的传递，而议员和信使都是兼职的，他们随时有可能离开议会厅，并且信使可能会重复的传递消息，也可能一去不复返，此处假设没有拜占庭将军问题（消息不会被篡改）。这样的环境下，通过议会协议仍然能保证有法令会被通过，并被所有议员所接受。</p>
+<h2 id="Paxos是什么"><a href="#Paxos是什么" class="headerlink" title="Paxos是什么"></a>Paxos是什么</h2><p>Paxos算法是一种基于消息传递且具有高度容错特性的一致性算法，Google的粗粒度锁服务Chubby的设计开发者Burrows曾经说过：“所有一致性协议本质上要么是Paxos要么是其变体”，在过去十年里，Paxos基本成为了分布式领域内一致性协议的代名词。Paxos的提出者Lamport也因其对分布式系统的杰出理论贡献获得了2013年图灵奖</p>
+<h2 id="Paxos解决什么"><a href="#Paxos解决什么" class="headerlink" title="Paxos解决什么"></a>Paxos解决什么</h2><p>在常见的分布式系统中，总会发生诸如机器宕机或网络异常等情况，Paxos算法需要解决的问题就是如何在分布式环境中，快速且正确地在集群内部对某个数据的值达成一致，并且保证不论发生以上任何异常，都不会破坏整个系统的一致性</p>
+<h2 id="相关概念"><a href="#相关概念" class="headerlink" title="相关概念"></a>相关概念</h2><h3 id="角色"><a href="#角色" class="headerlink" title="角色"></a>角色</h3><ul>
+<li><p>提议者(proposer): 进行提议的角色</p>
+</li>
+<li><p>批准者(acceptor): 通过提议的角色</p>
+</li>
+<li><p>学习者(learner): 感知(learn)被选定的提议</p>
+</li>
+</ul>
+<p>在具体的实现中，一个进程可能同时充当多种角色。比如一个进程可能既是Proposer又是Acceptor又是Learner</p>
+<h3 id="提案"><a href="#提案" class="headerlink" title="提案"></a>提案</h3><p>最终要达成一致的value就在提案里（pid，value），Proposer可以提出（propose）提案；Acceptor可以接受（accept）提案；如果某个提案被选定（chosen），那么该提案里的value就被选定了</p>
+<h3 id="选定提案"><a href="#选定提案" class="headerlink" title="选定提案"></a>选定提案</h3><p>在何种情况下不同的进程认为提案被选中了？</p>
+<p>Proposer：只要Proposer发的提案被Acceptor接受，Proposer就认为该提案里的value被选定了<br>Acceptor：只要Acceptor接受了某个提案，Acceptor就认为该提案里的value被选定了<br>Learner：Acceptor告诉Learner哪个value被选定，Learner就认为那个value被选定</p>
+<h2 id="推导过程"><a href="#推导过程" class="headerlink" title="推导过程"></a>推导过程</h2><p>这个一致性需要满足三个要求：<br>1.v达成一致时的值是由某个进程提出的。这是为了防止像这样的作弊方式：无论如何，最终都令每个进程的v为同一个预先设置好的值，例如都令v=2，那么这样的一致也太容易了，也没有任何实际意义。<br>2.一旦v就某个值达成了一致，那么v不能对另一个值再次达成一致。这个要求称为<strong>安全性</strong>。<br>3.一致总是能够达成，即v总会被决定为某个值。这是因为不想无休止的等待，这个要求也称为活性。</p>
+<p>Paxos要求满足的前置假设只有一个：消息内容不会被篡改</p>
+<p>进程必须能够多次改写v的值（在还没达成一致性时）。同时我们也要意识到：当进程收到第一个消息时，进程是没有任何理由拒绝这个消息的请求的</p>
+<p>如果一个提案被大多数进程所接受，那么称提案被通过，此时显然v被决定为提案中的值。进程P记录的接受的提案ID记做a_proposal_id</p>
+<h3 id="核心原理"><a href="#核心原理" class="headerlink" title="核心原理"></a>核心原理</h3><p>我们称超过半数的进程组成的集合为法定集合，两个法定集合必然存在非空交集，即至少有一个公共进程，称为法定集合性质。 例如A,B,C,D,F进程组成的全集，法定集合Q1包括进程A,B,C，Q2包括进程B,C,D，那么Q1和Q2的交集必然不在空，C就是Q1，Q2的公共进程</p>
+<h3 id="推导过程-1"><a href="#推导过程-1" class="headerlink" title="推导过程"></a>推导过程</h3><p>1、三个进程的场景P1,P2,P3（n个进程的场景类似），P1尝试令v的值被决定为a,P2尝试令v被决定为b</p>
+<p><code>为了满足安全性，需要拒绝策略</code>：根据提案ID的大小来作为拒绝或接受的依据</p>
+<p>假设P1的id大于P2的id</p>
+<p>1.1、P3先收到P1的消息，通过拒绝策略，可以达到目的</p>
+<p>1.2、P3先收到P2的消息，无法拒绝，会接受两次，<code>无法满足安全性</code>，因此从三个角度考虑</p>
+<p>1.2.1、P3能够拒绝掉P2的提案：在接收到P2前，先收到P1的<code>预提案</code>，需要引入<code>预提案</code>,进程P在发送提案前，先广播一轮消息，消息附带着接下来要发送的提案的proposal_id，<code>接收者收到后，根据a_proposal_id = max(proposal_id,a_proposal_id)保留较大的提案</code>，但仍然依赖与预提案的接收顺序，因此问题仍然存在</p>
+<p>1.2.2、P3能够拒绝掉P1的提案：不符合我们的拒绝策略</p>
+<p>1.2.3、限制P1提出的提案中的值，如果P1的提案中的值与P2的提案一致，那么接受P1也不会破坏一致性：<code>意味着P1在正式提出提案前，需要有途径能获悉P2的提案的值</code></p>
+<blockquote>
+<p>目前的流程</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">阶段一 提议者Proposer：向接受者Acceptor广播预提案，附带接下来提案Proposal的proposal_id 接受者Acceptor：收到预提案后更新a_proposal_id = max(proposal_id,a_proposal_id)</span><br><span class="line">阶段二 提议者Proposer：向接受者Acceptor广播提案，和之前的预提案共享同一个proposal_id 接受者Acceptor：如果收到的提案的proposal_id&gt;= a.proposal_id，那么接受这个提案，更新a_proposal_id = max(proposal_id,a_proposal_id)</span><br></pre></td></tr></table></figure>
+<p>2、N个进程的场景，存在两个进程Pi,Pj，Pi尝试另v被决定为a,Pj尝试另v被决定为b，Pi提出的预提案记作PreProposal-i，提案记作Proposal-i；Pj的预提案PreProsal-j，提案Proposal-j</p>
+<p><code>Pi的提案被通过代表了存在一个法定集合Q-i，Q-i中的进程都接受了Proposal-i，Pj同理，存在一个Q-j，Q-j中的进程都接受了Proposal-j。由于法定集合的性质，两个多数集Q-i和Q-j中必然存在一个公共进程Pk。Pk即相当于场景1中的P3，只要Pk能够拒绝Proposal-i和Proposal-j中的一个，协议依旧是安全的</code></p>
+<p>2.2.3、由于拒绝策略失效，所以只能令<code>Proposal-i.v = Proposal-j.v=b</code>，首先需要主动询问进程集合，假设回复的是法定集合Q-i，同理法定集合Q-j收到了<code>Proposal-j.v=b</code>，<code>因此存在一个Pk即接收到了Pj提案，也收到了Pi的预提案</code>，而该场景的前提下，Pk是先收到Pj提案，因此记录了<code>Proposal-j.v = b</code></p>
+<p>假设存在<code>CL策略，使得Pi轮训访问回复的集合K-i中选定的 Proposal-m.v = Proposal-j.v=b</code></p>
+<p>假设其中有一个提案是<code>Proposal-f.v != Proposal-j.v=b</code>，则存在法定集合Q-f和法定集合Q-j的<code>公共节点P-s</code>，Ps<code>即接受了PreProposal-f又接受了Proposal-j</code></p>
+<p>假设 <code>PreProposal-f.proposal_id &gt; Proposal-j.proposal_id</code></p>
+<p>2.2.3.1、Ps先收到PreProposal-f，因为拒绝策略，则会拒绝Proposal-j，与假设矛盾</p>
+<p>2.2.3.2、Ps先收到Proposal-j，则PreProposal-f来了之后会把Proposal-j.v=b回复给Proposal-f，由于<code>CL策略</code>则Proposal-f.v = Proposal-j.v=b，与假设矛盾</p>
+<blockquote>
+<p>推论</p>
+</blockquote>
+<p>当 <code>Proposal-f.v != Proposal-j.v=b</code>，那么 <code>PreProposal-f.proposal_id &lt; Proposal-j.proposal_id</code>（最初两个提案也不相等）<br>即是，当 <code>Proposal-f.v = Proposal-j.v=b</code>，那么 <code>PreProposal-f.proposal_id &gt; Proposal-j.proposal_id</code>（这就是<code>CL策略</code>）</p>
+<p>即<code>如果一个提案Proposal-j最终会被通过，那么对于任意的一个提案Proposal-i,如果Proposal-i.proposal_id &gt; Proposal-j.proposal_id，那么Proposal-i.v = Proposal-j.v</code></p>
+<h2 id="Paxos协议流程"><a href="#Paxos协议流程" class="headerlink" title="Paxos协议流程"></a>Paxos协议流程</h2><p>根据上述推导过程，总结了Paxos的协议内容</p>
+<p>阶段一 <code>预提案阶段</code>： 提议者Proposer：向接受者Acceptor广播预提案，附带接下来提案Proposal的proposal_id，接受者Acceptor：收到预提案后更新a_proposal_id = max(proposal_id,a_proposal_id)，如果预提案的proposal_id&gt;a_proposal_id，Acceptor回复记录的接受过的proposal_id最大的提案（包含value）</p>
+<p>阶段二 <code>提案阶段</code>： 提议者Proposer：等待直到收到大多数接受者对预提案的回复，从所有回复的提案组成的法定数目的提案集合K中挑选proposal_id最大的提案，以该提案的值作为本次提案的值。如果K是空集，那么可以给提案任意赋值。然后把该提案广播给接受者们，提案和预提案共享同一个proposal_id。 接受者Acceptor：如果收到的提案的proposal_id&gt;= a.proposal_id，那么接受这个提案，更新a_proposal_id = max(proposal_id,a_proposal_id)，更新记录的提案</p>
+<blockquote>
+<p>一句话总结</p>
+</blockquote>
+<pre><code>如果在集群中一个题案A（pid，value）会被通过，让集群中的所有人达成一致，那么小于该题案编号的题案会被拒绝，大于该题案编号的题案的值为该题案的值
+</code></pre><h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://www.zhihu.com/question/19787937/answer/82340987" target="_blank" rel="noopener">如何浅显易懂地解说 Paxos 的算法</a></li>
+<li><a href="https://zh.wikipedia.org/zh-cn/Paxos%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">维基百科</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/01/10/自动化测试-testng/" rel="next" title="自动化测试-testng">
+                <i class="fa fa-chevron-left"></i> 自动化测试-testng
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">7</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#追本溯源"><span class="nav-number">1.</span> <span class="nav-text">追本溯源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos是什么"><span class="nav-number">2.</span> <span class="nav-text">Paxos是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos解决什么"><span class="nav-number">3.</span> <span class="nav-text">Paxos解决什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关概念"><span class="nav-number">4.</span> <span class="nav-text">相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#角色"><span class="nav-number">4.1.</span> <span class="nav-text">角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提案"><span class="nav-number">4.2.</span> <span class="nav-text">提案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选定提案"><span class="nav-number">4.3.</span> <span class="nav-text">选定提案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推导过程"><span class="nav-number">5.</span> <span class="nav-text">推导过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#核心原理"><span class="nav-number">5.1.</span> <span class="nav-text">核心原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推导过程-1"><span class="nav-number">5.2.</span> <span class="nav-text">推导过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos协议流程"><span class="nav-number">6.</span> <span class="nav-text">Paxos协议流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">7.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共18.8k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
