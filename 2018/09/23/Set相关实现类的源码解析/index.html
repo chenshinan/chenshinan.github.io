@@ -79,19 +79,19 @@
 
 
 
-<meta name="description" content="概念List是一个接口，它继承于Collection的接口。它代表着有序的队列 List的架构图 ArrayList 继承关系：ArrayList -&amp;gt; AbstractList 实现 List接口  ArrayList 是一个数组队列，相当于 动态数组。与Java中的数组相比，它的容量能动态增长。不是线程安全的。ArrayList包含了两个重要的对象：elementData(Object[">
+<meta name="description" content="概念Set具有与Collection完全一样的接口，因此没有任何额外的功能。存入Set的每个元素都必须是唯一的，因为Set不保存重复元素 Set的架构图 Set相关 Set 是继承于Collection的接口。它是一个不允许有重复元素的集合  Set不支持快速获取，只能通过迭代器进行遍历   HashSet 继承关系：HashSet -&amp;gt; AbstractSet 实现 Set接口  Hash">
 <meta property="og:type" content="article">
-<meta property="og:title" content="List的相关实现类的源码解析（JDK1.8）">
-<meta property="og:url" content="http://chenshinan.github.io/2018/09/22/List的相关实现类的源码解析/index.html">
+<meta property="og:title" content="Set相关实现类的源码解析（JDK1.8）">
+<meta property="og:url" content="http://chenshinan.github.io/2018/09/23/Set相关实现类的源码解析/index.html">
 <meta property="og:site_name" content="大艺术家_SN">
-<meta property="og:description" content="概念List是一个接口，它继承于Collection的接口。它代表着有序的队列 List的架构图 ArrayList 继承关系：ArrayList -&amp;gt; AbstractList 实现 List接口  ArrayList 是一个数组队列，相当于 动态数组。与Java中的数组相比，它的容量能动态增长。不是线程安全的。ArrayList包含了两个重要的对象：elementData(Object[">
+<meta property="og:description" content="概念Set具有与Collection完全一样的接口，因此没有任何额外的功能。存入Set的每个元素都必须是唯一的，因为Set不保存重复元素 Set的架构图 Set相关 Set 是继承于Collection的接口。它是一个不允许有重复元素的集合  Set不支持快速获取，只能通过迭代器进行遍历   HashSet 继承关系：HashSet -&amp;gt; AbstractSet 实现 Set接口  Hash">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190114172003.png">
-<meta property="og:updated_time" content="2019-01-14T09:35:12.824Z">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190213202720.png">
+<meta property="og:updated_time" content="2019-02-16T08:02:01.334Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="List的相关实现类的源码解析（JDK1.8）">
-<meta name="twitter:description" content="概念List是一个接口，它继承于Collection的接口。它代表着有序的队列 List的架构图 ArrayList 继承关系：ArrayList -&amp;gt; AbstractList 实现 List接口  ArrayList 是一个数组队列，相当于 动态数组。与Java中的数组相比，它的容量能动态增长。不是线程安全的。ArrayList包含了两个重要的对象：elementData(Object[">
-<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190114172003.png">
+<meta name="twitter:title" content="Set相关实现类的源码解析（JDK1.8）">
+<meta name="twitter:description" content="概念Set具有与Collection完全一样的接口，因此没有任何额外的功能。存入Set的每个元素都必须是唯一的，因为Set不保存重复元素 Set的架构图 Set相关 Set 是继承于Collection的接口。它是一个不允许有重复元素的集合  Set不支持快速获取，只能通过迭代器进行遍历   HashSet 继承关系：HashSet -&amp;gt; AbstractSet 实现 Set接口  Hash">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190213202720.png">
 
 
 
@@ -131,13 +131,13 @@
 
 
 
-  <link rel="canonical" href="http://chenshinan.github.io/2018/09/22/List的相关实现类的源码解析/">
+  <link rel="canonical" href="http://chenshinan.github.io/2018/09/23/Set相关实现类的源码解析/">
 
 
 
 
 
-  <title>List的相关实现类的源码解析（JDK1.8） | 大艺术家_SN</title>
+  <title>Set相关实现类的源码解析（JDK1.8） | 大艺术家_SN</title>
   
 
 
@@ -244,7 +244,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2018/09/22/List的相关实现类的源码解析/">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2018/09/23/Set相关实现类的源码解析/">
 
     <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
       <meta itemprop="name" content="chenshinan">
@@ -261,7 +261,7 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">List的相关实现类的源码解析（JDK1.8）</h1>
+          <h1 class="post-title" itemprop="name headline">Set相关实现类的源码解析（JDK1.8）</h1>
         
 
         <div class="post-meta">
@@ -273,8 +273,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-22T17:24:12+08:00">
-                2018-09-22
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-23T20:29:10+08:00">
+                2018-09-23
               </time>
             
 
@@ -302,7 +302,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  1.1k 字
+                  351 字
                 </span>
               
 
@@ -315,7 +315,7 @@
                   <span class="post-meta-item-text">阅读时长 </span>
                 
                 <span title="阅读时长">
-                  4 分钟
+                  1 分钟
                 </span>
               
             </div>
@@ -336,99 +336,33 @@
       
 
       
-        <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>List是一个接口，它继承于Collection的接口。它代表着有序的队列</p>
-<h2 id="List的架构图"><a href="#List的架构图" class="headerlink" title="List的架构图"></a>List的架构图</h2><p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190114172003.png" alt="List的结构图"></p>
-<h2 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h2><ul>
-<li><p>继承关系：ArrayList -&gt; AbstractList 实现 List接口</p>
+        <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>Set具有与Collection完全一样的接口，因此没有任何额外的功能。<br>存入Set的每个元素都必须是唯一的，因为Set不保存重复元素</p>
+<h2 id="Set的架构图"><a href="#Set的架构图" class="headerlink" title="Set的架构图"></a>Set的架构图</h2><p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190213202720.png" alt="Set的架构图"></p>
+<h2 id="Set相关"><a href="#Set相关" class="headerlink" title="Set相关"></a>Set相关</h2><ul>
+<li><p>Set 是继承于Collection的接口。它是一个不允许有重复元素的集合</p>
 </li>
-<li><p>ArrayList 是一个数组队列，相当于 动态数组。与Java中的数组相比，它的容量能动态增长。不是线程安全的。ArrayList包含了两个重要的对象：elementData<code>(Object[]类型的数组)</code> 和 size</p>
-</li>
-<li><p>遍历ArrayList时，使用随机访问(即，通过索引序号访问)效率最高</p>
-</li>
-<li><p>转数组：Integer[] newText = v.toArray(new Integer[v.size()])</p>
+<li><p>Set不支持快速获取，只能通过迭代器进行遍历</p>
 </li>
 </ul>
-<h2 id="Fail-Fast机制"><a href="#Fail-Fast机制" class="headerlink" title="Fail-Fast机制"></a>Fail-Fast机制</h2><ul>
-<li><p>fail-fast 机制是java集合(Collection)中的一种错误机制。当多个线程对同一个集合的内容进行操作时，就可能会产生fail-fast事件。</p>
+<h2 id="HashSet"><a href="#HashSet" class="headerlink" title="HashSet"></a>HashSet</h2><ul>
+<li><p>继承关系：HashSet -&gt; AbstractSet 实现 Set接口</p>
 </li>
-<li><p>通过modCount的值来判断是否多线程同时操作，modCount用来记录List修改的次数：每修改一次(添加/删除等操作)，将modCount+1</p>
+<li><p>HashSet实现Set接口，由哈希表（实际上是一个HashMap实例）支持。它<code>不保证set 的迭代顺序</code>；特别是它不保证该顺序恒久不变。此类<code>允许使用null元素</code>。</p>
 </li>
-</ul>
-<h2 id="LinkedList"><a href="#LinkedList" class="headerlink" title="LinkedList"></a>LinkedList</h2><ul>
-<li><p>继承关系：LinkedList -&gt; AbstractSequentialList -&gt; AbstractList 实现 List接口</p>
+<li><p>HashSet的<code>元素都存到HashMap键值对的Key上面</code>，而Value时有一个统一的值<code>private static final Object PRESENT = new Object();</code></p>
 </li>
-<li><p>LinkedList的本质是<code>双向链表</code>，包含两个重要的成员：header 和 size</p>
+<li><p>HashSet的实现</p>
 </li>
 </ul>
-<p>header是双向链表的表头，它是双向链表节点所对应的类Entry的实例。Entry中包含成员变量： previous, next, element。其中，previous是该节点的上一个节点，next是该节点的下一个节点，element是该节点所包含的值</p>
+<p>对于HashSet而言，它是基于HashMap实现的，HashSet底层使用HashMap来保存所有元素，因此HashSet 的实现比较简单，相关HashSet的操作，基本上都是直接调用底层HashMap的相关方法来完成， HashSet的源代码如下</p>
+<h2 id="TreeSet"><a href="#TreeSet" class="headerlink" title="TreeSet"></a>TreeSet</h2><ul>
+<li><p>继承关系：TreeSet -&gt; AbstractSet 实现 Set接口</p>
+</li>
+<li><p>TreeSet的本质是一个<code>&quot;有序的，并且没有重复元素&quot;</code>的集合，它是通过TreeMap实现的。TreeSet中含有一个<code>&quot;NavigableMap类型的成员变量&quot;</code>m，而m实际上是<code>&quot;TreeMap的实例&quot;</code></p>
+</li>
+</ul>
+<p>参考文献：</p>
 <ul>
-<li><p>特点：顺序访问会非常高效，而随机访问效率比较低，因此不要通过随机访问去遍历LinkedList</p>
-</li>
-<li><p><code>双向链表和索引值联系起来</code></p>
-</li>
-</ul>
-<p>通过一个计数索引值来实现的。例如，当我们调用get(int location)时，首先会比较“location”和“双向链表长度的1/2”；若前者大，则从链表头开始往后查找，直到location位置；否则，从链表末尾开始先前查找，直到location位置</p>
-<ul>
-<li>LinkedList可以作为<code>FIFO(先进先出)的队列</code>或<code>LIFO(后进先出)的栈</code></li>
-</ul>
-<h2 id="Vector：矢量队列（已经被淘汰，很少用到）"><a href="#Vector：矢量队列（已经被淘汰，很少用到）" class="headerlink" title="Vector：矢量队列（已经被淘汰，很少用到）"></a>Vector：矢量队列（已经被淘汰，很少用到）</h2><ul>
-<li><p>继承关系：Stack -&gt; AbstractList 实现 List接口</p>
-</li>
-<li><p>Vector本质是数组</p>
-</li>
-<li><p>和ArrayList不同，Vector中的操作是线程安全的</p>
-</li>
-</ul>
-<h2 id="Stack：栈"><a href="#Stack：栈" class="headerlink" title="Stack：栈"></a>Stack：栈</h2><ul>
-<li><p>继承关系：Stack -&gt; Vector -&gt; AbstractList 实现 List接口</p>
-</li>
-<li><p>本质是数组</p>
-</li>
-<li><p>特性：先进后出</p>
-</li>
-<li><p>执行push时(即，将元素推入栈中)，执行peek时(即，取出栈顶元素，不执行删除)，执行pop时(即，取出栈顶元素，并将该元素从栈中删除)</p>
-</li>
-</ul>
-<h2 id="其他知识点"><a href="#其他知识点" class="headerlink" title="其他知识点"></a>其他知识点</h2><ul>
-<li>ArrayList内部多次调用方法：<code>Arrays.copyOf</code>(U[] original, int newLength, Class&lt;? extends T[]&gt; newType)</li>
-</ul>
-<p>复制数组数据到返回结果数组，内部调用System.arraycopy</p>
-<ul>
-<li><code>System.arraycopy</code>(Object src,int srcPos,Object dest, int destPos,int length)</li>
-</ul>
-<p>native方法，复制数组数据到目标数组</p>
-<ul>
-<li>RandomAccess接口</li>
-</ul>
-<p>RandomAccess接口是一个空接口， 是一个<code>标记接口</code>，用于标明实现该接口的List支持快速随机访问，主要目的是使算法能够在随机和顺序访问的list中表现的更加高效。部分方法中会判断当前对象是否实现了RandomAccess接口接口，若实现了则采用随机访问的方式获取数据</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">static</span> &lt;T&gt; <span class="function"><span class="keyword">int</span> <span class="title">binarySearch</span><span class="params">(List&lt;? extends Comparable&lt;? <span class="keyword">super</span> T&gt;&gt; list, T key)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">if</span> (list <span class="keyword">instanceof</span> RandomAccess || list.size()&lt;BINARYSEARCH_THRESHOLD)</span><br><span class="line">        <span class="keyword">return</span> Collections.indexedBinarySearch(list, key);</span><br><span class="line">    <span class="keyword">else</span></span><br><span class="line">        <span class="keyword">return</span> Collections.iteratorBinarySearch(list, key);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
-<ul>
-<li><p>求交集：retainAll</p>
-</li>
-<li><p>List中有一个subList方法，用来返回一个list的一部分的视图</p>
-</li>
-</ul>
-<p>称为视图，是因为返回的list是靠原来的list支持的，做的操作会影响到彼此。如果你在调用了sublist返回了子list之后，如果修改了原list的大小，那么之前产生的子list将会失效，变得不可使用。<code>用法</code>：删除一个list的某个区段，list.subList(from, to).clear();</p>
-<ul>
-<li><p><code>(java8)</code>ArrayList.replaceAll：使用对该元素应用运算符的结果来替换列表中的每个元素</p>
-</li>
-<li><p><code>(java8)</code>ArrayList.removeIf：使用函数式接口来移除匹配的元素</p>
-</li>
-<li><p><code>在同一个包里</code>的子类中实例化NewObject类获得对象，然后可用该对象访问<code>protected</code>修饰的方法或者属性</p>
-</li>
-</ul>
-<h2 id="总结⭐️"><a href="#总结⭐️" class="headerlink" title="总结⭐️"></a>总结⭐️</h2><ul>
-<li><p>对于需要快速插入，删除元素，应该使用LinkedList。</p>
-</li>
-<li><p>对于需要快速随机访问元素，应该使用ArrayList。</p>
-</li>
-<li><p>对于“单线程环境” 或者 “多线程环境，但List仅仅只会被单个线程操作”，此时应该使用非同步的类(如ArrayList、LinkedList)。</p>
-</li>
-<li><p>对于“多线程环境，且List可能同时被多个线程操作”，此时，应该使用同步的类(如Vector或<code>CopyOnWriteArrayList</code>)</p>
-</li>
-</ul>
-<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
-<li><a href="https://github.com/chenshinan/csn-list" target="_blank" rel="noopener">demo</a></li>
 <li><a href="http://www.cnblogs.com/skywang12345/p/3323085.html" target="_blank" rel="noopener">Java 集合系列教程</a></li>
 </ul>
 
@@ -455,8 +389,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/08/06/Java设计模式/" rel="next" title="Java设计模式">
-                <i class="fa fa-chevron-left"></i> Java设计模式
+              <a href="/2018/09/23/Map相关实现类的源码解析/" rel="next" title="Map相关实现类的源码解析（JDK1.8）">
+                <i class="fa fa-chevron-left"></i> Map相关实现类的源码解析（JDK1.8）
               </a>
             
           </div>
@@ -465,8 +399,8 @@
 
           <div class="post-nav-prev post-nav-item">
             
-              <a href="/2018/09/23/Map相关实现类的源码解析/" rel="prev" title="Map相关实现类的源码解析（JDK1.8）">
-                Map相关实现类的源码解析（JDK1.8） <i class="fa fa-chevron-right"></i>
+              <a href="/2018/12/26/Hexo博客搭建教程/" rel="prev" title="Hexo博客搭建教程">
+                Hexo博客搭建教程 <i class="fa fa-chevron-right"></i>
               </a>
             
           </div>
@@ -593,7 +527,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#List的架构图"><span class="nav-number">2.</span> <span class="nav-text">List的架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayList"><span class="nav-number">3.</span> <span class="nav-text">ArrayList</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fail-Fast机制"><span class="nav-number">4.</span> <span class="nav-text">Fail-Fast机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinkedList"><span class="nav-number">5.</span> <span class="nav-text">LinkedList</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vector：矢量队列（已经被淘汰，很少用到）"><span class="nav-number">6.</span> <span class="nav-text">Vector：矢量队列（已经被淘汰，很少用到）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stack：栈"><span class="nav-number">7.</span> <span class="nav-text">Stack：栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他知识点"><span class="nav-number">8.</span> <span class="nav-text">其他知识点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结⭐️"><span class="nav-number">9.</span> <span class="nav-text">总结⭐️</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">10.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Set的架构图"><span class="nav-number">2.</span> <span class="nav-text">Set的架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Set相关"><span class="nav-number">3.</span> <span class="nav-text">Set相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HashSet"><span class="nav-number">4.</span> <span class="nav-text">HashSet</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TreeSet"><span class="nav-number">5.</span> <span class="nav-text">TreeSet</span></a></li></ol></div>
             
 
           </div>

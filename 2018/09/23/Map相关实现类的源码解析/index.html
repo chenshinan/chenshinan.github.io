@@ -1,0 +1,909 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="概念Map是一种把键对象和值对象映射的集合，它的每一个元素都包含一对键对象和值对象。Map没有继承于Collection接口 从Map集合中检索元素时，只要给出键对象，就会返回对应的值对象 Map的架构图 Map相关 Map：不包含重复键的映射集合  entrySet()用于返回键-值集的Set集合  keySet()用于返回键集的Set集合  values()用户返回值集的Collection集">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Map相关实现类的源码解析（JDK1.8）">
+<meta property="og:url" content="http://chenshinan.github.io/2018/09/23/Map相关实现类的源码解析/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="概念Map是一种把键对象和值对象映射的集合，它的每一个元素都包含一对键对象和值对象。Map没有继承于Collection接口 从Map集合中检索元素时，只要给出键对象，就会返回对应的值对象 Map的架构图 Map相关 Map：不包含重复键的映射集合  entrySet()用于返回键-值集的Set集合  keySet()用于返回键集的Set集合  values()用户返回值集的Collection集">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190213200918.png">
+<meta property="og:updated_time" content="2019-02-16T08:01:40.602Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Map相关实现类的源码解析（JDK1.8）">
+<meta name="twitter:description" content="概念Map是一种把键对象和值对象映射的集合，它的每一个元素都包含一对键对象和值对象。Map没有继承于Collection接口 从Map集合中检索元素时，只要给出键对象，就会返回对应的值对象 Map的架构图 Map相关 Map：不包含重复键的映射集合  entrySet()用于返回键-值集的Set集合  keySet()用于返回键集的Set集合  values()用户返回值集的Collection集">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190213200918.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2018/09/23/Map相关实现类的源码解析/">
+
+
+
+
+
+  <title>Map相关实现类的源码解析（JDK1.8） | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2018/09/23/Map相关实现类的源码解析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Map相关实现类的源码解析（JDK1.8）</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-23T19:42:32+08:00">
+                2018-09-23
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  3.5k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  12 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>Map是一种把键对象和值对象映射的集合，它的每一个元素都包含一对键对象和值对象。<br>Map没有继承于Collection接口 从Map集合中检索元素时，只要给出键对象，就会返回对应的值对象</p>
+<h2 id="Map的架构图"><a href="#Map的架构图" class="headerlink" title="Map的架构图"></a>Map的架构图</h2><p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190213200918.png" alt="Map的架构图"></p>
+<h2 id="Map相关"><a href="#Map相关" class="headerlink" title="Map相关"></a>Map相关</h2><ul>
+<li><p>Map：不包含重复键的映射集合</p>
+</li>
+<li><p>entrySet()用于返回键-值集的Set集合</p>
+</li>
+<li><p>keySet()用于返回键集的Set集合</p>
+</li>
+<li><p>values()用户返回值集的Collection集合</p>
+</li>
+<li><p>SortedMap：是继承于Map的接口。SortedMap中的内容是排序的键值对，排序的方法是通过比较器(Comparator)。</p>
+</li>
+<li><p>NavigableMap：是<code>继承于SortedMap</code>的接口。相比于SortedMap，NavigableMap有一系列的导航方法；如”获取大于/等于某对象的键值对”、“获取小于/等于某对象的键值对”等等</p>
+</li>
+</ul>
+<h2 id="HashMap"><a href="#HashMap" class="headerlink" title="HashMap"></a>HashMap</h2><ul>
+<li><p>继承关系：HashMap -&gt; AbstractMap 实现 Map接口</p>
+</li>
+<li><p>HashMap构成</p>
+</li>
+</ul>
+<p>HashMap由<code>数组+链表</code>组成的，数组是HashMap的主体，链表则是主要为了解决哈希冲突而存在的，如果定位到的数组位置不含链表（当前entry的next指向null）,那么对于查找，添加等操作很快，仅需一次寻址即可；如果定位到的数组包含链表，对于添加操作，其时间复杂度为O(n)，首先遍历链表，存在即覆盖，否则新增；对于查找操作来讲，仍需遍历链表，然后通过key对象的equals方法逐一比对查找。所以，性能考虑，HashMap中的链表出现越少，性能才会越好。当链表达到一定长度时转为红黑树，复杂度降为 O(logn)。<code>新增对象时，size都会+1，对象会根据hash值找到在数组中对应的存储位置，当达到设置的容量阈值时就会触发扩容</code></p>
+<ul>
+<li><p>HashMap 的实现不是同步的，这意味着它<code>不是线程安全的</code>。它的<code>key、value都可以为null</code>。此外，HashMap中的<code>映射不是有序</code>的</p>
+</li>
+<li><p>哈希表</p>
+</li>
+</ul>
+<p>散列表（Hash table，也叫哈希表），是根据关键码值(Key value)而直接进行访问的数据结构。也就是说，它通过把关键码值映射到表中一个位置来访问记录，以加快查找的速度。这个映射函数叫做散列函数，存放记录的数组叫做散列表。通过哈希函数（一定的规则）计算出在数组中存在的位置，哈希表的主干就是数组</p>
+<ul>
+<li>哈希冲突</li>
+</ul>
+<p>通过哈希函数得出的实际存储地址相同，即为哈希冲突，解决哈希冲突可以采用链表或红黑树</p>
+<ul>
+<li>红黑树</li>
+</ul>
+<p>JDK1.8引入红黑树大程度优化了HashMap的性能，红黑树本质上是一种二叉查找树，但它在二叉查找树的基础上额外添加了一个标记（颜色），同时具有一定的规则。这些规则使红黑树保证了一种平衡，插入、删除、查找的最坏时间复杂度都为 O(logn)<br>红黑输有五个特征：</p>
+<pre><code>每个节点要么是红色，要么是黑色；
+根节点永远是黑色的；
+所有的叶节点都是是黑色的（注意这里说叶子节点其实是上图中的 NIL 节点）；
+每个红色节点的两个子节点一定都是黑色；
+从任一节点到其子树中每个叶子节点的路径都包含相同数量的黑色节点；
+</code></pre><p>详细参考：<a href="https://blog.csdn.net/sun_tttt/article/details/65445754" target="_blank" rel="noopener">https://blog.csdn.net/sun_tttt/article/details/65445754</a></p>
+<ul>
+<li>扩容机制</li>
+</ul>
+<p>当数组中的数据数量达到阈值时，触发扩容，容量扩大一倍，重新分布原数组中的数据，相对消耗性能。在常规构造器中，没有为数组table分配内存空间（有一个入参为指定Map的构造器例外），而是在执行put操作的时候才真正构建table数组。<code>扩容是一个特别耗性能的操作，所以当程序员在使用HashMap的时候，估算map的大小，初始化的时候给一个大致的数值，避免map进行频繁的扩容</code></p>
+<ul>
+<li>hashCode</li>
+</ul>
+<p>Java中的hashCode方法就是根据一定的规则将与对象相关的信息（比如对象的存储地址，对象的字段等）映射成一个数值，这个数值称作为散列值（哈希值）</p>
+<blockquote>
+<p>在重写equals方法的同时，必须重写hashCode方法。不同的对象可能会生成相同的hashcode值</p>
+</blockquote>
+<ul>
+<li>hash方法：<code>对key的hashcode进一步进行计算以及二进制位的调整等来保证最终获取的存储位置尽量分布均匀，二进制中，高16位与低16位进行&#39;异或&#39;运算使存储位置均衡</code></li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">int</span> <span class="title">hash</span><span class="params">(Object key)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">int</span> h;</span><br><span class="line">        <span class="keyword">return</span> (key == <span class="keyword">null</span>) ? <span class="number">0</span> : (h = key.hashCode()) ^ (h &gt;&gt;&gt; <span class="number">16</span>);</span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p>因为hashmap需要用length-1的数量级和hash值做一个与操作,如果长度是17,那么length-1就是16那么与下来的值要么是0要么是16,也就是说16个槽子只用了两个槽,效率是很低的,而如果采用16(2的四次方),就是15(01111)做与操作,均匀分不到0-15的槽子上 (h = key.hashCode()) ^ (h &gt;&gt;&gt; 16) 这个计算目的是为了希望能够尽量均匀,最后做indexFor的时候实际上只是利用了低16位,高16位是用不到的,那么低16位的数字利用<code>^亦或</code>的方法来保证均匀分布</p>
+<ul>
+<li>映射数据的实际存储位置：<code>(n - 1) &amp; hash</code></li>
+</ul>
+<p>通过(n - 1) &amp; hash来映射到数据的实际存储位置，不存在该节点则创建，<code>n是数组的大小，HashMap的数组长度一定是2的次幂</code>，因此n-1即可以形成低位的1111，与hash值进行与运算得到较为均匀的数组分布</p>
+<ul>
+<li>负载因子：loadFactor</li>
+</ul>
+<p>没有设置的话默认为0.75，与桶最大容量计算出桶的阈值，当容量达到桶阈值时将进行扩容操作。<code>默认负载因子为0.75, 这是在时间和空间成本上寻求一种折衷。加载因子过高虽然减少了空间开销，但同时也增加了查找某个条目的时间</code></p>
+<ul>
+<li>右移运算符</li>
+</ul>
+<p>带符号右移<code>&gt;&gt;</code>：右移运算符&gt;&gt;使指定值的所有位都右移规定的次数。右边移出去的部分扔掉不要，左边空出来的部分用原来的数字填充<br>无符号右移<code>&gt;&gt;&gt;</code>：&gt;&gt;&gt;与&gt;&gt;唯一的不同是它无论原来的最左边是什么数，统统都用0填充</p>
+<ul>
+<li><p>二进制负数</p>
+<pre><code>正数 5:0000 0101（存储在计算机中）
+负数-5分为原码、反码、补码
+原码:  0000 0101
+反码:  1111 1010
+补码+1:1111 1011（存储在计算机中)
+</code></pre></li>
+<li><p>遍历</p>
+</li>
+</ul>
+<p>遍历有三种方式：map.entrySet()、map.keySet()、map.forEach()</p>
+<p><code>推荐用第一种entrySet，效率高，可以直接取到key和value，第二种还要用key去取值，第三种java8的方式</code></p>
+<ul>
+<li>其他</li>
+</ul>
+<blockquote>
+<p>HashMap是线程不安全的，不要在并发的环境中同时操作HashMap，建议使用ConcurrentHashMap</p>
+</blockquote>
+<h2 id="Hashtable"><a href="#Hashtable" class="headerlink" title="Hashtable"></a>Hashtable</h2><ul>
+<li><p>继承关系：Hashtable -&gt; Dictionary 实现 Map接口</p>
+</li>
+<li><p>实现方式与HashMap相同，由<code>数组+链表</code>构成</p>
+</li>
+<li><p>Hashtable 的函数都是同步的，这意味着它是<code>线程安全</code>的。它的<code>key、value都不可以为null</code>。此外，Hashtable中的<code>映射不是有序</code>的</p>
+</li>
+<li><p>Dictionary接口</p>
+</li>
+</ul>
+<p>Dictionary是一个抽象类，它直接继承于Object类，没有实现任何接口。Dictionary类是JDK 1.0的引入的。虽然Dictionary也支持“添加key-value键值对”、“获取value”、“获取大小”等基本操作，但它的API函数比Map少；而且<code>Dictionary一般是通过Enumeration(枚举类)去遍历，Map则是通过Iterator(迭代器)去遍历</code></p>
+<ul>
+<li>Enumeration枚举器接口</li>
+</ul>
+<p>Enumeration是java.util中的一个接口类，在Enumeration中封装了有关枚举数据集合的方法，与Iterator差不多，用来遍历集合中的元素。但是枚举Enumeration只提供了遍历Vector和Hashtable类型集合元素的功能</p>
+<h2 id="TreeMap"><a href="#TreeMap" class="headerlink" title="TreeMap"></a>TreeMap</h2><ul>
+<li><p>继承关系：TreeMap -&gt; AbstractMap 实现 NavigableMap接口</p>
+</li>
+<li><p>TreeMap 基于<code>红黑树（Red-Black tree）</code>实现的，<code>不是线程安全</code>的。TreeMap的<code>键映射是有序的</code></p>
+</li>
+</ul>
+<h2 id="WeekHashMap"><a href="#WeekHashMap" class="headerlink" title="WeekHashMap"></a>WeekHashMap</h2><ul>
+<li><p>继承关系：WeekHashMap -&gt; AbstractMap 实现 Map接口</p>
+</li>
+<li><p>实现方式与HashMap相同，由<code>数组+链表</code>构成</p>
+</li>
+<li><p>WeakHashMap的键是<code>弱键</code>：在 WeakHashMap 中，当某个键不再正常使用时，会被从WeakHashMap中被自动移除。更精确地说，对于一个给定的键，其映射的存在并不阻止垃圾回收器对该键的丢弃，这就使该键成为可终止的，被终止，然后被回收。某个键被终止时，它对应的键值对也就从映射中有效地移除了</p>
+</li>
+<li><p>“弱键”的原理</p>
+</li>
+</ul>
+<p>大致上就是，通过WeakReference和ReferenceQueue实现的。 WeakHashMap的key是“弱键”，即是WeakReference类型的；ReferenceQueue是一个队列，它会保存被GC回收的“弱键”。实现步骤如下：</p>
+<pre><code>1、新建WeakHashMap，将“键值对”添加到WeakHashMap中。实际上，WeakHashMap是通过数组table保存Entry(键值对)；每一个Entry实际上是一个单向链表，即Entry是键值对链表。
+2、当某“弱键”不再被其它对象引用，并被GC回收时。在GC回收该“弱键”时，这个“弱键”也同时会被添加到ReferenceQueue(queue)队列中。
+3、当下一次我们需要操作WeakHashMap时，会先同步table和queue。table中保存了全部的键值对，而queue中保存被GC回收的键值对；同步它们，就是删除table中被GC回收的键值对。
+</code></pre><ul>
+<li>WeekHashMap <code>不是线程安全</code>的。可以使用 Collections.synchronizedMap 方法来构造同步的 WeakHashMap</li>
+</ul>
+<h2 id="LinkedHashMap"><a href="#LinkedHashMap" class="headerlink" title="LinkedHashMap"></a>LinkedHashMap</h2><ul>
+<li><p>继承关系：LinkedHashMap -&gt; HashMap -&gt; AbstractMap 实现 Map接口</p>
+</li>
+<li><p>LinkedHashMap可以认为是<code>HashMap+LinkedList</code>，即它既使用HashMap操作数据结构，又使用LinkedList维护插入元素的先后顺序，<code>不是线程安全的，但是有序的</code></p>
+</li>
+<li><p>LinkedHashMap是HashMap的子类，维护一个运行于所有条目的双向链表，LinkedHashMap保证了元素迭代的顺序。该迭代顺序可以是插入顺序或者是访问顺序</p>
+</li>
+<li><p>通过Entry&lt;K,V&gt; extends HashMap.Node&lt;K,V&gt;，增加了前节点和后节点</p>
+</li>
+<li><p>关键属性：<code>accessOrder</code>，可在构造函数时传入</p>
+</li>
+</ul>
+<p>false：所有的Entry按照插入的顺序排列<br>true：所有的Entry按照访问的顺序排列</p>
+<ul>
+<li>LinkedHashMap<code>存储元素</code></li>
+</ul>
+<p>LinkedHashMap并未重写父类HashMap的put方法，而是重写了父类HashMap的put方法调用的子方法<code>afterNodeAccess(Node&lt;K,V&gt; e)</code>和<code>afterNodeInsertion</code>，提供了自己特有的双向链接列表的实现</p>
+<ul>
+<li>LinkedHashMap<code>读取元素</code></li>
+</ul>
+<p>LinkedHashMap重写了父类HashMap的get方法，实际在调用父类getNode()方法取得查找的元素后，再判断当排序模式accessOrder为true时（即按访问顺序排序），<code>先将当前节点从链表中移除，然后再将当前节点插入到链表尾部</code>。由于的链表的增加、删除操作是常量级的，故并不会带来性能的损失</p>
+<ul>
+<li><p><code>每次访问一个元素（get或put），被访问的元素都被提到最后面去了</code></p>
+</li>
+<li><p>利用LinkedHashMap实现LRU算法缓存<code>（LRU即Least Recently Used，最近最少使用，也就是说，当缓存满了，会优先淘汰那些最近最不常访问的数据）</code></p>
+</li>
+</ul>
+<p>get和put方法中会调用：void <code>afterNodeAccess</code>(Node&lt;K,V&gt; e) 这个方法，当accessOrder为true时，就是使用的访问顺序，访问次数最少到访问次数最多，此时要做特殊处理。处理机制就是访问了一次，就将自己往后移一位，这里就是先将自己删除了，然后在把自己添加，这样，近期访问的少的就在链表的开始，最近访问的元素就会在链表的末尾。如果为false。那么默认就是插入顺序，直接通过链表的特点就能依次找到插入元素，不用做特殊处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">LRUCache</span> <span class="keyword">extends</span> <span class="title">LinkedHashMap</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">LRUCache</span><span class="params">(<span class="keyword">int</span> maxSize)</span> </span>&#123;</span><br><span class="line">        <span class="comment">//设置accessOrder为true</span></span><br><span class="line">        <span class="keyword">super</span>(maxSize, <span class="number">0.75F</span>, <span class="keyword">true</span>);</span><br><span class="line">        maxElements = maxSize;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">protected</span> <span class="keyword">boolean</span> <span class="title">removeEldestEntry</span><span class="params">(java.util.Map.Entry eldest)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> size() &gt; maxElements;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">static</span> <span class="keyword">final</span> <span class="keyword">long</span> serialVersionUID = <span class="number">1L</span>;</span><br><span class="line">    <span class="keyword">protected</span> <span class="keyword">int</span> maxElements;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="其他知识点"><a href="#其他知识点" class="headerlink" title="其他知识点"></a>其他知识点</h2><ul>
+<li>可以通过Collections.synchronizedMap方法来构造同步的Map对象</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map concurrentMyMap = Collections.synchronizedMap(myMap);</span><br></pre></td></tr></table></figure>
+<h2 id="总结⭐️"><a href="#总结⭐️" class="headerlink" title="总结⭐️"></a>总结⭐️</h2><ul>
+<li><p>HashMap 是基于“拉链法”实现的散列表。一般用于单线程程序中。</p>
+</li>
+<li><p>Hashtable 也是基于“拉链法”实现的散列表。它一般用于多线程程序中。</p>
+</li>
+<li><p>WeakHashMap 也是基于“拉链法”实现的散列表，它一般也用于单线程程序中。相比HashMap，WeakHashMap中的键是“弱键”，当“弱键”被GC回收时，它对应的键值对也会被从WeakHashMap中删除；而HashMap中的键是强键。</p>
+</li>
+<li><p>TreeMap 是有序的散列表，它是通过红黑树实现的。它一般用于单线程中存储有序的映射</p>
+</li>
+<li><p><code>HashMap</code>与<code>Hashtable</code>的<code>区别</code></p>
+<pre><code>1、HashMap继承于AbstractMap，而Hashtable继承于Dictionary
+2、HashMap的函数不是线程安全的，而Hashtable的函数是线程安全的
+3、HashMap的key、value都可以为null，Hashtable的key、value都不可以为null
+4、HashMap只支持Iterator(迭代器)遍历，而Hashtable支持Iterator(迭代器)和Enumeration(枚举器)两种方式遍历
+5、HashMap添加元素时，是使用自定义的哈希算法，Hashtable没有自定义哈希算法，而直接采用的key的hashCode()
+</code></pre></li>
+<li><p><code>HashMap</code>与<code>WeakHashMap</code>的<code>区别</code></p>
+<pre><code>1、HashMap实现了Cloneable和Serializable接口，而WeakHashMap没有
+2、HashMap的“键”是“强引用(StrongReference)”，而WeakHashMap的键是“弱引用(WeakReference)”
+</code></pre></li>
+<li><p><code>Enumeration</code>与<code>Iterator</code>的<code>区别</code></p>
+<pre><code>1、Enumeration 是JDK 1.0添加的接口，而Iterator 是JDK 1.2才添加的接口
+2、Iterator 比Enumeration 多了支持fail-fast机制，所以Enumeration 遍历速度较快
+</code></pre></li>
+</ul>
+<p>参考文献：</p>
+<ul>
+<li><a href="https://www.cnblogs.com/chengxiao/p/6059914.html" target="_blank" rel="noopener">HashMap实现原理及源码分析</a></li>
+<li><a href="http://www.cnblogs.com/skywang12345/p/3323085.html" target="_blank" rel="noopener">Java 集合系列教程</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/22/List的相关实现类的源码解析/" rel="next" title="List的相关实现类的源码解析（JDK1.8）">
+                <i class="fa fa-chevron-left"></i> List的相关实现类的源码解析（JDK1.8）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/09/23/Set相关实现类的源码解析/" rel="prev" title="Set相关实现类的源码解析（JDK1.8）">
+                Set相关实现类的源码解析（JDK1.8） <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">10</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Map的架构图"><span class="nav-number">2.</span> <span class="nav-text">Map的架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Map相关"><span class="nav-number">3.</span> <span class="nav-text">Map相关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HashMap"><span class="nav-number">4.</span> <span class="nav-text">HashMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hashtable"><span class="nav-number">5.</span> <span class="nav-text">Hashtable</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#TreeMap"><span class="nav-number">6.</span> <span class="nav-text">TreeMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#WeekHashMap"><span class="nav-number">7.</span> <span class="nav-text">WeekHashMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinkedHashMap"><span class="nav-number">8.</span> <span class="nav-text">LinkedHashMap</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他知识点"><span class="nav-number">9.</span> <span class="nav-text">其他知识点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结⭐️"><span class="nav-number">10.</span> <span class="nav-text">总结⭐️</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共23.4k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
