@@ -1,0 +1,841 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="概念redis是一个key-value存储系统。和Memcached类似，它支持存储的value类型相对更多，包括string(字符串)、list(链表)、set(集合)、zset(sorted set –有序集合)和hash（哈希类型）。这些数据类型都支持push/pop、add/remove及取交集并集和差集及更丰富的操作，而且这些操作都是原子性的。在此基础上，redis支持各种不同方式的排序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="redis学习">
+<meta property="og:url" content="http://chenshinan.github.io/2018/11/04/redis学习/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="概念redis是一个key-value存储系统。和Memcached类似，它支持存储的value类型相对更多，包括string(字符串)、list(链表)、set(集合)、zset(sorted set –有序集合)和hash（哈希类型）。这些数据类型都支持push/pop、add/remove及取交集并集和差集及更丰富的操作，而且这些操作都是原子性的。在此基础上，redis支持各种不同方式的排序">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-16T08:28:39.510Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="redis学习">
+<meta name="twitter:description" content="概念redis是一个key-value存储系统。和Memcached类似，它支持存储的value类型相对更多，包括string(字符串)、list(链表)、set(集合)、zset(sorted set –有序集合)和hash（哈希类型）。这些数据类型都支持push/pop、add/remove及取交集并集和差集及更丰富的操作，而且这些操作都是原子性的。在此基础上，redis支持各种不同方式的排序">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2018/11/04/redis学习/">
+
+
+
+
+
+  <title>redis学习 | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2018/11/04/redis学习/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">redis学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-11-04T16:25:17+08:00">
+                2018-11-04
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  2.8k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  10 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>redis是一个key-value存储系统。和Memcached类似，它支持存储的value类型相对更多，包括string(字符串)、list(链表)、set(集合)、zset(sorted set –有序集合)和hash（哈希类型）。这些数据类型都支持push/pop、add/remove及取交集并集和差集及更丰富的操作，而且这些操作都是原子性的。在此基础上，redis支持各种不同方式的排序。与memcached一样，为了保证效率，数据都是缓存在内存中。区别的是redis会周期性的把更新的数据写入磁盘或者把修改操作写入追加的记录文件，并且在此基础上实现了master-slave(主从)同步</p>
+<h2 id="基础"><a href="#基础" class="headerlink" title="基础"></a>基础</h2><ul>
+<li><p>redis是线程安全的<code>（因为只有一个线程）</code>，采用<code>非阻塞I/O多路复用</code>，其所有操作都是原子的，不会因并发产生数据异常</p>
+</li>
+<li><p>Redis的速度非常快<code>（因为使用非阻塞式IO，且大部分命令的算法时间复杂度都是O(1))</code></p>
+</li>
+<li><p>使用高耗时的Redis命令是很危险的，会占用唯一的一个线程的大量处理时间，导致所有的请求都被拖慢。<code>（例如时间复杂度为O(N)的KEYS命令，严格禁止在生产环境中使用）</code></p>
+</li>
+<li><p>String是Redis的基础数据类型，Redis没有Int、Float、Boolean等数据类型的概念，所有的基本类型在Redis中都以String体现</p>
+</li>
+<li><p>Redis的List是链表型的数据结构，可以使用LPUSH/RPUSH/LPOP/RPOP等命令在List的两端执行插入元素和弹出元素的操作。虽然List也支持在特定index上插入和读取元素的功能，但其时间复杂度较高（O(N)），应小心使用</p>
+</li>
+<li><p>Hash即哈希表，Redis的Hash和传统的哈希表一样，是一种field-value型的数据结构，可以理解成将HashMap搬入Redis</p>
+</li>
+</ul>
+<p>Hash的优点包括：</p>
+<pre><code>1、可以实现二元查找，如&quot;查找ID为1000的用户的年龄&quot;
+2、比起将整个对象序列化后作为String存储的方法，Hash能够有效地减少网络传输的消耗
+3、当使用Hash维护一个集合时，提供了比List效率高得多的随机访问命令
+</code></pre><h2 id="持久化方式"><a href="#持久化方式" class="headerlink" title="持久化方式"></a>持久化方式</h2><h3 id="RDB"><a href="#RDB" class="headerlink" title="RDB"></a>RDB</h3><p>建议至少开启RDB方式的数据持久化：RDB方式的持久化几乎不损耗Redis本身的性能，在进行RDB持久化时，Redis主进程唯一需要做的事情就是fork出一个子进程，所有持久化工作都由子进程完成</p>
+<p>Redis默认开启RDB快照：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">save 900 1</span><br><span class="line">save 300 10</span><br><span class="line">save 60 10000</span><br></pre></td></tr></table></figure>
+<h3 id="AOF"><a href="#AOF" class="headerlink" title="AOF"></a>AOF</h3><p>采用AOF持久方式时，Redis会把每一个写请求都记录在一个日志文件里。在Redis重启时，会把AOF文件中记录的所有写操作顺序执行一遍，确保数据恢复到最新</p>
+<p>AOF提供了三种fsync配置，always/everysec/no，通过配置项[appendfsync]指定：</p>
+<pre><code>appendfsync no：不进行fsync，将flush文件的时机交给OS决定，速度最快
+appendfsync always：每写入一条日志就进行一次fsync操作，数据安全性最高，但速度最慢
+appendfsync everysec：折中的做法，交由后台线程每秒fsync一次
+</code></pre><h2 id="数据淘汰机制"><a href="#数据淘汰机制" class="headerlink" title="数据淘汰机制"></a>数据淘汰机制</h2><p>Redis提供了5种数据淘汰策略：</p>
+<pre><code>volatile-lru：使用LRU算法进行数据淘汰（淘汰上次使用时间最早的，且使用次数最少的key），只淘汰设定了有效期的key
+allkeys-lru：使用LRU算法进行数据淘汰，所有的key都可以被淘汰
+volatile-random：随机淘汰数据，只淘汰设定了有效期的key
+allkeys-random：随机淘汰数据，所有的key都可以被淘汰
+volatile-ttl：淘汰剩余有效期最短的key
+</code></pre><blockquote>
+<p>最好为Redis指定一种有效的数据淘汰策略以配合maxmemory设置，避免在内存使用满后发生写入失败的情况</p>
+</blockquote>
+<h2 id="Pipelining"><a href="#Pipelining" class="headerlink" title="Pipelining"></a>Pipelining</h2><p>Redis提供许多批量操作的命令，如MSET/MGET/HMSET/HMGET等等，这些命令存在的意义是减少维护网络连接和传输数据所消耗的资源和时间</p>
+<p>如果客户端要连续执行的多次操作无法通过Redis命令组合在一起，此时便可以使用Redis提供的pipelining功能来实现在一次交互中执行多条命令</p>
+<h2 id="Redis性能调优"><a href="#Redis性能调优" class="headerlink" title="Redis性能调优"></a>Redis性能调优</h2><pre><code>1、最初的也是最重要的，确保没有让Redis执行耗时长的命令
+2、使用pipelining将连续执行的命令组合执行
+3、操作系统的Transparent huge pages功能必须关闭
+4、如果在虚拟机中运行Redis，可能天然就有虚拟机环境带来的固有延迟。可以通过./redis-cli --intrinsic-latency 100命令查看固有延迟。同时如果对Redis的性能有较高要求的话，应尽可能在物理机上直接部署Redis。
+6、检查数据持久化策略
+7、考虑引入读写分离机制
+</code></pre><h2 id="主从复制"><a href="#主从复制" class="headerlink" title="主从复制"></a>主从复制</h2><p>Redis支持一主多从的主从复制架构。一个Master实例负责处理所有的写请求，Master将写操作同步至所有Slave。<br>借助Redis的主从复制，可以实现读写分离和高可用：</p>
+<p>实时性要求不是特别高的读请求，可以在Slave上完成，提升效率。特别是一些周期性执行的统计任务，这些任务可能需要执行一些长耗时的Redis命令，可以专门规划出1个或几个Slave用于服务这些统计任务</p>
+<blockquote>
+<p>借助Redis Sentinel可以实现高可用，当Master crash后，Redis Sentinel能够自动将一个Slave晋升为Master，继续提供服务</p>
+</blockquote>
+<h2 id="Redis-Sentinel-哨兵模式"><a href="#Redis-Sentinel-哨兵模式" class="headerlink" title="Redis Sentinel 哨兵模式"></a>Redis Sentinel 哨兵模式</h2><p>Redis Sentinel是Redis官方开发的监控组件，可以监控Redis实例的状态，通过Master节点自动发现Slave节点，并在监测到Master节点失效时选举出一个新的Master，并向所有Redis实例推送新的主从配置。</p>
+<p>Redis Sentinel需要至少部署3个实例才能形成选举关系</p>
+<h2 id="Redis-Cluster-集群分片"><a href="#Redis-Cluster-集群分片" class="headerlink" title="Redis Cluster 集群分片"></a>Redis Cluster 集群分片</h2><blockquote>
+<p>为何要做集群分片？</p>
+</blockquote>
+<pre><code>1、Redis中存储的数据量大，一台主机的物理内存已经无法容纳
+2、Redis的写请求并发量大，一个Redis实例以无法承载
+</code></pre><h3 id="Redis-Cluster的能力"><a href="#Redis-Cluster的能力" class="headerlink" title="Redis Cluster的能力"></a>Redis Cluster的能力</h3><pre><code>1、能够自动将数据分散在多个节点上
+2、当访问的key不在当前分片上时，能够自动将请求转发至正确的分片
+3、当集群中部分节点失效时仍能提供服务
+</code></pre><p>其中第三点是基于主从复制来实现的，Redis Cluster的每个数据分片都采用了主从复制的结构</p>
+<h3 id="Redis-Cluster分片原理"><a href="#Redis-Cluster分片原理" class="headerlink" title="Redis Cluster分片原理"></a>Redis Cluster分片原理</h3><p>Redis Cluster中共有16384个hash slot，Redis会计算每个key的CRC16，将结果与16384取模，来决定该key存储在哪一个hash slot中，同时需要指定Redis Cluster中每个数据分片负责的Slot数。Slot的分配在任何时间点都可以进行重新分配。</p>
+<p>客户端在对key进行读写操作时，可以连接Cluster中的任意一个分片，如果操作的key不在此分片负责的Slot范围内，Redis Cluster会自动将请求重定向到正确的分片上</p>
+<h2 id="Redis常见问题"><a href="#Redis常见问题" class="headerlink" title="Redis常见问题"></a>Redis常见问题</h2><blockquote>
+<p>单线程的redis为什么这么快?</p>
+</blockquote>
+<pre><code>1、纯内存操作
+2、单线程操作，避免了频繁的上下文切换
+3、采用了非阻塞I/O多路复用机制
+</code></pre><blockquote>
+<p><code>先删除缓存再更新数据库</code>，这个操作是错误的</p>
+</blockquote>
+<p>如果出现两个并发线程同时操作，更新操作是先删除了缓存，查询操作从数据库查了旧的数据，导致如果数据没有再更新的话，缓存中一直是旧数据</p>
+<h2 id="Redis安装"><a href="#Redis安装" class="headerlink" title="Redis安装"></a>Redis安装</h2><h3 id="通过homebrew"><a href="#通过homebrew" class="headerlink" title="通过homebrew"></a>通过homebrew</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">brew install redis //下载安装</span><br><span class="line">brew services start redis //运行方式1：后台启动</span><br><span class="line">redis-server /usr/local/etc/redis.conf //运行方式2：根据配置启动</span><br><span class="line">redis-cli -h 127.0.0.1 -p 6379 //进入控制台</span><br><span class="line">brew services stop redis //退出redis</span><br></pre></td></tr></table></figure>
+<h3 id="通过官方下载源码包"><a href="#通过官方下载源码包" class="headerlink" title="通过官方下载源码包"></a>通过官方下载源码包</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">wget http://download.redis.io/releases/redis-5.0.0.tar.gz</span><br><span class="line">tar zxvf redis-5.0.0.tar.gz</span><br><span class="line">cd redis-5.0.0</span><br><span class="line">make //编译</span><br><span class="line">redis-cli -c -p 7000 shutdown //退出redis</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>包下的README.md有使用教程</p>
+</blockquote>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">set key value</span><br><span class="line">get key</span><br><span class="line">shutdown //关闭停止</span><br><span class="line">quit //退出客户端</span><br></pre></td></tr></table></figure>
+<h3 id="redis-conf配置"><a href="#redis-conf配置" class="headerlink" title="redis.conf配置"></a>redis.conf配置</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">daemonize : 是否后台运行，将其设为no，表示前台运行。</span><br><span class="line">port :redis服务监听的端口。</span><br><span class="line">logfile : 指定日志文件路径。</span><br><span class="line">appendonly : 是否开启appendonlylog，开启的话每次写操作会记一条log，这会提高数据抗风险能力，但影响效率。</span><br><span class="line">cluster-node-timeout : 集群结点超时限制</span><br></pre></td></tr></table></figure>
+<h2 id="Redis-Cluster集群部署"><a href="#Redis-Cluster集群部署" class="headerlink" title="Redis Cluster集群部署"></a>Redis Cluster集群部署</h2><p>每个节点对应一个redis.conf和node.conf（自动生成，命名不同）</p>
+<ul>
+<li>最小的Redis群集配置文件</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">port 7000</span><br><span class="line">cluster-enabled yes</span><br><span class="line">cluster-config-file node-7000.conf</span><br><span class="line">cluster-node-timeout 5000</span><br><span class="line">appendonly yes</span><br></pre></td></tr></table></figure>
+<ul>
+<li>启动redis</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">redis-server ./redis7000.conf</span><br><span class="line">redis-server ./redis7001.conf</span><br><span class="line">redis-server ./redis7002.conf</span><br><span class="line">redis-server ./redis7003.conf</span><br><span class="line">redis-server ./redis7004.conf</span><br><span class="line">redis-server ./redis7005.conf</span><br></pre></td></tr></table></figure>
+<ul>
+<li>将redis节点关联成集群</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">redis-cli --cluster create 127.0.0.1:7000 127.0.0.1:7001 \</span><br><span class="line">127.0.0.1:7002 127.0.0.1:7003 127.0.0.1:7004 127.0.0.1:7005 \</span><br><span class="line">--cluster-replicas 1</span><br></pre></td></tr></table></figure>
+<p>输入yes后，此时搭建集群成功</p>
+<blockquote>
+<p>另外可以使用如下命令快速搭建集群</p>
+</blockquote>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">create-cluster start</span><br><span class="line">create-cluster create</span><br></pre></td></tr></table></figure>
+<h2 id="spring-boot整合redis"><a href="#spring-boot整合redis" class="headerlink" title="spring boot整合redis"></a>spring boot整合redis</h2><h3 id="引入pom"><a href="#引入pom" class="headerlink" title="引入pom"></a>引入pom</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;dependency&gt;</span><br><span class="line">        &lt;groupId&gt;org.springframework.boot&lt;/groupId&gt;</span><br><span class="line">        &lt;artifactId&gt;spring-boot-starter-data-redis&lt;/artifactId&gt;</span><br><span class="line">&lt;/dependency&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="application-yml配置"><a href="#application-yml配置" class="headerlink" title="application.yml配置"></a>application.yml配置</h3><figure class="highlight yml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line"><span class="attr">  port:</span> <span class="number">8011</span></span><br><span class="line"><span class="attr">spring:</span></span><br><span class="line"><span class="attr">  redis:</span></span><br><span class="line"><span class="attr">    host:</span> <span class="number">127.0</span><span class="number">.0</span><span class="number">.1</span></span><br><span class="line"><span class="attr">    port:</span> <span class="number">6679</span></span><br></pre></td></tr></table></figure>
+<h3 id="redis配置文件"><a href="#redis配置文件" class="headerlink" title="redis配置文件"></a>redis配置文件</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">@Configuration</span><br><span class="line">public class RedisConfig &#123;</span><br><span class="line">    @Bean</span><br><span class="line">    public RedisTemplate&lt;String, Object&gt; redisTemplate(RedisConnectionFactory redisConnectionFactory) &#123;</span><br><span class="line">        RedisTemplate&lt;String, Object&gt; redisTemplate = new RedisTemplate&lt;&gt;();</span><br><span class="line">        initDomainRedisTemplate(redisTemplate, redisConnectionFactory);</span><br><span class="line">        return redisTemplate;</span><br><span class="line">    &#125;</span><br><span class="line">    private void initDomainRedisTemplate(RedisTemplate&lt;String, Object&gt; redisTemplate, RedisConnectionFactory factory) &#123;</span><br><span class="line">        redisTemplate.setKeySerializer(new StringRedisSerializer());</span><br><span class="line">        redisTemplate.setValueSerializer(new JdkSerializationRedisSerializer());</span><br><span class="line">        redisTemplate.setHashKeySerializer(new StringRedisSerializer());</span><br><span class="line">        redisTemplate.setHashValueSerializer(new GenericJackson2JsonRedisSerializer());</span><br><span class="line">        redisTemplate.setConnectionFactory(factory);</span><br><span class="line">    &#125;</span><br><span class="line">    @Bean</span><br><span class="line">    public ValueOperations&lt;String, Object&gt; valueOperations(RedisTemplate&lt;String, Object&gt; redisTemplate) &#123;</span><br><span class="line">        return redisTemplate.opsForValue();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="RedisUtil"><a href="#RedisUtil" class="headerlink" title="RedisUtil"></a>RedisUtil</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line">@Component</span><br><span class="line">public class RedisUtil &#123;</span><br><span class="line">    @Autowired</span><br><span class="line">    private RedisTemplate&lt;String, Object&gt; redisTemplate;</span><br><span class="line">    @Autowired</span><br><span class="line">    private ValueOperations&lt;String, Object&gt; valueOperations;</span><br><span class="line">    /**</span><br><span class="line">     * 查询key,支持模糊查询</span><br><span class="line">     */</span><br><span class="line">    public Set&lt;String&gt; keys(String key) &#123;</span><br><span class="line">        return redisTemplate.keys(key);</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 字符串添加信息</span><br><span class="line">     *</span><br><span class="line">     * @param key     key</span><br><span class="line">     * @param obj     可以是单个的值，也可以是任意类型的对象</span><br><span class="line">     * @param timeout 过期时间，单位秒</span><br><span class="line">     */</span><br><span class="line">    public void set(String key, Object obj, Long timeout) &#123;</span><br><span class="line">        valueOperations.set(key, obj, timeout, TimeUnit.SECONDS);</span><br><span class="line">    &#125;</span><br><span class="line">    /**</span><br><span class="line">     * 字符串添加信息</span><br><span class="line">     *</span><br><span class="line">     * @param key key</span><br><span class="line">     * @param obj 可以是单个的值，也可以是任意类型的对象</span><br><span class="line">     */</span><br><span class="line">    public void set(String key, Object obj) &#123;</span><br><span class="line">        valueOperations.set(key, obj);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>SpringBoot中可以基础redis作为缓存</p>
+</blockquote>
+<pre><code>配置：spring.cache.type:redis
+启动缓存：@EnableCaching
+实现：CachingConfigurerSupport
+最后使用注解：@Cacheable注解在方法上，该方法的返回结果既被缓存
+</code></pre><p>参考文献：</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/db5da880154a" target="_blank" rel="noopener">I/O多路复用</a></li>
+<li><a href="https://redis.io/topics/cluster-tutorial" target="_blank" rel="noopener">官方redis集群教程</a></li>
+<li><a href="https://www.cnblogs.com/leeSmall/p/8414687.html" target="_blank" rel="noopener">Redis系列九（redis集群高可用）</a></li>
+<li><a href="https://my.oschina.net/dslcode/blog/1936656" target="_blank" rel="noopener">docker redis 集群（cluster）搭建</a></li>
+<li><a href="https://www.cnblogs.com/hlhdidi/p/7928074.html" target="_blank" rel="noopener">springboot整合redis周围缓存</a></li>
+<li><a href="https://docs.spring.io/spring-data/data-redis/docs/current/reference/html/#redis:connectors" target="_blank" rel="noopener">Spring Data Redis官方教程</a></li>
+<li><a href="https://www.cnblogs.com/EasonJim/p/7805665.html" target="_blank" rel="noopener">Spring Boot使用Spring Data Redis操作Redis（单机/集群）</a></li>
+</ul>
+<p>以下是复习Redis面试原理相关</p>
+<ul>
+<li><a href="https://www.jianshu.com/p/2f14bc570563" target="_blank" rel="noopener">Redis基础、高级特性与性能调优</a></li>
+<li><a href="https://blog.csdn.net/Stubborn_Cow/article/details/50442950" target="_blank" rel="noopener">Redis 主从复制 原理与用法</a></li>
+<li><a href="https://www.cnblogs.com/rjzheng/p/9096228.htm" target="_blank" rel="noopener">redis复习精讲【推荐】</a></li>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MzU4NDQ4MzU5OA==&amp;mid=2247483867&amp;idx=1&amp;sn=39a06fa3d6d8f09eefaaf3d2b15b40e4&amp;chksm=fd9857bacaefdeaccd7cacf9dba5b702bf6f639377ded5a29fc1e56ae4f1d0a121ad0829c9dc&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">面试中关于Redis的问题看这篇就够了</a></li>
+<li><a href="https://mp.weixin.qq.com/s?__biz=MzU4NDQ4MzU5OA==&amp;mid=2247483863&amp;idx=1&amp;sn=8a7d08783f45d3af7947b8a2e7cc981e&amp;chksm=fd9857b6caefdea072a7cec992fa1d32316ffdca8eea24e7f5a7871ce189bdd4e5b144619ae8&amp;scene=21#wechat_redirect" target="_blank" rel="noopener">一文轻松搞懂redis集群原理及搭建与使用</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/23/Set相关实现类的源码解析/" rel="next" title="Set相关实现类的源码解析（JDK1.8）">
+                <i class="fa fa-chevron-left"></i> Set相关实现类的源码解析（JDK1.8）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/12/26/Hexo博客搭建教程/" rel="prev" title="Hexo博客搭建教程">
+                Hexo博客搭建教程 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">11</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基础"><span class="nav-number">2.</span> <span class="nav-text">基础</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#持久化方式"><span class="nav-number">3.</span> <span class="nav-text">持久化方式</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#RDB"><span class="nav-number">3.1.</span> <span class="nav-text">RDB</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#AOF"><span class="nav-number">3.2.</span> <span class="nav-text">AOF</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据淘汰机制"><span class="nav-number">4.</span> <span class="nav-text">数据淘汰机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Pipelining"><span class="nav-number">5.</span> <span class="nav-text">Pipelining</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis性能调优"><span class="nav-number">6.</span> <span class="nav-text">Redis性能调优</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#主从复制"><span class="nav-number">7.</span> <span class="nav-text">主从复制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-Sentinel-哨兵模式"><span class="nav-number">8.</span> <span class="nav-text">Redis Sentinel 哨兵模式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-Cluster-集群分片"><span class="nav-number">9.</span> <span class="nav-text">Redis Cluster 集群分片</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-Cluster的能力"><span class="nav-number">9.1.</span> <span class="nav-text">Redis Cluster的能力</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Redis-Cluster分片原理"><span class="nav-number">9.2.</span> <span class="nav-text">Redis Cluster分片原理</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis常见问题"><span class="nav-number">10.</span> <span class="nav-text">Redis常见问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis安装"><span class="nav-number">11.</span> <span class="nav-text">Redis安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#通过homebrew"><span class="nav-number">11.1.</span> <span class="nav-text">通过homebrew</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#通过官方下载源码包"><span class="nav-number">11.2.</span> <span class="nav-text">通过官方下载源码包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis-conf配置"><span class="nav-number">11.3.</span> <span class="nav-text">redis.conf配置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Redis-Cluster集群部署"><span class="nav-number">12.</span> <span class="nav-text">Redis Cluster集群部署</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#spring-boot整合redis"><span class="nav-number">13.</span> <span class="nav-text">spring boot整合redis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#引入pom"><span class="nav-number">13.1.</span> <span class="nav-text">引入pom</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#application-yml配置"><span class="nav-number">13.2.</span> <span class="nav-text">application.yml配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#redis配置文件"><span class="nav-number">13.3.</span> <span class="nav-text">redis配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RedisUtil"><span class="nav-number">13.4.</span> <span class="nav-text">RedisUtil</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共26.2k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
