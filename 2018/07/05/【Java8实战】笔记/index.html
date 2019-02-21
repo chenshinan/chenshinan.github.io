@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="大艺术家_SN">
 <meta property="og:description" content="概念 谓词：类似函数的东西，接受一个参数值，返回true或false (Predicate )  流，内部迭代  函数式接口：只定义一个抽象方法的接口（@FunctionalInterface注解注释的接口表示为函数式接口，若不是会报错）  Comparator 比较器：Comparator.comparing(User::getAge)   行为参数化原本一个函数通过传递一个接口的实现类，通过传">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-02-21T11:54:29.104Z">
+<meta property="og:updated_time" content="2019-02-21T12:06:04.278Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【Java8实战】笔记">
 <meta name="twitter:description" content="概念 谓词：类似函数的东西，接受一个参数值，返回true或false (Predicate )  流，内部迭代  函数式接口：只定义一个抽象方法的接口（@FunctionalInterface注解注释的接口表示为函数式接口，若不是会报错）  Comparator 比较器：Comparator.comparing(User::getAge)   行为参数化原本一个函数通过传递一个接口的实现类，通过传">
@@ -478,7 +478,7 @@
 <h4 id="分组"><a href="#分组" class="headerlink" title="分组"></a>分组</h4><ul>
 <li>groupingBy：返回Map，对数据进行分组，可以再传入第二个参数为groupingBy，形成多级分组，若不传默认为toList()。一般与maping结合使用，放在第二个参数</li>
 </ul>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, List&lt;Long&gt;&gt; projectConfigMap = projectConfigs.stream().collect(Collectors.groupingBy(ProjectConfig::getApplyType,Collectors.mapping(ProjectConfig::getProjectId,Collectors.toList())));</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, List&lt;Long&gt;&gt; projectConfigMap = projectConfigs</span><br><span class="line">.stream().collect(Collectors.groupingBy(ProjectConfig::getApplyType,Collectors.mapping(ProjectConfig::getProjectId,Collectors.toList())));</span><br></pre></td></tr></table></figure>
 <ul>
 <li><p>maping：分组映射值</p>
 </li>
@@ -536,7 +536,7 @@
 <h3 id="flatMap扁平化"><a href="#flatMap扁平化" class="headerlink" title="flatMap扁平化"></a>flatMap扁平化</h3><blockquote>
 <p>.map.map无法取出值来，需要使用flatMap扁平化取值</p>
 </blockquote>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">List&lt;StatusDTO&gt; addStatuses = changeItems.stream().map(StateMachineSchemeChangeItem::getAddStatuses).flatMap(x -&gt; x.stream()).distinct().collect(Collectors.toList())</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">List&lt;StatusDTO&gt; addStatuses = changeItems</span><br><span class="line">.stream().map(StateMachineSchemeChangeItem::getAddStatuses).flatMap(x -&gt; x.stream()).distinct().collect(Collectors.toList())</span><br></pre></td></tr></table></figure>
 <h3 id="无法直接序列化"><a href="#无法直接序列化" class="headerlink" title="无法直接序列化"></a>无法直接序列化</h3><h3 id="行为"><a href="#行为" class="headerlink" title="行为"></a>行为</h3><ul>
 <li><p>get()：获取值，不存在会报错</p>
 </li>
