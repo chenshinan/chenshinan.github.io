@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是kafkaKafka是最初由Linkedin公司开发，是一个分布式、支持分区的（partition）、多副本的（replica），基于zookeeper协调的分布式流平台。 那什么是流平台呢？流平台有以下三个关键功能： 发布和订阅记录流，类似于消息队列或企业消息传递系统 以容错的持久方式存储记录流 记录发生时处理流  Kafka通常用于两大类应用： 构建可在系统或应用程序之间可靠获取数据的实">
+<meta property="og:type" content="article">
+<meta property="og:title" content="kafka学习">
+<meta property="og:url" content="http://chenshinan.github.io/2018/03/31/kafka学习/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="什么是kafkaKafka是最初由Linkedin公司开发，是一个分布式、支持分区的（partition）、多副本的（replica），基于zookeeper协调的分布式流平台。 那什么是流平台呢？流平台有以下三个关键功能： 发布和订阅记录流，类似于消息队列或企业消息传递系统 以容错的持久方式存储记录流 记录发生时处理流  Kafka通常用于两大类应用： 构建可在系统或应用程序之间可靠获取数据的实">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190222114309.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190222114657.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190222114730.png">
+<meta property="og:updated_time" content="2019-02-22T05:57:42.643Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="kafka学习">
+<meta name="twitter:description" content="什么是kafkaKafka是最初由Linkedin公司开发，是一个分布式、支持分区的（partition）、多副本的（replica），基于zookeeper协调的分布式流平台。 那什么是流平台呢？流平台有以下三个关键功能： 发布和订阅记录流，类似于消息队列或企业消息传递系统 以容错的持久方式存储记录流 记录发生时处理流  Kafka通常用于两大类应用： 构建可在系统或应用程序之间可靠获取数据的实">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190222114309.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2018/03/31/kafka学习/">
+
+
+
+
+
+  <title>kafka学习 | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2018/03/31/kafka学习/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">kafka学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-03-31T13:55:22+08:00">
+                2018-03-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  2k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  7 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="什么是kafka"><a href="#什么是kafka" class="headerlink" title="什么是kafka"></a>什么是kafka</h2><p>Kafka是最初由Linkedin公司开发，是一个分布式、支持分区的（partition）、多副本的（replica），基于zookeeper协调的分布式流平台。</p>
+<h3 id="那什么是流平台呢？流平台有以下三个关键功能："><a href="#那什么是流平台呢？流平台有以下三个关键功能：" class="headerlink" title="那什么是流平台呢？流平台有以下三个关键功能："></a>那什么是流平台呢？流平台有以下三个关键功能：</h3><ul>
+<li>发布和订阅记录流，类似于消息队列或企业消息传递系统</li>
+<li>以容错的持久方式存储记录流</li>
+<li>记录发生时处理流</li>
+</ul>
+<h3 id="Kafka通常用于两大类应用："><a href="#Kafka通常用于两大类应用：" class="headerlink" title="Kafka通常用于两大类应用："></a>Kafka通常用于两大类应用：</h3><ul>
+<li>构建可在系统或应用程序之间可靠获取数据的实时流数据管道</li>
+<li>构建转换或响应数据流的实时流应用程序</li>
+</ul>
+<h3 id="几个概念"><a href="#几个概念" class="headerlink" title="几个概念"></a>几个概念</h3><ul>
+<li>Kafka作为一个集群运行在一个或多个可跨多个数据中心的服务器上</li>
+<li>Kafka集群以称为主题的类别存储记录流</li>
+<li>每条记录由一个键，一个值和一个时间戳组成</li>
+</ul>
+<h2 id="kafka的特性"><a href="#kafka的特性" class="headerlink" title="kafka的特性"></a>kafka的特性</h2><ul>
+<li><code>高吞吐量、低延迟</code>：kafka每秒可以处理几十万条消息，它的延迟最低只有几毫秒，每个topic可以分多个partition, consumer group 对partition进行consume操作</li>
+<li><code>可扩展性</code>：kafka集群支持热扩展</li>
+<li><code>持久性、可靠性</code>：消息被持久化到本地磁盘，并且支持数据备份防止数据丢失</li>
+<li><code>容错性</code>：允许集群中节点失败（若副本数量为n,则允许n-1个节点失败）</li>
+<li><code>高并发</code>：支持数千个客户端同时读写</li>
+</ul>
+<h2 id="使用场景"><a href="#使用场景" class="headerlink" title="使用场景"></a>使用场景</h2><ul>
+<li><code>日志收集</code>：一个公司可以用Kafka可以收集各种服务的log，通过kafka以统一接口服务的方式开放给各种consumer，例如hadoop、Hbase、Solr等。</li>
+<li><code>消息系统</code>：解耦和生产者和消费者、缓存消息等。</li>
+<li><code>用户活动跟踪</code>：Kafka经常被用来记录web用户或者app用户的各种活动，如浏览网页、搜索、点击等活动，这些活动信息被各个服务器发布到kafka的topic中，然后订阅者通过订阅这些topic来做实时的监控分析，或者装载到hadoop、数据仓库中做离线分析和挖掘。</li>
+<li><code>运营指标</code>：Kafka也经常用来记录运营监控数据。包括收集各种分布式应用的数据，生产各种操作的集中反馈，比如报警和报告。</li>
+<li><code>流式处理</code>：比如spark streaming和storm</li>
+</ul>
+<h2 id="kafka中的核心概念"><a href="#kafka中的核心概念" class="headerlink" title="kafka中的核心概念"></a>kafka中的核心概念</h2><ul>
+<li><code>Producer</code>：特指消息的生产者</li>
+<li><code>Consumer</code>：特指消息的消费者</li>
+<li><code>Consumer Group</code>：消费者组，可以并行消费Topic中partition的消息</li>
+<li><code>Broker</code>：缓存代理，Kafa 集群中的一台或多台服务器统称为 broker。</li>
+<li><code>Topic</code>：特指 Kafka 处理的消息源（feeds of messages）的不同分类。</li>
+<li><code>Partition</code>：Topic 物理上的分组，一个 topic 可以分为多个 partition，每个 partition 是一个有序的队列。partition 中的每条消息都会被分配一个有序的 id（offset）</li>
+<li><code>Message</code>：消息，是通信的基本单位，每个 producer 可以向一个 topic（主题）发布一些消息</li>
+<li><code>Producers(是个动词)</code>：消息和数据生产者，向 Kafka 的一个 topic 发布消息的过程叫做 producers</li>
+<li><code>Consumers(是个动词)</code>：消息和数据消费者，订阅 topics 并处理其发布的消息的过程叫做 consumers</li>
+</ul>
+<h2 id="kafka的逻辑架构"><a href="#kafka的逻辑架构" class="headerlink" title="kafka的逻辑架构"></a>kafka的逻辑架构</h2><p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190222114309.png" alt="image"><br><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190222114657.png" alt="image"></p>
+<ul>
+<li>Producer根据指定的partition方法（round-robin、hash等），将消息发布到指定topic的partition里面</li>
+<li>kafka集群接收到Producer发过来的消息后，将其持久化到硬盘，并保留消息指定时长（可配置），而不关注消息是否被消费。</li>
+<li>Consumer从kafka集群pull数据，并控制获取消息的offset</li>
+</ul>
+<h2 id="kafka的Producers"><a href="#kafka的Producers" class="headerlink" title="kafka的Producers"></a>kafka的Producers</h2><ul>
+<li>消息排列分区</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">Producer将消息发布到指定的Topic中,同时Producer也能决定将此消息归属于哪个partition（即：生产者可以指定将发送的消息放在一个topic中的partition1，还是partition2中）（注：这种机制可以理解为一种变相的负载均衡，轮转，比如基于&quot;round-robin&quot;方式或者通过其他的一些算法等）;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>异步发送</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka支持异步批量发送消息。批量发送可以很有效的提高发送效率。Kafka producer的异步发送模式允许进行批量发送，先将消息缓存在内存中，然后一次请求批量发送出去</span><br></pre></td></tr></table></figure>
+<h2 id="kafka的broker"><a href="#kafka的broker" class="headerlink" title="kafka的broker"></a>kafka的broker</h2><ul>
+<li>Broker：<code>(可以把Broker理解为Kafka的服务器)</code>缓存代理，Kafka 集群中的一台或多台服务器统称为 broker。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kafka中支持消息持久化的，生产者生产消息后，kafka不会直接把消息传递给消费者，而是先要在broker中进行存储，持久化是保存在kafka的日志文件中。</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Message在Broker中通Log追加<code>（即新的消息保存在文件的最后面，是有序的）</code>的方式进行持久化存储。并进行分区<code>（patitions)</code></p>
+</li>
+<li><p>为了减少磁盘写入的次数, broker 会将消息暂时 buffer 起来,当消息的个数(或尺寸)达到一定阀值时,再flush到磁盘,这样减少了磁盘IO调用的次数。</p>
+</li>
+</ul>
+<h2 id="kafka的无状态机制"><a href="#kafka的无状态机制" class="headerlink" title="kafka的无状态机制"></a>kafka的无状态机制</h2><ul>
+<li>Broker没有副本机制，一旦broker宕机，该broker的消息将都不可用。</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">注意：Broker没有副本，那broker宕机了怎么解决？</span><br><span class="line">虽然broker没有副本，但是消息本身是有副本的，不会丢失。Broker只要在宕机后再读取消息的日志就行了</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>Broker不保存订阅者的状态，由订阅者自己保存。</p>
+</li>
+<li><p>无状态导致消息的删除成为难题<code>（可能删除的消息正在被订阅）</code>，kafka采用基于时间的SLA<code>(服务水平保证)</code>，消息保存一定时间<code>（通常为7天）</code>后会被删除。</p>
+</li>
+<li><p>消息订阅者可以rewind back到任意位置重新进行消费，当订阅者故障时，可以选择最小的offset<code>(id，即偏移量)</code>进行重新读取消费消息。</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">1.消费者是如何确定，那条消息应该消费，那条消息已经消费了？</span><br><span class="line">Zookeeper会帮助记录那条消息已经消费了，那条消息没有消费</span><br><span class="line">2.消费者是如何快速的找到它没有消费的消息呢？</span><br><span class="line">这个实现就要靠kafka中 “稀疏索引”</span><br></pre></td></tr></table></figure>
+<h2 id="kafka的Message的组成"><a href="#kafka的Message的组成" class="headerlink" title="kafka的Message的组成"></a>kafka的Message的组成</h2><ul>
+<li><p>Message消息：是通信的基本单位，每个 producer 可以向一个 topic<code>（主题）</code>发布一些消息</p>
+</li>
+<li><p>Kafka中的Message是以topic为基本单位组织的，不同的topic之间是相互独立的。每个topic又可以分成几个不同的partition<code>(每个topic有几个partition是在创建topic时指定的)</code>，每个partition存储一部分Message。</p>
+</li>
+<li><p>partition中的每条Message包含了以下三个属性：</p>
+<p>  |名称|类型|<br>  |—-|——–|<br>  |offset|long|<br>  |MessageSize|int32|<br>  |data|是message的具体内容|</p>
+<p>  <code>offset偏移量，即消息的唯一标示，通过它才能找到唯一的一条消息</code></p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">注意：</span><br><span class="line">1.消息是无状态的，消息的消费先后顺序是没有关系的</span><br><span class="line">2.每一个partition只能由一个consumer来进行消费，但是一个consumer是可以消费多个partition，是一对多的关系</span><br></pre></td></tr></table></figure>
+<h2 id="kafka的Partition的分区的目的"><a href="#kafka的Partition的分区的目的" class="headerlink" title="kafka的Partition的分区的目的"></a>kafka的Partition的分区的目的</h2><ul>
+<li><p>kafka基于文件存储.通过分区,可以将日志内容分散到多个server上,来避免文件尺寸达到单机磁盘的上限,每个partiton都会被当前server(kafka实例)保存;</p>
+</li>
+<li><p>可以将一个topic切分多任意多个partitions,来消息保存/消费的效率.</p>
+</li>
+<li><p>越多的partitions意味着可以容纳更多的consumer,有效提升并发消费的能力.</p>
+</li>
+</ul>
+<h2 id="kafka的Consumers"><a href="#kafka的Consumers" class="headerlink" title="kafka的Consumers"></a>kafka的Consumers</h2><ul>
+<li><p>在kafka中，我们可以认为一个group是一个“订阅者”，一个topic中的每个partitions，只会被一个“订阅者”中的一个consumer消费，不过一个consumer可以消费多个partitions中的消息<code>（消费者数据小于partitions的数量时）</code></p>
+</li>
+<li><p>kafka的设计原理决定，对于一个topic，同一个group中不能有多于partitions个数的consumer同时消费，否则这些消费者将没有消息可以消费，是一种资源的浪费</p>
+</li>
+</ul>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190222114730.png" alt="Kafka消费模型"></p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="http://kafka.apache.org/" target="_blank" rel="noopener">官方文档</a></li>
+<li><a href="http://orchome.com/kafka/index" target="_blank" rel="noopener">kafka中文教程</a></li>
+<li><a href="https://blog.csdn.net/liyiming2017/article/details/82805479" target="_blank" rel="noopener">【博客】Kafka核心概念-多图-形象易懂</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/03/06/【Docker从入门到实战】笔记/" rel="next" title="【Docker从入门到实战】笔记">
+                <i class="fa fa-chevron-left"></i> 【Docker从入门到实战】笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/07/05/【Java8实战】笔记/" rel="prev" title="【Java8实战】笔记">
+                【Java8实战】笔记 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">14</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是kafka"><span class="nav-number">1.</span> <span class="nav-text">什么是kafka</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#那什么是流平台呢？流平台有以下三个关键功能："><span class="nav-number">1.1.</span> <span class="nav-text">那什么是流平台呢？流平台有以下三个关键功能：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kafka通常用于两大类应用："><span class="nav-number">1.2.</span> <span class="nav-text">Kafka通常用于两大类应用：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#几个概念"><span class="nav-number">1.3.</span> <span class="nav-text">几个概念</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的特性"><span class="nav-number">2.</span> <span class="nav-text">kafka的特性</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用场景"><span class="nav-number">3.</span> <span class="nav-text">使用场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka中的核心概念"><span class="nav-number">4.</span> <span class="nav-text">kafka中的核心概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的逻辑架构"><span class="nav-number">5.</span> <span class="nav-text">kafka的逻辑架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的Producers"><span class="nav-number">6.</span> <span class="nav-text">kafka的Producers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的broker"><span class="nav-number">7.</span> <span class="nav-text">kafka的broker</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的无状态机制"><span class="nav-number">8.</span> <span class="nav-text">kafka的无状态机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的Message的组成"><span class="nav-number">9.</span> <span class="nav-text">kafka的Message的组成</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的Partition的分区的目的"><span class="nav-number">10.</span> <span class="nav-text">kafka的Partition的分区的目的</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kafka的Consumers"><span class="nav-number">11.</span> <span class="nav-text">kafka的Consumers</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">12.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共32.4k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
