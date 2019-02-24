@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="Maven配置setting.xml位置 M2_HOME/conf/setting.xml为全局配置  用户/.m2/setting.xml为用户范围配置   设置HTTP代理 proxies配置仓库认证信息 serversprofiles 不同情况下的配置mirrors 配置镜像pom.xml头部project声明了一些POM相关的命名空间及xsd元素，虽然这些属性不是必须的，但使用这些属性能够">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【Maven实战】笔记">
+<meta property="og:url" content="http://chenshinan.github.io/2018/07/31/【Maven实战】笔记/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="Maven配置setting.xml位置 M2_HOME/conf/setting.xml为全局配置  用户/.m2/setting.xml为用户范围配置   设置HTTP代理 proxies配置仓库认证信息 serversprofiles 不同情况下的配置mirrors 配置镜像pom.xml头部project声明了一些POM相关的命名空间及xsd元素，虽然这些属性不是必须的，但使用这些属性能够">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-02-24T03:46:41.881Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【Maven实战】笔记">
+<meta name="twitter:description" content="Maven配置setting.xml位置 M2_HOME/conf/setting.xml为全局配置  用户/.m2/setting.xml为用户范围配置   设置HTTP代理 proxies配置仓库认证信息 serversprofiles 不同情况下的配置mirrors 配置镜像pom.xml头部project声明了一些POM相关的命名空间及xsd元素，虽然这些属性不是必须的，但使用这些属性能够">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2018/07/31/【Maven实战】笔记/">
+
+
+
+
+
+  <title>【Maven实战】笔记 | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2018/07/31/【Maven实战】笔记/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">【Maven实战】笔记</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-07-31T11:46:19+08:00">
+                2018-07-31
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  2.8k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  11 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="Maven配置"><a href="#Maven配置" class="headerlink" title="Maven配置"></a>Maven配置</h2><h3 id="setting-xml"><a href="#setting-xml" class="headerlink" title="setting.xml"></a>setting.xml</h3><h4 id="位置"><a href="#位置" class="headerlink" title="位置"></a>位置</h4><ul>
+<li><p>M2_HOME/conf/setting.xml为全局配置</p>
+</li>
+<li><p>用户/.m2/setting.xml为用户范围配置</p>
+</li>
+</ul>
+<h4 id="设置HTTP代理-proxies"><a href="#设置HTTP代理-proxies" class="headerlink" title="设置HTTP代理 proxies"></a>设置HTTP代理 proxies</h4><h4 id="配置仓库认证信息-servers"><a href="#配置仓库认证信息-servers" class="headerlink" title="配置仓库认证信息 servers"></a>配置仓库认证信息 servers</h4><h4 id="profiles-不同情况下的配置"><a href="#profiles-不同情况下的配置" class="headerlink" title="profiles 不同情况下的配置"></a>profiles 不同情况下的配置</h4><h4 id="mirrors-配置镜像"><a href="#mirrors-配置镜像" class="headerlink" title="mirrors 配置镜像"></a>mirrors 配置镜像</h4><h3 id="pom-xml"><a href="#pom-xml" class="headerlink" title="pom.xml"></a>pom.xml</h3><h4 id="头部project"><a href="#头部project" class="headerlink" title="头部project"></a>头部project</h4><p>声明了一些POM相关的命名空间及xsd元素，虽然这些属性不是必须的，但使用这些属性能够让第三方工具帮助我们快速编辑POM</p>
+<h4 id="repositories"><a href="#repositories" class="headerlink" title="repositories"></a>repositories</h4><ul>
+<li><p>可以使用repository子元素声明一个或者多个远程仓库</p>
+</li>
+<li><p>releases的enabled值为true表示开启发布版本的下载支持</p>
+</li>
+<li><p>snapshots的enabled值为true表示开启快照版本的下载支持</p>
+</li>
+<li><p>updatePolicy用来配置Maven从远程仓库检查更新的频率</p>
+</li>
+<li><p>checksumPolicy用来配置Maven检查检验和文件的策略</p>
+</li>
+</ul>
+<h4 id="项目打包后能部署到远程仓库-distributionManagement"><a href="#项目打包后能部署到远程仓库-distributionManagement" class="headerlink" title="项目打包后能部署到远程仓库 distributionManagement"></a>项目打包后能部署到远程仓库 distributionManagement</h4><h4 id="packaging-打包方式"><a href="#packaging-打包方式" class="headerlink" title="packaging 打包方式"></a>packaging 打包方式</h4><h4 id="finalName-生成包的时候最终的名字定义"><a href="#finalName-生成包的时候最终的名字定义" class="headerlink" title="finalName 生成包的时候最终的名字定义"></a>finalName 生成包的时候最终的名字定义</h4><h2 id="命令"><a href="#命令" class="headerlink" title="命令"></a>命令</h2><h3 id="mvn-clean-compile"><a href="#mvn-clean-compile" class="headerlink" title="mvn clean compile"></a>mvn clean compile</h3><h4 id="clean-清理输出目录target"><a href="#clean-清理输出目录target" class="headerlink" title="clean 清理输出目录target/"></a>clean 清理输出目录target/</h4><h4 id="compile-编译主代码到target"><a href="#compile-编译主代码到target" class="headerlink" title="compile 编译主代码到target/"></a>compile 编译主代码到target/</h4><h3 id="mvn-clean-test"><a href="#mvn-clean-test" class="headerlink" title="mvn clean test"></a>mvn clean test</h3><h4 id="会先执行编译"><a href="#会先执行编译" class="headerlink" title="会先执行编译"></a>会先执行编译</h4><h4 id="test-默认的测试代码目录是src-test-java"><a href="#test-默认的测试代码目录是src-test-java" class="headerlink" title="test 默认的测试代码目录是src/test/java"></a>test 默认的测试代码目录是src/test/java</h4><h3 id="mvn-clean-package"><a href="#mvn-clean-package" class="headerlink" title="mvn clean package"></a>mvn clean package</h3><h4 id="会先执行编译、测试"><a href="#会先执行编译、测试" class="headerlink" title="会先执行编译、测试"></a>会先执行编译、测试</h4><h4 id="package-把主代码打包成xxx-SNAPSHOT-jar并输出到target"><a href="#package-把主代码打包成xxx-SNAPSHOT-jar并输出到target" class="headerlink" title="package 把主代码打包成xxx-SNAPSHOT.jar并输出到target/"></a>package 把主代码打包成xxx-SNAPSHOT.jar并输出到target/</h4><h3 id="mvn-clean-install"><a href="#mvn-clean-install" class="headerlink" title="mvn clean install"></a>mvn clean install</h3><h4 id="会先执行编译、测试、打包"><a href="#会先执行编译、测试、打包" class="headerlink" title="会先执行编译、测试、打包"></a>会先执行编译、测试、打包</h4><h4 id="install-将项目输出的jar安装到了Maven本地仓库中"><a href="#install-将项目输出的jar安装到了Maven本地仓库中" class="headerlink" title="install 将项目输出的jar安装到了Maven本地仓库中"></a>install 将项目输出的jar安装到了Maven本地仓库中</h4><h4 id="想要生成可运行的jar，需要配置插件maven-shade-plugin，生成两个jar，一个为原始的。打开另一个的META-INF-MAINFEST-MF"><a href="#想要生成可运行的jar，需要配置插件maven-shade-plugin，生成两个jar，一个为原始的。打开另一个的META-INF-MAINFEST-MF" class="headerlink" title="想要生成可运行的jar，需要配置插件maven-shade-plugin，生成两个jar，一个为原始的。打开另一个的META-INF/MAINFEST.MF"></a>想要生成可运行的jar，需要配置插件maven-shade-plugin，生成两个jar，一个为原始的。打开另一个的META-INF/MAINFEST.MF</h4><h2 id="坐标和依赖"><a href="#坐标和依赖" class="headerlink" title="坐标和依赖"></a>坐标和依赖</h2><h3 id="传递性依赖"><a href="#传递性依赖" class="headerlink" title="传递性依赖"></a>传递性依赖</h3><p>有了传递性依赖，maven会解析各个直接依赖的POM，将那些必要的间接依赖，以传递性依赖的形式引入到当前的项目中</p>
+<h3 id="依赖调解"><a href="#依赖调解" class="headerlink" title="依赖调解"></a>依赖调解</h3><p>若两条依赖路径上有两个版本的X，第一原则是：路径最近者优先</p>
+<h3 id="解析依赖树"><a href="#解析依赖树" class="headerlink" title="解析依赖树"></a>解析依赖树</h3><p>mvn dependency:list</p>
+<p>mvn dependency:tree</p>
+<p>mvn dependency:analyze</p>
+<h2 id="仓库"><a href="#仓库" class="headerlink" title="仓库"></a>仓库</h2><h3 id="快照版本-SNAPSHOT"><a href="#快照版本-SNAPSHOT" class="headerlink" title="快照版本 SNAPSHOT"></a>快照版本 SNAPSHOT</h3><p>当把项目设置成快照版本，推到仓库后，若有项目依赖该版本，maven会自动从仓库中检查快照版本项目的最新版本，并更新下载，因此具有不稳定性。用户也可以使用命令行-U参数强制让Maven检查更新：mvn clean install -U</p>
+<h3 id="最新发布版本-RELEASE"><a href="#最新发布版本-RELEASE" class="headerlink" title="最新发布版本 RELEASE"></a>最新发布版本 RELEASE</h3><h3 id="最新版本（包括快照）-LATEST"><a href="#最新版本（包括快照）-LATEST" class="headerlink" title="最新版本（包括快照） LATEST"></a>最新版本（包括快照） LATEST</h3><h3 id="镜像"><a href="#镜像" class="headerlink" title="镜像"></a>镜像</h3><p>如果仓库A可以提供仓库B的所有内容，那么A为B的一个镜像。</p>
+<h4 id="mirrorOf"><a href="#mirrorOf" class="headerlink" title="mirrorOf"></a>mirrorOf</h4><p>mirrorOf的值为central，表示该配置为中央仓库的镜像，任何对于中央仓库的请求都会转至该镜像，一般会结合私服使用。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">&lt;mirrorOf&gt;*&lt;/mirrorOf&gt;</span><br><span class="line">&lt;mirrorOf&gt;external:*&lt;/mirrorOf&gt;</span><br><span class="line">&lt;mirrorOf&gt;repo1,repo2&lt;/mirrorOf&gt;</span><br><span class="line">&lt;mirrorOf&gt;*,!repo1&lt;/mirrorOf&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="生命周期和插件"><a href="#生命周期和插件" class="headerlink" title="生命周期和插件"></a>生命周期和插件</h2><p>Maven拥有三套相互独立的生命周期，它们分别是clean、default和site</p>
+<ul>
+<li><p>clean生命周期的目的是清理项目</p>
+</li>
+<li><p>default生命周期的目的是构建项目</p>
+</li>
+<li><p>site生命周期的目的是建立项目站点</p>
+</li>
+</ul>
+<p>每个生命周期包含一些阶段</p>
+<h3 id="clean-生命周期"><a href="#clean-生命周期" class="headerlink" title="clean 生命周期"></a>clean 生命周期</h3><p>clean生命周期的目的是清理项目，它包含三个阶段（phase）：</p>
+<pre><code>pre-clean：执行一些清理前需要完成的工作
+clean：清理上一次构建生成的文件
+post-clean：执行一些清理后需要完成的工作
+</code></pre><h3 id="default-生命周期"><a href="#default-生命周期" class="headerlink" title="default 生命周期"></a>default 生命周期</h3><pre><code>validate
+initialize
+generate-sources
+process-sources 处理项目主资源文件
+generate-resources
+process-resources
+compile 编译项目的主源码
+process-classes
+generate-test-sources
+process-test-sources 处理项目测试资源文件
+generate-test-resources
+process-test-resources
+test-compile 编译项目的测试代码
+process-test-classes
+test 使用单元测试框架运行测试
+prepare-package
+package 打包编译好的代码
+pre-integration-test
+integration-test
+post-instregration-test
+verify
+install 将包安装到Maven本地仓库
+deploy 将最终的包复制到远程仓库
+</code></pre><h3 id="sit-生命周期"><a href="#sit-生命周期" class="headerlink" title="sit 生命周期"></a>sit 生命周期</h3><pre><code>pre-site 执行生成站点之前要完成的工作
+site 生成项目站点文档
+post-site 执行生成站点之后要完成的工作
+site-deploy 将生成的项目站点发布到服务器上
+</code></pre><h3 id="命令行与生命周期"><a href="#命令行与生命周期" class="headerlink" title="命令行与生命周期"></a>命令行与生命周期</h3><p><code>mvn clean install</code>命令实际调用了clean生命周期的pre-clean、clean阶段，以及default生命周期的从validate至install所有阶段。</p>
+<h3 id="插件目标"><a href="#插件目标" class="headerlink" title="插件目标"></a>插件目标</h3><p>对于插件本身，为了能够复用代码，它往往能够完成多个任务，这些功能聚集在一个插件里，每个功能就是一个插件目标。通用写法：冒号前面是插件前缀，冒号后面是插件目标（dependency:analyze）</p>
+<h3 id="插件绑定"><a href="#插件绑定" class="headerlink" title="插件绑定"></a>插件绑定</h3><p>Maven的生命周期与插件相互绑定，用以完成实际的构建任务。<code>具体而言，是生命周期的阶段与插件的目标相互绑定</code></p>
+<h3 id="插件配置：命令行配置"><a href="#插件配置：命令行配置" class="headerlink" title="插件配置：命令行配置"></a>插件配置：命令行配置</h3><p>用户可以在Maven命令中使用-D参数，并伴随一个参数键=参数值的形式，来配置插件目标的参数。例如，在运行命令的时候，加上如下-D参数就能跳过测试</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn install -Dmaven.test.skip=true</span><br></pre></td></tr></table></figure>
+<p>参数-D时Jave自带的，其功能是通过命令行设置一个Java系统属性，Maven简单地重用了该参数</p>
+<h3 id="获取插件信息"><a href="#获取插件信息" class="headerlink" title="获取插件信息"></a>获取插件信息</h3><p>基本上所有主要的Maven插件都来自于Apache和Codehaus</p>
+<h3 id="插件目标前缀"><a href="#插件目标前缀" class="headerlink" title="插件目标前缀"></a>插件目标前缀</h3><p>为了更简洁，Maven引入了目标前缀的概念，help是maven-help-plugin的目标前缀，dependency是maven-dependency-plugin的前缀。</p>
+<h3 id="插件解析机制"><a href="#插件解析机制" class="headerlink" title="插件解析机制"></a>插件解析机制</h3><p>与依赖构件一样，插件构件同样基于坐标存储在Maven仓库中，插件的远程仓库使用pluginRepositories和pluginRepository配置</p>
+<p>Maven在超级POM中为所有核心插件设定了版本</p>
+<p>Maven在解析插件仓库元数据的时候，会默认使用org.apache.maven.plugins和org.codehaus.mojo两个groupId，也可以通过配置setting.xml让Maven检查其他groupId上的插件仓库元数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">当Maven解析到dependency:tree这样的命令后，它首先基于默认的groupId归并所有插件仓库的元数据maven-metadata.xml;其次检查归并后的元数据，找到对应的artifactId为maven-dependency-plugin;然后结合当前元数据的groupId:org.apache.maven.plugin;最后解析得到完整的插件坐标。</span><br></pre></td></tr></table></figure>
+<h2 id="聚合与继承"><a href="#聚合与继承" class="headerlink" title="聚合与继承"></a>聚合与继承</h2><h3 id="聚合：主要是为了方便快速构建项目"><a href="#聚合：主要是为了方便快速构建项目" class="headerlink" title="聚合：主要是为了方便快速构建项目"></a>聚合：主要是为了方便快速构建项目</h3><p>Maven的聚合特性能够把项目的各个模块聚合在一起构建</p>
+<p>两个子模块外面包着一个父模块，父模块也作为一个Maven项目，因此也有POM</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">&lt;packaging&gt;pom&lt;/packaging&gt;</span><br><span class="line">...</span><br><span class="line">&lt;modules&gt;</span><br><span class="line">    &lt;module&gt;xx1&lt;/module&gt;</span><br><span class="line">    &lt;module&gt;xx2&lt;/module&gt;</span><br><span class="line">&lt;/modules&gt;</span><br></pre></td></tr></table></figure>
+<p><code>注意：聚合模块和其他模块的目录结构并非一定是父子结构，若是平行结构，聚合POM中module的路径也要做相应修改</code></p>
+<h3 id="继承：主要是为了消除重复配置"><a href="#继承：主要是为了消除重复配置" class="headerlink" title="继承：主要是为了消除重复配置"></a>继承：主要是为了消除重复配置</h3><p>Maven的继承特性则能帮助抽取各模块相同的依赖和插件等配置</p>
+<p>父模块使用了与其他模块一致的groupId和version，打包方式也要为pom</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">&lt;packaging&gt;pom&lt;/packaging&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<p>子模块继承父模块</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">...</span><br><span class="line">&lt;parent&gt;</span><br><span class="line">    &lt;groupId&gt;xx&lt;/groupId&gt;</span><br><span class="line">    &lt;artifactId&gt;xx-parent&lt;/artifactId&gt;</span><br><span class="line">    &lt;version&gt;xx&lt;/version&gt;</span><br><span class="line">    &lt;relativePath&gt;../pom.xml&lt;/relativePath&gt;</span><br><span class="line">&lt;/parent&gt;</span><br><span class="line">...</span><br></pre></td></tr></table></figure>
+<h3 id="反应堆：在一个多模块的Maven项目中，反应堆是指所有模块组成的一个构建结构"><a href="#反应堆：在一个多模块的Maven项目中，反应堆是指所有模块组成的一个构建结构" class="headerlink" title="反应堆：在一个多模块的Maven项目中，反应堆是指所有模块组成的一个构建结构"></a>反应堆：在一个多模块的Maven项目中，反应堆是指所有模块组成的一个构建结构</h3><p>实际的构建顺序是这样形成的：Maven按序读取POM，如果该POM没有依赖模块，那么就构建该模块，否则就先构建其依赖模块，如果该依赖还依赖其他模块，则进一步先构建依赖的依赖</p>
+<h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><h3 id="mvn-test：test阶段与maven-surefire-plugin的test目标绑定"><a href="#mvn-test：test阶段与maven-surefire-plugin的test目标绑定" class="headerlink" title="mvn test：test阶段与maven-surefire-plugin的test目标绑定"></a>mvn test：test阶段与maven-surefire-plugin的test目标绑定</h3><p>扫描src/test/java/下符合命名模式的测试类</p>
+<ul>
+<li><p>*<em>/Test</em>.java</p>
+</li>
+<li><p>*<em>/</em>Test.java</p>
+</li>
+<li><p>*<em>/</em>TestCase.java</p>
+</li>
+</ul>
+<h3 id="mvn-package-DskipTests：跳过测试"><a href="#mvn-package-DskipTests：跳过测试" class="headerlink" title="mvn package-DskipTests：跳过测试"></a>mvn package-DskipTests：跳过测试</h3><h3 id="mvn-test-Dtest-xxxTest：只运行某个测试类，可以用逗号分隔"><a href="#mvn-test-Dtest-xxxTest：只运行某个测试类，可以用逗号分隔" class="headerlink" title="mvn test -Dtest = xxxTest：只运行某个测试类，可以用逗号分隔"></a>mvn test -Dtest = xxxTest：只运行某个测试类，可以用逗号分隔</h3><h2 id="使用Maven构建Web应用"><a href="#使用Maven构建Web应用" class="headerlink" title="使用Maven构建Web应用"></a>使用Maven构建Web应用</h2><h3 id="使用jetty-maven-plugin进行测试（热部署）"><a href="#使用jetty-maven-plugin进行测试（热部署）" class="headerlink" title="使用jetty-maven-plugin进行测试（热部署）"></a>使用jetty-maven-plugin进行测试（热部署）</h3><p>能够周期性地检查项目内容，发现变更后自动更新到内置的Jatty Web容器中，使用很简单，配置jetty-maven-plugin插件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&lt;plugin&gt;</span><br><span class="line">&lt;groupId&gt;org.mortbay.jetty&lt;/groupId&gt;</span><br><span class="line">&lt;artifactId&gt;jetty-maven-plugin&lt;/artifactId&gt;</span><br><span class="line">&lt;version&gt;xx&lt;/version&gt;</span><br><span class="line">&lt;configuration&gt;</span><br><span class="line">    &lt;scanIntervalSeconds&gt;10&lt;/scanIntervalSeconds&gt;</span><br><span class="line">    &lt;webAppConfig&gt;</span><br><span class="line">    &lt;contextPath&gt;/test&lt;/contextPath&gt;</span><br><span class="line">    &lt;/webAppConfig&gt;</span><br><span class="line">&lt;/configuration&gt;</span><br><span class="line">&lt;/plugin&gt;</span><br></pre></td></tr></table></figure>
+<p>scanIntervalSeconds是扫描项目变更的时间间隔，默认为0，表示不扫描，因此需要配置时间才会自动化热部署。为了能在命令行直接运行mvn jetty：run，用户需要配置setting.xml:</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;setting&gt;</span><br><span class="line">    &lt;pluginGroups&gt;</span><br><span class="line">        &lt;pluginGroup&gt;org.mortbay.jetty&lt;/pluginGroup&gt;</span><br><span class="line">    &lt;/pluginGroups&gt;</span><br><span class="line">&lt;/setting&gt;</span><br></pre></td></tr></table></figure>
+<h2 id="版本管理：-lt-主版本-gt-lt-次版本-gt-lt-增量版本-gt-lt-里程碑版本-gt"><a href="#版本管理：-lt-主版本-gt-lt-次版本-gt-lt-增量版本-gt-lt-里程碑版本-gt" class="headerlink" title="版本管理：&lt;主版本&gt;.&lt;次版本&gt;.&lt;增量版本&gt;-&lt;里程碑版本&gt;"></a>版本管理：&lt;主版本&gt;.&lt;次版本&gt;.&lt;增量版本&gt;-&lt;里程碑版本&gt;</h2><h2 id="灵活的构建"><a href="#灵活的构建" class="headerlink" title="灵活的构建"></a>灵活的构建</h2><p>Maven为了支持构建的灵活性，内置了三大特性，即属性、Profile、资源过滤</p>
+<h3 id="属性"><a href="#属性" class="headerlink" title="属性"></a>属性</h3><p>通过<properties>元素用户可以自定义一个或多个Maven属性，然后在POM的其他地方使用${属性名称}的方式引用属性。</properties></p>
+<ul>
+<li><p>内置属性：${basedir}根目录、${version}项目版本</p>
+</li>
+<li><p>POM属性：例如 ${project.artifactId}</p>
+</li>
+<li><p>自定义属性：<properties></properties></p>
+</li>
+<li><p>Settings属性：例如 ${settings.localRepository}</p>
+</li>
+<li><p>Java系统属性：例如 ${user.home}</p>
+</li>
+<li><p>环境变量属性：例如 ${env.JAVA_HOME}</p>
+</li>
+</ul>
+<h3 id="资源过滤"><a href="#资源过滤" class="headerlink" title="资源过滤"></a>资源过滤</h3><p>将数据放到<profiles>下，通过命令激活数据。要为资源目录开启过滤，只要在此基础上添加一行filtering配置即可</profiles></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;profiles&gt;</span><br><span class="line">    &lt;profile&gt;</span><br><span class="line">        &lt;id&gt;dev&lt;/id&gt;</span><br><span class="line">        &lt;properties&gt;</span><br><span class="line">            &lt;db.driver&gt;xxx&lt;/db.driver&gt;</span><br><span class="line">        &lt;/properties&gt;</span><br><span class="line">    &lt;/profile&gt;</span><br><span class="line">&lt;/profiles&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="Maven-Profile"><a href="#Maven-Profile" class="headerlink" title="Maven Profile"></a>Maven Profile</h3><p>profile能够在构建的时候修改POM的一个子集，或者添加额外的配置元素。用户可以使用很多方式激活profile，以实现构建在不同环境下的移植。</p>
+<h4 id="激活profile"><a href="#激活profile" class="headerlink" title="激活profile"></a>激活profile</h4><ul>
+<li><p>命令行激活：mvn clean install -Pdev</p>
+</li>
+<li><p>settings文件显示激活</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">&lt;setting&gt;</span><br><span class="line">    &lt;activeProfiles&gt;</span><br><span class="line">        &lt;activeProfile&gt;dev&lt;/activeProfile&gt;</span><br><span class="line">    &lt;/activeProfiles&gt;</span><br><span class="line">&lt;/setting&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>系统属性激活</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">&lt;profiles&gt;</span><br><span class="line">    &lt;profile&gt;</span><br><span class="line">        &lt;activation&gt;</span><br><span class="line">            &lt;property&gt;</span><br><span class="line">                &lt;name&gt;test&lt;/name&gt;</span><br><span class="line">            &lt;/property&gt;</span><br><span class="line">        &lt;/activationid&gt;</span><br><span class="line">    &lt;/profile&gt;</span><br><span class="line">&lt;/profiles&gt;</span><br></pre></td></tr></table></figure>
+<p>可以在命令行声明系统属性<br>mvn clean install -Dtest = x</p>
+<ul>
+<li>操作系统环境</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&lt;profiles&gt;</span><br><span class="line">    &lt;profile&gt;</span><br><span class="line">        &lt;activation&gt;</span><br><span class="line">            &lt;os&gt;</span><br><span class="line">                &lt;name&gt;Windows XP&lt;/name&gt;</span><br><span class="line">                ···</span><br><span class="line">            &lt;/os&gt;</span><br><span class="line">        &lt;/activationid&gt;</span><br><span class="line">    &lt;/profile&gt;</span><br><span class="line">&lt;/profiles&gt;</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>文件存在与否激活</p>
+</li>
+<li><p>默认激活</p>
+</li>
+</ul>
+<h3 id="Web资源过滤"><a href="#Web资源过滤" class="headerlink" title="Web资源过滤"></a>Web资源过滤</h3><p>在Web项目中，资源文件同样位于src/main/resources/目录下，它们经过处理后会位于WAR包的WEB-INF/classes目录下，这也是Java代码编译打包后的目录。也就是说，这类资源文件在打包过后位于应用程序的classpath中。Web项目中还有另外一类资源文件，默认它们的源码位于src/main/webapp/目录，经打包后位于WAR包的根目录。</p>
+<h2 id="编写Maven插件"><a href="#编写Maven插件" class="headerlink" title="编写Maven插件"></a>编写Maven插件</h2><ul>
+<li><p>创建Maven项目，它的packaging为mavn-plugin</p>
+</li>
+<li><p>编写插件目标，继承AbstractMojo类</p>
+</li>
+<li><p>为目标配置参数，在编写mojo类时需要注意提供可配置的参数</p>
+</li>
+<li><p>编写代码实现目标行为，实现mojo的execute()方法</p>
+</li>
+<li><p>错误处理及日志</p>
+</li>
+<li><p>测试插件</p>
+</li>
+</ul>
+<h2 id="Archetype"><a href="#Archetype" class="headerlink" title="Archetype"></a>Archetype</h2><p>可以Archetype理解为Maven项目的模板</p>
+<p>mvn archetype:generate</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li>【Maven实战】书籍</li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/07/28/【图解HTTP】笔记/" rel="next" title="【图解HTTP】笔记">
+                <i class="fa fa-chevron-left"></i> 【图解HTTP】笔记
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/08/06/Java设计模式/" rel="prev" title="Java设计模式">
+                Java设计模式 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">16</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Maven配置"><span class="nav-number">1.</span> <span class="nav-text">Maven配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#setting-xml"><span class="nav-number">1.1.</span> <span class="nav-text">setting.xml</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#位置"><span class="nav-number">1.1.1.</span> <span class="nav-text">位置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#设置HTTP代理-proxies"><span class="nav-number">1.1.2.</span> <span class="nav-text">设置HTTP代理 proxies</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#配置仓库认证信息-servers"><span class="nav-number">1.1.3.</span> <span class="nav-text">配置仓库认证信息 servers</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#profiles-不同情况下的配置"><span class="nav-number">1.1.4.</span> <span class="nav-text">profiles 不同情况下的配置</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#mirrors-配置镜像"><span class="nav-number">1.1.5.</span> <span class="nav-text">mirrors 配置镜像</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#pom-xml"><span class="nav-number">1.2.</span> <span class="nav-text">pom.xml</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#头部project"><span class="nav-number">1.2.1.</span> <span class="nav-text">头部project</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#repositories"><span class="nav-number">1.2.2.</span> <span class="nav-text">repositories</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#项目打包后能部署到远程仓库-distributionManagement"><span class="nav-number">1.2.3.</span> <span class="nav-text">项目打包后能部署到远程仓库 distributionManagement</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#packaging-打包方式"><span class="nav-number">1.2.4.</span> <span class="nav-text">packaging 打包方式</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#finalName-生成包的时候最终的名字定义"><span class="nav-number">1.2.5.</span> <span class="nav-text">finalName 生成包的时候最终的名字定义</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#命令"><span class="nav-number">2.</span> <span class="nav-text">命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mvn-clean-compile"><span class="nav-number">2.1.</span> <span class="nav-text">mvn clean compile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#clean-清理输出目录target"><span class="nav-number">2.1.1.</span> <span class="nav-text">clean 清理输出目录target/</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#compile-编译主代码到target"><span class="nav-number">2.1.2.</span> <span class="nav-text">compile 编译主代码到target/</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mvn-clean-test"><span class="nav-number">2.2.</span> <span class="nav-text">mvn clean test</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#会先执行编译"><span class="nav-number">2.2.1.</span> <span class="nav-text">会先执行编译</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#test-默认的测试代码目录是src-test-java"><span class="nav-number">2.2.2.</span> <span class="nav-text">test 默认的测试代码目录是src/test/java</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mvn-clean-package"><span class="nav-number">2.3.</span> <span class="nav-text">mvn clean package</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#会先执行编译、测试"><span class="nav-number">2.3.1.</span> <span class="nav-text">会先执行编译、测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#package-把主代码打包成xxx-SNAPSHOT-jar并输出到target"><span class="nav-number">2.3.2.</span> <span class="nav-text">package 把主代码打包成xxx-SNAPSHOT.jar并输出到target/</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mvn-clean-install"><span class="nav-number">2.4.</span> <span class="nav-text">mvn clean install</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#会先执行编译、测试、打包"><span class="nav-number">2.4.1.</span> <span class="nav-text">会先执行编译、测试、打包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#install-将项目输出的jar安装到了Maven本地仓库中"><span class="nav-number">2.4.2.</span> <span class="nav-text">install 将项目输出的jar安装到了Maven本地仓库中</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#想要生成可运行的jar，需要配置插件maven-shade-plugin，生成两个jar，一个为原始的。打开另一个的META-INF-MAINFEST-MF"><span class="nav-number">2.4.3.</span> <span class="nav-text">想要生成可运行的jar，需要配置插件maven-shade-plugin，生成两个jar，一个为原始的。打开另一个的META-INF/MAINFEST.MF</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#坐标和依赖"><span class="nav-number">3.</span> <span class="nav-text">坐标和依赖</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#传递性依赖"><span class="nav-number">3.1.</span> <span class="nav-text">传递性依赖</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#依赖调解"><span class="nav-number">3.2.</span> <span class="nav-text">依赖调解</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#解析依赖树"><span class="nav-number">3.3.</span> <span class="nav-text">解析依赖树</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#仓库"><span class="nav-number">4.</span> <span class="nav-text">仓库</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#快照版本-SNAPSHOT"><span class="nav-number">4.1.</span> <span class="nav-text">快照版本 SNAPSHOT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最新发布版本-RELEASE"><span class="nav-number">4.2.</span> <span class="nav-text">最新发布版本 RELEASE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#最新版本（包括快照）-LATEST"><span class="nav-number">4.3.</span> <span class="nav-text">最新版本（包括快照） LATEST</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#镜像"><span class="nav-number">4.4.</span> <span class="nav-text">镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#mirrorOf"><span class="nav-number">4.4.1.</span> <span class="nav-text">mirrorOf</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#生命周期和插件"><span class="nav-number">5.</span> <span class="nav-text">生命周期和插件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#clean-生命周期"><span class="nav-number">5.1.</span> <span class="nav-text">clean 生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#default-生命周期"><span class="nav-number">5.2.</span> <span class="nav-text">default 生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sit-生命周期"><span class="nav-number">5.3.</span> <span class="nav-text">sit 生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#命令行与生命周期"><span class="nav-number">5.4.</span> <span class="nav-text">命令行与生命周期</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插件目标"><span class="nav-number">5.5.</span> <span class="nav-text">插件目标</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插件绑定"><span class="nav-number">5.6.</span> <span class="nav-text">插件绑定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插件配置：命令行配置"><span class="nav-number">5.7.</span> <span class="nav-text">插件配置：命令行配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#获取插件信息"><span class="nav-number">5.8.</span> <span class="nav-text">获取插件信息</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插件目标前缀"><span class="nav-number">5.9.</span> <span class="nav-text">插件目标前缀</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#插件解析机制"><span class="nav-number">5.10.</span> <span class="nav-text">插件解析机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚合与继承"><span class="nav-number">6.</span> <span class="nav-text">聚合与继承</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#聚合：主要是为了方便快速构建项目"><span class="nav-number">6.1.</span> <span class="nav-text">聚合：主要是为了方便快速构建项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#继承：主要是为了消除重复配置"><span class="nav-number">6.2.</span> <span class="nav-text">继承：主要是为了消除重复配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#反应堆：在一个多模块的Maven项目中，反应堆是指所有模块组成的一个构建结构"><span class="nav-number">6.3.</span> <span class="nav-text">反应堆：在一个多模块的Maven项目中，反应堆是指所有模块组成的一个构建结构</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#测试"><span class="nav-number">7.</span> <span class="nav-text">测试</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#mvn-test：test阶段与maven-surefire-plugin的test目标绑定"><span class="nav-number">7.1.</span> <span class="nav-text">mvn test：test阶段与maven-surefire-plugin的test目标绑定</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mvn-package-DskipTests：跳过测试"><span class="nav-number">7.2.</span> <span class="nav-text">mvn package-DskipTests：跳过测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mvn-test-Dtest-xxxTest：只运行某个测试类，可以用逗号分隔"><span class="nav-number">7.3.</span> <span class="nav-text">mvn test -Dtest = xxxTest：只运行某个测试类，可以用逗号分隔</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#使用Maven构建Web应用"><span class="nav-number">8.</span> <span class="nav-text">使用Maven构建Web应用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#使用jetty-maven-plugin进行测试（热部署）"><span class="nav-number">8.1.</span> <span class="nav-text">使用jetty-maven-plugin进行测试（热部署）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#版本管理：-lt-主版本-gt-lt-次版本-gt-lt-增量版本-gt-lt-里程碑版本-gt"><span class="nav-number">9.</span> <span class="nav-text">版本管理：&lt;主版本&gt;.&lt;次版本&gt;.&lt;增量版本&gt;-&lt;里程碑版本&gt;</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#灵活的构建"><span class="nav-number">10.</span> <span class="nav-text">灵活的构建</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#属性"><span class="nav-number">10.1.</span> <span class="nav-text">属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#资源过滤"><span class="nav-number">10.2.</span> <span class="nav-text">资源过滤</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Maven-Profile"><span class="nav-number">10.3.</span> <span class="nav-text">Maven Profile</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#激活profile"><span class="nav-number">10.3.1.</span> <span class="nav-text">激活profile</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Web资源过滤"><span class="nav-number">10.4.</span> <span class="nav-text">Web资源过滤</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#编写Maven插件"><span class="nav-number">11.</span> <span class="nav-text">编写Maven插件</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Archetype"><span class="nav-number">12.</span> <span class="nav-text">Archetype</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">13.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共36.5k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
