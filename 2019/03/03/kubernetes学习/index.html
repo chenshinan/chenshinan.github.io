@@ -87,7 +87,7 @@
 <meta property="og:description" content="什么是kubernetsKubernetes，因为首尾字母中间有8个字符，所以被简写成K8s K8s 是 Google 开源的容器集群管理系统。是底层资源与容器间的一个抽象层，在 Docker 技术的基础上，为容器化的应用提供部署运行、资源调度、服务发现和动态伸缩等一系列完整功能，提高了大规模容器集群管理的便捷性。用于自动部署，扩展和管理容器化应用程序的开源系统。 特点 可移植：支持公有云，私有云">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190303191150.png">
-<meta property="og:updated_time" content="2019-03-03T11:55:00.720Z">
+<meta property="og:updated_time" content="2019-03-06T08:31:43.330Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes学习">
 <meta name="twitter:description" content="什么是kubernetsKubernetes，因为首尾字母中间有8个字符，所以被简写成K8s K8s 是 Google 开源的容器集群管理系统。是底层资源与容器间的一个抽象层，在 Docker 技术的基础上，为容器化的应用提供部署运行、资源调度、服务发现和动态伸缩等一系列完整功能，提高了大规模容器集群管理的便捷性。用于自动部署，扩展和管理容器化应用程序的开源系统。 特点 可移植：支持公有云，私有云">
@@ -302,7 +302,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  1.1k 字
+                  1.2k 字
                 </span>
               
 
@@ -412,10 +412,15 @@
 <p>Job任务一般运行完一次后就没有用了，需要手动删除</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 删除所有job</span><br><span class="line">kubectl delete job --all -n [namespace]</span><br></pre></td></tr></table></figure>
 <p>更多内容请参考<a href="https://kubernetes.io/zh/docs/user-guide/kubectl-overview/" target="_blank" rel="noopener">官方文档kubectl概述</a></p>
+<h2 id="helm（kubernetes应用的管理工具）"><a href="#helm（kubernetes应用的管理工具）" class="headerlink" title="helm（kubernetes应用的管理工具）"></a>helm（kubernetes应用的管理工具）</h2><p>Helm是一种简化Kubernetes<code>应用程序安装和管理的工具</code>。可以把它想象为Kubernetes的 apt/yum/<code>homebrew</code></p>
+<p><code>Helm chart</code>是用来封装kubernetes原生应用程序的<code>yaml文件</code>，可以在你部署应用的时候自定义应用程序的一些metadata，便与应用程序的分发</p>
+<p>Helm有两部分：client<code>（helm）</code>和server<code>（tiller）</code>，<code>Tiller</code>在您的Kubernetes<code>集群内部运行</code>，并<code>管理chart的发布（安装）</code>，<code>helm</code>可以在任何地方</p>
+<p>更多内容请参考<a href="https://helm.sh/" target="_blank" rel="noopener">官方Helm</a></p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
 <li><a href="https://kubernetes.io/zh/docs/concepts/" target="_blank" rel="noopener">官方文档</a></li>
 <li><a href="https://kubernetes.io/zh/docs/reference/setup-tools/kubeadm/kubeadm/" target="_blank" rel="noopener">官方文档kubeadm概述</a></li>
 <li><a href="https://kubernetes.io/zh/docs/user-guide/kubectl-overview/" target="_blank" rel="noopener">官方文档kubectl概述</a></li>
+<li><a href="https://helm.sh/" target="_blank" rel="noopener">官方Helm</a></li>
 <li><a href="https://gitbook.cn/books/5aadcf4f984e353193a90ddb/index.html?utm_source=dl18041002" target="_blank" rel="noopener">Kubernetes 入门简明教程</a></li>
 <li><a href="https://www.jianshu.com/p/f4c2104ba90a" target="_blank" rel="noopener">最简单的kubernetes入门实验教程</a></li>
 </ul>
@@ -577,7 +582,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是kubernets"><span class="nav-number">1.</span> <span class="nav-text">什么是kubernets</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特点"><span class="nav-number">2.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">3.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">4.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Master相关组件"><span class="nav-number">5.</span> <span class="nav-text">Master相关组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kube-apiserver"><span class="nav-number">5.1.</span> <span class="nav-text">Kube-apiserver</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kube-controller-manager"><span class="nav-number">5.2.</span> <span class="nav-text">Kube-controller-manager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Etcd"><span class="nav-number">5.3.</span> <span class="nav-text">Etcd</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node相关组件"><span class="nav-number">6.</span> <span class="nav-text">Node相关组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubelet"><span class="nav-number">6.1.</span> <span class="nav-text">Kubelet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kube-proxy"><span class="nav-number">6.2.</span> <span class="nav-text">Kube-proxy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-Rkt"><span class="nav-number">6.3.</span> <span class="nav-text">Docker/Rkt</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeadm（快速安装工具）"><span class="nav-number">7.</span> <span class="nav-text">kubeadm（快速安装工具）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectl（命令工具）"><span class="nav-number">8.</span> <span class="nav-text">kubectl（命令工具）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用命令"><span class="nav-number">8.1.</span> <span class="nav-text">常用命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是kubernets"><span class="nav-number">1.</span> <span class="nav-text">什么是kubernets</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#特点"><span class="nav-number">2.</span> <span class="nav-text">特点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#架构"><span class="nav-number">3.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#基本概念"><span class="nav-number">4.</span> <span class="nav-text">基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Master相关组件"><span class="nav-number">5.</span> <span class="nav-text">Master相关组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kube-apiserver"><span class="nav-number">5.1.</span> <span class="nav-text">Kube-apiserver</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kube-controller-manager"><span class="nav-number">5.2.</span> <span class="nav-text">Kube-controller-manager</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Etcd"><span class="nav-number">5.3.</span> <span class="nav-text">Etcd</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Node相关组件"><span class="nav-number">6.</span> <span class="nav-text">Node相关组件</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Kubelet"><span class="nav-number">6.1.</span> <span class="nav-text">Kubelet</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Kube-proxy"><span class="nav-number">6.2.</span> <span class="nav-text">Kube-proxy</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Docker-Rkt"><span class="nav-number">6.3.</span> <span class="nav-text">Docker/Rkt</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubeadm（快速安装工具）"><span class="nav-number">7.</span> <span class="nav-text">kubeadm（快速安装工具）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#kubectl（命令工具）"><span class="nav-number">8.</span> <span class="nav-text">kubectl（命令工具）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#常用命令"><span class="nav-number">8.1.</span> <span class="nav-text">常用命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#helm（kubernetes应用的管理工具）"><span class="nav-number">9.</span> <span class="nav-text">helm（kubernetes应用的管理工具）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">10.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -618,7 +623,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共43.8k字</span>
+  <span class="post-count">博客全站共43.9k字</span>
 </div>
 
 
