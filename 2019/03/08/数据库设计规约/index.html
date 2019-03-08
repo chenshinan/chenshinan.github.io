@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="大艺术家_SN">
 <meta property="og:description" content="建表规约1.【强制】表达是与否概念的字段，必须使用 is_xxx 的方式命名，数据类型是 unsigned tinyint（1 表示是， 0 表示否）。  说明： 任何字段如果为非负数，必须是 unsigned。 正例： 表达逻辑删除的字段名 is_deleted， 1 表示删除， 0 表示未删除。  2.【强制】表名、字段名必须使用小写字母或数字，禁止出现数字开头，禁止两个下划线中间只出现数字。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-08T07:47:55.181Z">
+<meta property="og:updated_time" content="2019-03-08T07:56:03.661Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库设计规约">
 <meta name="twitter:description" content="建表规约1.【强制】表达是与否概念的字段，必须使用 is_xxx 的方式命名，数据类型是 unsigned tinyint（1 表示是， 0 表示否）。  说明： 任何字段如果为非负数，必须是 unsigned。 正例： 表达逻辑删除的字段名 is_deleted， 1 表示删除， 0 表示未删除。  2.【强制】表名、字段名必须使用小写字母或数字，禁止出现数字开头，禁止两个下划线中间只出现数字。">
@@ -334,30 +334,33 @@
       
 
       
-        <h2 id="建表规约"><a href="#建表规约" class="headerlink" title="建表规约"></a>建表规约</h2><p>1.【强制】表达是与否概念的字段，必须使用 is_xxx 的方式命名，数据类型是 unsigned tinyint（1 表示是， 0 表示否）。</p>
+        <h2 id="建表规约"><a href="#建表规约" class="headerlink" title="建表规约"></a>建表规约</h2><p>1.<code>【强制】</code>表达是与否概念的字段，必须使用 is_xxx 的方式命名，数据类型是 unsigned tinyint（1 表示是， 0 表示否）。</p>
 <ul>
 <li>说明： 任何字段如果为非负数，必须是 unsigned。</li>
 <li>正例： 表达逻辑删除的字段名 is_deleted， 1 表示删除， 0 表示未删除。</li>
 </ul>
-<p>2.【强制】表名、字段名必须使用小写字母或数字，禁止出现数字开头，禁止两个下划线中间只出现数字。数据库字段名的修改代价很大，因为无法进行预发布，所以字段名称需要慎重考虑。</p>
+<p>2.<code>【强制】</code>表名、字段名必须使用小写字母或数字，禁止出现数字开头，禁止两个下划线中间只出现数字。数据库字段名的修改代价很大，因为无法进行预发布，所以字段名称需要慎重考虑。</p>
 <ul>
 <li>说明： MySQL 在 Windows 下不区分大小写，但在 Linux 下默认是区分大小写。因此，数据库名、表名、字段名，都不允许出现任何大写字母，避免节外生枝。</li>
 <li>正例： hap_admin， rdc_config， level3_name</li>
 <li>反例： HapAdmin， rdcConfig， level_3_name</li>
 </ul>
-<p>3.【强制】表名不使用复数名词。</p>
+<p>3.<code>【强制】</code>表名不使用复数名词。</p>
 <ul>
 <li>说明： 表名应该仅仅表示表里面的实体内容，不应该表示实体数量，对应于 DO 类名也是单数形式，符合表达习惯。</li>
 </ul>
-<p>4.【强制】禁用保留字，如 desc、 range、 match、 delayed 等， 请参考 MySQL 官方保留字。<br>5.【强制】 主键索引名为 pk_字段名； 唯一索引名为 uk_字段名； 普通索引名则为 idx_字段名。</p>
+<p>4.<code>【强制】</code>禁用保留字，如 desc、 range、 match、 delayed 等， 请参考 MySQL 官方保留字。</p>
+<p>5.<code>【强制】</code>主键索引名为 pk_字段名； 唯一索引名为 uk_字段名； 普通索引名则为 idx_字段名。</p>
 <ul>
 <li>说明： pk_ 即 primary key； uk_ 即 unique key； idx_ 即 index 的简称。</li>
 </ul>
-<p>6.【强制】小数类型为 decimal，禁止使用 float 和 double。</p>
+<p>6.<code>【强制】</code>小数类型为 decimal，禁止使用 float 和 double。</p>
 <ul>
 <li>说明： float 和 double 在存储的时候，存在精度损失的问题，很可能在值的比较时，得到不正确的结果。如果存储的数据范围超过 decimal 的范围，建议将数据拆成整数和小数分开存储。</li>
 </ul>
-<p>7.【强制】如果存储的字符串长度几乎相等，使用 char 定长字符串类型。<br>8.【强制】 varchar 是可变长字符串，不预先分配存储空间，长度不要超过5000，如果存储长度大于此值，定义字段类型为 text，独立出来一张表，用主键来对应，避免影响其它字段索引效率。<br>9.【强制】表必备三字段： id, create_date, last_update_date。</p>
+<p>7.<code>【强制】</code>如果存储的字符串长度几乎相等，使用 char 定长字符串类型。</p>
+<p>8.<code>【强制】</code>varchar 是可变长字符串，不预先分配存储空间，长度不要超过5000，如果存储长度大于此值，定义字段类型为 text，独立出来一张表，用主键来对应，避免影响其它字段索引效率。</p>
+<p>9.<code>【强制】</code>表必备三字段： id, create_date, last_update_date。</p>
 <ul>
 <li>说明： 其中 id 必为主键，类型为 unsigned bigint、单表时自增、步长为 1。 create_date,last_update_date 的类型均为 datetime 类型，前者现在时表示主动创建，后者过去分词表示被动更新。</li>
 </ul>
@@ -422,19 +425,19 @@
 </tr>
 </tbody>
 </table>
-<h2 id="索引规约"><a href="#索引规约" class="headerlink" title="索引规约"></a>索引规约</h2><p>1.【强制】业务上具有唯一特性的字段，即使是多个字段的组合，也必须建成唯一索引。</p>
+<h2 id="索引规约"><a href="#索引规约" class="headerlink" title="索引规约"></a>索引规约</h2><p>1.<code>【强制】</code>业务上具有唯一特性的字段，即使是多个字段的组合，也必须建成唯一索引。</p>
 <ul>
 <li>说明：不要以为唯一索引影响了insert速度，这个速度损耗可以忽略，但提高查找速度是明显的；另外，即使在应用层做了非常完善的校验控制，只要没有唯一索引，根据墨菲定律，必然有脏数据产生。</li>
 </ul>
-<p>2.【强制】超过三个表禁止join。需要join的字段，数据类型必须绝对一致；多表关联查询时，保证被关联的字段需要有索引。</p>
+<p>2.<code>【强制】</code>超过三个表禁止join。需要join的字段，数据类型必须绝对一致；多表关联查询时，保证被关联的字段需要有索引。</p>
 <ul>
 <li>说明：即使双表join也要注意表索引、SQL性能。</li>
 </ul>
-<p>3.【强制】在varchar字段上建立索引时，必须指定索引长度，没必要对全字段建立索引，根据实际文本区分度决定索引长度即可。</p>
+<p>3.<code>【强制】</code>在varchar字段上建立索引时，必须指定索引长度，没必要对全字段建立索引，根据实际文本区分度决定索引长度即可。</p>
 <ul>
 <li>说明：索引的长度与区分度是一对矛盾体，一般对字符串类型数据，长度为 20 的索引，区分度会高达90%以上，可以使用 count(distinct left(列名,索引长度))/count(*)的区分度来确定。</li>
 </ul>
-<p>4.【强制】页面搜索严禁左模糊或者全模糊，如果需要请走搜索引擎来解决。</p>
+<p>4.<code>【强制】</code>页面搜索严禁左模糊或者全模糊，如果需要请走搜索引擎来解决。</p>
 <ul>
 <li>说明：索引文件具有B-Tree的最左前缀匹配特性，如果左边的值未确定，那么无法使用此索引。</li>
 </ul>
@@ -469,32 +472,32 @@
 <li>正例： 如果 where a=? and b=? ， a列的几乎接近于唯一值，那么只需要单建 idx_a 索引即<br>可。</li>
 <li>说明： 存在非等号和等号混合判断条件时，在建索引时，请把等号条件的列前置。如： where a&gt;?and b=? 那么即使 a 的区分度更高，也必须把 b 放在索引的最前列。</li>
 </ul>
-<p>10.【推荐】 防止因字段类型不同造成的隐式转换， 导致索引失效。</p>
+<p>10.【推荐】防止因字段类型不同造成的隐式转换， 导致索引失效。</p>
 <p>11.【参考】创建索引时避免有如下极端误解：</p>
 <pre><code>1. 宁滥勿缺：认为一个查询就需要建一个索引。
 2. 宁缺勿滥：认为索引会消耗空间、严重拖慢更新和新增速度。
 3. 抵制惟一索引：认为业务的惟一性一律需要在应用层通过“先查后插”方式解决。
-</code></pre><h2 id="SQL-语句"><a href="#SQL-语句" class="headerlink" title="SQL 语句"></a>SQL 语句</h2><p>1.【强制】不要使用 count(列名)或 count(常量)来替代 count(*)， count(*)是 SQL92 定义的标准统计行数的语法，跟数据库无关，跟 NULL 和非 NULL 无关。</p>
+</code></pre><h2 id="SQL-语句"><a href="#SQL-语句" class="headerlink" title="SQL 语句"></a>SQL 语句</h2><p>1.<code>【强制】</code>不要使用 count(列名)或 count(常量)来替代 count(*)， count(*)是 SQL92 定义的标准统计行数的语法，跟数据库无关，跟 NULL 和非 NULL 无关。</p>
 <ul>
 <li>说明： count(*)会统计值为 NULL 的行，而 count(列名)不会统计此列为 NULL 值的行。</li>
 </ul>
-<p>2.【强制】 count(distinct col) 计算该列除 NULL 之外的不重复行数， 注意 count(distinct col1, col2) 如果其中一列全为 NULL，那么即使另一列有不同的值，也返回为 0。</p>
-<p>3.【强制】当某一列的值全是 NULL 时， count(col)的返回结果为 0，但 sum(col)的返回结果为NULL，因此使用 sum()时需注意 NPE 问题。</p>
+<p>2.<code>【强制】</code>count(distinct col) 计算该列除 NULL 之外的不重复行数， 注意 count(distinct col1, col2) 如果其中一列全为 NULL，那么即使另一列有不同的值，也返回为 0。</p>
+<p>3.<code>【强制】</code>当某一列的值全是 NULL 时， count(col)的返回结果为 0，但 sum(col)的返回结果为NULL，因此使用 sum()时需注意 NPE 问题。</p>
 <ul>
 <li>正例： 可以使用如下方式来避免 sum 的 NPE 问题：</li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> <span class="keyword">IF</span>(<span class="keyword">ISNULL</span>(<span class="keyword">SUM</span>(g)),<span class="number">0</span>,<span class="keyword">SUM</span>(g)) <span class="keyword">FROM</span> <span class="keyword">table</span>;</span><br></pre></td></tr></table></figure>
-<p>4.【强制】使用 ISNULL()来判断是否为 NULL 值。<br>说明： NULL 与任何值的直接比较都为 NULL。</p>
+<p>4.<code>【强制】</code>使用 ISNULL()来判断是否为 NULL 值。<br>说明： NULL 与任何值的直接比较都为 NULL。</p>
 <pre><code>1. NULL&lt;&gt;NULL 的返回结果是 NULL， 而不是 false。
 2. NULL=NULL 的返回结果是 NULL， 而不是 true。
 3. NULL&lt;&gt;1 的返回结果是 NULL，而不是 true。
-</code></pre><p>5.【强制】 在代码中写分页查询逻辑时，若 count 为 0 应直接返回，避免执行后面的分页语句。</p>
-<p>6.【强制】不得使用外键与级联，一切外键概念必须在应用层解决。</p>
+</code></pre><p>5.<code>【强制】</code>在代码中写分页查询逻辑时，若 count 为 0 应直接返回，避免执行后面的分页语句。</p>
+<p>6.<code>【强制】</code>不得使用外键与级联，一切外键概念必须在应用层解决。</p>
 <ul>
 <li>说明：以学生和成绩的关系为例，学生表中的 student_id是主键，那么成绩表中的 student_id 则为外键。如果更新学生表中的 student_id，同时触发成绩表中的 student_id 更新， 即为级联更新。外键与级联更新适用于单机低并发，不适合分布式、高并发集群；级联更新是强阻塞，存在数据库更新风暴的风险：外键影响数据库的插入速度。</li>
 </ul>
-<p>7.【强制】禁止使用存储过程，存储过程难以调试和扩展，更没有移植性。</p>
-<p>8.【强制】数据订正（特别是删除、 修改记录操作） 时，要先 select，避免出现误删除，确认无误才能执行更新语句。</p>
+<p>7.<code>【强制】</code>禁止使用存储过程，存储过程难以调试和扩展，更没有移植性。</p>
+<p>8.<code>【强制】</code>数据订正（特别是删除、 修改记录操作） 时，要先 select，避免出现误删除，确认无误才能执行更新语句。</p>
 <p>9.【推荐】 in 操作能避免则避免，若实在避免不了，需要仔细评估 in 后边的集合元素数量，控制在 1000 个之内。</p>
 <p>10.【参考】 如果有全球化需要，所有的字符存储与表示，均以 utf-8 编码，注意字符统计函数的区别。</p>
 <ul>
@@ -506,7 +509,7 @@
 <ul>
 <li>说明： TRUNCATE TABLE 在功能上与不带 WHERE 子句的 DELETE 语句相同。</li>
 </ul>
-<h3 id="ORM-映射"><a href="#ORM-映射" class="headerlink" title="ORM 映射"></a>ORM 映射</h3><p>1.【强制】在表查询中，一律不要使用 * 作为查询的字段列表，需要哪些字段必须明确写明。</p>
+<h2 id="ORM-映射"><a href="#ORM-映射" class="headerlink" title="ORM 映射"></a>ORM 映射</h2><p>1.<code>【强制】</code>在表查询中，一律不要使用 * 作为查询的字段列表，需要哪些字段必须明确写明。</p>
 <ul>
 <li>说明：<ol>
 <li>增加查询分析器解析成本.</li>
@@ -514,23 +517,23 @@
 </ol>
 </li>
 </ul>
-<p>2.【强制】 POJO 类的布尔属性不能加 is，而数据库字段必须加 is_，要求在 resultMap 中进行<br>字段与属性之间的映射。</p>
-<p>3.【强制】不要用 resultClass 当返回参数，即使所有类属性名与数据库字段一一对应，也需要定义；反过来，每一个表也必然有一个与之对应。</p>
+<p>2.<code>【强制】</code>POJO 类的布尔属性不能加 is，而数据库字段必须加 is_，要求在 resultMap 中进行<br>字段与属性之间的映射。</p>
+<p>3.<code>【强制】</code>不要用 resultClass 当返回参数，即使所有类属性名与数据库字段一一对应，也需要定义；反过来，每一个表也必然有一个与之对应。</p>
 <ul>
 <li>说明： 配置映射关系，使字段与 DO 类解耦，方便维护。</li>
 </ul>
-<p>4.【强制】sql.xml 配置参数使用： #{}， #param# 不要使用${} 此种方式容易出现 SQL 注入。</p>
-<p>5.【强制】 iBATIS 自带的 queryForList(String statementName,int start,int size)不推荐使用。</p>
+<p>4.<code>【强制】</code>sql.xml 配置参数使用： #{}， #param# 不要使用${} 此种方式容易出现 SQL 注入。</p>
+<p>5.<code>【强制】</code>iBATIS 自带的 queryForList(String statementName,int start,int size)不推荐使用。</p>
 <ul>
 <li>说明：其实现方式是在数据库取到 statementName对应的SQL语句的所有记录，再通过 subList 取 start,size 的子集合。</li>
 <li>正例：</li>
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Map&lt;String, Object&gt; map = <span class="keyword">new</span> HashMap&lt;String, Object&gt;();</span><br><span class="line">map.put(<span class="string">"start"</span>, start);</span><br><span class="line">map.put(<span class="string">"size"</span>, size);</span><br></pre></td></tr></table></figure>
-<p>6.【强制】不允许直接拿 HashMap 与 Hashtable 作为查询结果集的输出。</p>
+<p>6.<code>【强制】</code>不允许直接拿 HashMap 与 Hashtable 作为查询结果集的输出。</p>
 <ul>
 <li>说明： resultClass=”Hashtable”， 会置入字段名和属性值，但是值的类型不可控。</li>
 </ul>
-<p>7.【强制】更新数据表记录时，必须同时更新记录对应的 gmt_modified 字段值为当前时间。</p>
+<p>7.<code>【强制】</code>更新数据表记录时，必须同时更新记录对应的 gmt_modified 字段值为当前时间。</p>
 <p>8.【推荐】不要写一个大而全的数据更新接口。 传入为 POJO 类，不管是不是自己的目标更新字段，都进行 update table set c1=value1,c2=value2,c3=value3; 这是不对的。执行 SQL 时， 不要更新无改动的字段，一是易出错； 二是效率低； 三是增加 binlog 存储。</p>
 <p>9.【参考】 @Transactional 事务不要滥用。事务会影响数据库的 QPS，另外使用事务的地方需要考虑各方面的回滚方案，包括缓存回滚、搜索引擎回滚、消息补偿、统计修正等。</p>
 <p>10.【参考】 <isequal>中的 compareValue 是与属性值对比的常量，一般是数字，表示相等时带上此条件； <isnotempty>表示不为空且不为 null 时执行；<isnotnull>表示不为 null 值时执行。</isnotnull></isnotempty></isequal></p>
@@ -692,7 +695,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#建表规约"><span class="nav-number">1.</span> <span class="nav-text">建表规约</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引规约"><span class="nav-number">2.</span> <span class="nav-text">索引规约</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL-语句"><span class="nav-number">3.</span> <span class="nav-text">SQL 语句</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ORM-映射"><span class="nav-number">3.1.</span> <span class="nav-text">ORM 映射</span></a></li></ol></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#建表规约"><span class="nav-number">1.</span> <span class="nav-text">建表规约</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引规约"><span class="nav-number">2.</span> <span class="nav-text">索引规约</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#SQL-语句"><span class="nav-number">3.</span> <span class="nav-text">SQL 语句</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ORM-映射"><span class="nav-number">4.</span> <span class="nav-text">ORM 映射</span></a></li></ol></div>
             
 
           </div>
