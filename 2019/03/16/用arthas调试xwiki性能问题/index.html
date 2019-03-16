@@ -1,0 +1,744 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="由于xwiki在线上运行出现性能问题，于是在本地利用docker搭建xwiki环境，并导入与线上同等量的数据，使用阿里巴巴的开源工具arthas进行调试 构建含有arthas的xwiki-docker镜像arthas调试工具与被调试的程序需要运行在同一个环境下，因此需要在xwiki镜像中载入arthas，arthas的运行需要在jdk环境下，而xwiki的基础镜像是jre环境，jre环境没有需要运">
+<meta property="og:type" content="article">
+<meta property="og:title" content="用arthas调试xwiki性能问题">
+<meta property="og:url" content="http://chenshinan.github.io/2019/03/16/用arthas调试xwiki性能问题/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="由于xwiki在线上运行出现性能问题，于是在本地利用docker搭建xwiki环境，并导入与线上同等量的数据，使用阿里巴巴的开源工具arthas进行调试 构建含有arthas的xwiki-docker镜像arthas调试工具与被调试的程序需要运行在同一个环境下，因此需要在xwiki镜像中载入arthas，arthas的运行需要在jdk环境下，而xwiki的基础镜像是jre环境，jre环境没有需要运">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190316105651.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190316110349.png">
+<meta property="og:updated_time" content="2019-03-16T03:24:08.644Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="用arthas调试xwiki性能问题">
+<meta name="twitter:description" content="由于xwiki在线上运行出现性能问题，于是在本地利用docker搭建xwiki环境，并导入与线上同等量的数据，使用阿里巴巴的开源工具arthas进行调试 构建含有arthas的xwiki-docker镜像arthas调试工具与被调试的程序需要运行在同一个环境下，因此需要在xwiki镜像中载入arthas，arthas的运行需要在jdk环境下，而xwiki的基础镜像是jre环境，jre环境没有需要运">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190316105651.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2019/03/16/用arthas调试xwiki性能问题/">
+
+
+
+
+
+  <title>用arthas调试xwiki性能问题 | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2019/03/16/用arthas调试xwiki性能问题/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">用arthas调试xwiki性能问题</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-03-16T11:22:10+08:00">
+                2019-03-16
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  703 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  3 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p>由于xwiki在线上运行出现性能问题，于是在本地利用docker搭建xwiki环境，并导入与线上同等量的数据，使用阿里巴巴的开源工具arthas进行调试</p>
+<h2 id="构建含有arthas的xwiki-docker镜像"><a href="#构建含有arthas的xwiki-docker镜像" class="headerlink" title="构建含有arthas的xwiki-docker镜像"></a>构建含有arthas的xwiki-docker镜像</h2><p>arthas调试工具与被调试的程序需要运行在同一个环境下，因此需要在xwiki镜像中载入arthas，arthas的运行需要在jdk环境下，而xwiki的基础镜像是jre环境，<em>jre环境没有需要运行arthas的tools.jar包</em>，最终的解决办法是下载完整的jdk包，直接用<code>./jdk1.8.0_201/bin/java -jar arthas-boot.jar</code>的方式启动arthas</p>
+<h3 id="官方下载jdk包"><a href="#官方下载jdk包" class="headerlink" title="官方下载jdk包"></a>官方下载jdk包</h3><p><a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank" rel="noopener">Java SE Development Kit 8 Downloads</a></p>
+<h3 id="使用dockerfile构建镜像"><a href="#使用dockerfile构建镜像" class="headerlink" title="使用dockerfile构建镜像"></a>使用dockerfile构建镜像</h3><figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> registry.saas.hand-china.com/hitoa/xwiki:<span class="number">10.4</span>-mysql-tomcat-<span class="number">0.14</span>.<span class="number">0</span></span><br><span class="line"><span class="keyword">COPY</span> jdk-8u201-linux-x64.tar.gz /jdk-8u201-linux-x64.tar.gz</span><br><span class="line">RUN tar --extract --file /jdk-8u201-linux-x64.tar.gz; \</span><br><span class="line">    rm /jdk-8u201-linux-x64.tar.gz; \</span><br><span class="line">    java -version; \</span><br><span class="line">    wget https://alibaba.github.io/arthas/arthas-boot.jar</span><br></pre></td></tr></table></figure>
+<p>在dockerfile所在目录下运行命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build -t hsqyz520/wiki-arthas:2.0 .</span><br></pre></td></tr></table></figure>
+<h3 id="上传镜像到docker-hub"><a href="#上传镜像到docker-hub" class="headerlink" title="上传镜像到docker hub"></a>上传镜像到docker hub</h3><p>先在<a href="https://cloud.docker.com" target="_blank" rel="noopener">dockerHub</a>注册一个账号</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 登录hub</span><br><span class="line">docker login</span><br><span class="line"><span class="meta">#</span> 查看镜像信息</span><br><span class="line">docker inspect hsqyz520/wiki-arthas:2.0</span><br><span class="line"><span class="meta">#</span> 推镜像到hub</span><br><span class="line">docker push hsqyz520/wiki-arthas:2.0</span><br></pre></td></tr></table></figure>
+<h2 id="利用docker-compose启动xwiki"><a href="#利用docker-compose启动xwiki" class="headerlink" title="利用docker-compose启动xwiki"></a>利用docker-compose启动xwiki</h2><figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">version: <span class="string">'2'</span></span><br><span class="line">networks:</span><br><span class="line">  bridge:</span><br><span class="line">    driver: bridge</span><br><span class="line">services:</span><br><span class="line">  web:</span><br><span class="line">    image: <span class="string">"wiki-arthas:2.0"</span></span><br><span class="line">    container_name: xwiki-mysql-tomcat-web</span><br><span class="line">    depends_on:</span><br><span class="line">      - db</span><br><span class="line">    ports:</span><br><span class="line">      - <span class="string">"7080:8080"</span></span><br><span class="line">    environment:</span><br><span class="line">      - DB_PORT=<span class="number">3306</span></span><br><span class="line">      - DB_USER=xwiki</span><br><span class="line">      - DB_PASSWORD=xwiki</span><br><span class="line">      - DB_HOST=xwiki-mysql-db</span><br><span class="line">      - JAVA_OPTS=-Xmx3072m</span><br><span class="line">      //...省略部分链接choerodon地址</span><br><span class="line">    volumes:</span><br><span class="line">      - ./xwiki-data:/usr/local/xwiki</span><br><span class="line">    networks:</span><br><span class="line">      - bridge</span><br><span class="line">  db:</span><br><span class="line">    image: <span class="string">"registry.saas.hand-china.com/tools/mysql:5.7.17"</span></span><br><span class="line">    container_name: xwiki-mysql-db</span><br><span class="line">    command:</span><br><span class="line">      - mysqld</span><br><span class="line">      - --character-set-server=utf8</span><br><span class="line">      - --collation-server=utf8_general_ci</span><br><span class="line">    volumes:</span><br><span class="line">      - ./xwiki.cnf:/etc/mysql/conf.d/xwiki.cnf</span><br><span class="line">      - ./mysql-data:/var/lib/mysql</span><br><span class="line">    ports:</span><br><span class="line">      - <span class="string">"3306:3306"</span></span><br><span class="line">    environment:</span><br><span class="line">      - MYSQL_ROOT_PASSWORD=xwiki</span><br><span class="line">      - MYSQL_USER=xwiki</span><br><span class="line">      - MYSQL_PASSWORD=xwiki</span><br><span class="line">      - MYSQL_DATABASE=xwiki</span><br><span class="line">    networks:</span><br><span class="line">      - bridge</span><br><span class="line">volumes:</span><br><span class="line">  mysql-data: &#123;&#125;</span><br><span class="line">  xwiki-data: &#123;&#125;</span><br></pre></td></tr></table></figure>
+<p>执行以下命令</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 启动</span><br><span class="line">docker-compose up</span><br><span class="line"><span class="meta">#</span> 关闭并移除卷</span><br><span class="line">docker-compose down -v</span><br><span class="line"><span class="meta">#</span> 查看所有容器</span><br><span class="line">docker ps -a</span><br><span class="line"><span class="meta">#</span> 删除所有未使用的容器</span><br><span class="line">docker rm $(docker ps -a -q)</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>若想清空wiki数据，启动前先删除以下文件夹</p>
+</blockquote>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190316105651.png" alt="image"></p>
+<blockquote>
+<p>若想关闭xwiki的choerodon认证，在<code>xwiki-data/data/xwiki.cfg</code>中注释掉认证类</p>
+</blockquote>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190316110349.png" alt="image"></p>
+<h2 id="数据导入"><a href="#数据导入" class="headerlink" title="数据导入"></a>数据导入</h2><p>由于大数据量的sql在navicat中运行容易失败，这种情况下应该用命令行进入到mysql中执行sql源文件</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 进入容器</span><br><span class="line">docker exec -it $&#123;mysql容器Id&#125; bash</span><br><span class="line"><span class="meta">#</span> 进入mysql</span><br><span class="line">mysql -u $&#123;数据库用户名&#125; -p</span><br><span class="line"><span class="meta">#</span> 切换数据库</span><br><span class="line">use $&#123;数据库名&#125;</span><br><span class="line"><span class="meta">#</span> 运行sql文件</span><br><span class="line">source $&#123;文件位置/文件名&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="启动监听"><a href="#启动监听" class="headerlink" title="启动监听"></a>启动监听</h2><p>在用<code>docker-compose</code>启动容器运行wiki后，在xwiki的容器中启动arthas监听wiki</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it $&#123;xwiki容器Id&#125; bash -c "./jdk1.8.0_201/bin/java -jar arthas-boot.jar"</span><br></pre></td></tr></table></figure>
+<h2 id="Arthas命令的使用"><a href="#Arthas命令的使用" class="headerlink" title="Arthas命令的使用"></a>Arthas命令的使用</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 查看方法耗时</span><br><span class="line">trace com.xpn.xwiki.web.ViewAction action</span><br><span class="line"><span class="meta">#</span> 查看方法调用链路</span><br><span class="line">stack com.xpn.xwiki.web.ViewAction action</span><br></pre></td></tr></table></figure>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://alibaba.github.io/arthas/docker.html" target="_blank" rel="noopener">Arthas-java诊断工具</a></li>
+<li><a href="http://www.kailing.pub/article/index/arcid/233.html" target="_blank" rel="noopener">Arthas排查Kubernetes中的应用频繁挂掉重启问题</a></li>
+<li><a href="https://github.com/xwiki/xwiki-platform" target="_blank" rel="noopener">XWiki源码</a></li>
+<li><a href="https://forum.xwiki.org/t/xwiki-performance-test/4604" target="_blank" rel="noopener">XWiki官方论坛</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/09/Markdown手册/" rel="next" title="Markdown手册">
+                <i class="fa fa-chevron-left"></i> Markdown手册
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">22</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#构建含有arthas的xwiki-docker镜像"><span class="nav-number">1.</span> <span class="nav-text">构建含有arthas的xwiki-docker镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#官方下载jdk包"><span class="nav-number">1.1.</span> <span class="nav-text">官方下载jdk包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用dockerfile构建镜像"><span class="nav-number">1.2.</span> <span class="nav-text">使用dockerfile构建镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传镜像到docker-hub"><span class="nav-number">1.3.</span> <span class="nav-text">上传镜像到docker hub</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用docker-compose启动xwiki"><span class="nav-number">2.</span> <span class="nav-text">利用docker-compose启动xwiki</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据导入"><span class="nav-number">3.</span> <span class="nav-text">数据导入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动监听"><span class="nav-number">4.</span> <span class="nav-text">启动监听</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Arthas命令的使用"><span class="nav-number">5.</span> <span class="nav-text">Arthas命令的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共49.9k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
