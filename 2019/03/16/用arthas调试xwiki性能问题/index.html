@@ -88,7 +88,12 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190316105651.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190316110349.png">
-<meta property="og:updated_time" content="2019-03-16T03:24:08.644Z">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190324093747.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190324100114.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190324094233.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190324094746.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190324095734.png">
+<meta property="og:updated_time" content="2019-03-24T02:03:09.364Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用arthas调试xwiki性能问题">
 <meta name="twitter:description" content="由于xwiki在线上运行出现性能问题，于是在本地利用docker搭建xwiki环境，并导入与线上同等量的数据，使用阿里巴巴的开源工具arthas进行调试 构建含有arthas的xwiki-docker镜像arthas调试工具与被调试的程序需要运行在同一个环境下，因此需要在xwiki镜像中载入arthas，arthas的运行需要在jdk环境下，而xwiki的基础镜像是jre环境，jre环境没有需要运">
@@ -303,7 +308,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  703 字
+                  1k 字
                 </span>
               
 
@@ -316,7 +321,7 @@
                   <span class="post-meta-item-text">阅读时长 </span>
                 
                 <span title="阅读时长">
-                  3 分钟
+                  4 分钟
                 </span>
               
             </div>
@@ -361,6 +366,16 @@
 <h2 id="启动监听"><a href="#启动监听" class="headerlink" title="启动监听"></a>启动监听</h2><p>在用<code>docker-compose</code>启动容器运行wiki后，在xwiki的容器中启动arthas监听wiki</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker exec -it $&#123;xwiki容器Id&#125; bash -c "./jdk1.8.0_201/bin/java -jar arthas-boot.jar"</span><br></pre></td></tr></table></figure>
 <h2 id="Arthas命令的使用"><a href="#Arthas命令的使用" class="headerlink" title="Arthas命令的使用"></a>Arthas命令的使用</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 查看方法耗时</span><br><span class="line">trace com.xpn.xwiki.web.ViewAction action</span><br><span class="line"><span class="meta">#</span> 查看方法调用链路</span><br><span class="line">stack com.xpn.xwiki.web.ViewAction action</span><br></pre></td></tr></table></figure>
+<h2 id="调试结果"><a href="#调试结果" class="headerlink" title="调试结果"></a>调试结果</h2><p>这次调试的主要目标是刷新页面，通过定位代码，所有的请求都会经过<code>XWikiAction.execute()</code>方法</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">trace com.xpn.xwiki.web.XWikiAction execute</span><br></pre></td></tr></table></figure>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190324093747.png" alt="image"><br><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190324100114.png" alt="image"></p>
+<p>主要耗时在<code>parseTemplate()</code>解析模版上，通过调试发现，xwiki采用<strong>velocity模板</strong>来渲染前端的，view.vm下面有许多子vm，下面覆盖了许多层级的vm，这样导致一个页面要渲染的模版成倍数量，可能这里就是xwiki刷新慢的原因，因此我考虑了是否可以给velocity增加缓存，我参考了<a href="https://www.jianshu.com/p/32952b773da1" target="_blank" rel="noopener">velocity配置优化</a>，于是我在配置中添加<code>velocity.properties = file.resource.loader.cache = true</code></p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190324094233.png" alt="image"></p>
+<p>将刷新页面的接口取到postman去压力测试，以便观察结果，需要设置Cookie，测试结果速度似乎有从平均600～800ms缩减至500～700ms，结果不是很明显</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190324094746.png" alt="image"></p>
+<p>后面我到<a href="https://forum.xwiki.org/t/optimization-of-velocity-configuration/4647" target="_blank" rel="noopener">XWiki官方论坛</a>提问，作者回复的大概意思是在XWiki中使用Velocity的方式，<em>缓存弊大于利</em>，后续版本会对这一块进行优化</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190324095734.png" alt="image"></p>
+<p>至此后面只能考虑在渲染这一方面每个层级引入并发Stream，以及确定是否数据库sql的问题</p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
 <li><a href="https://alibaba.github.io/arthas/docker.html" target="_blank" rel="noopener">Arthas-java诊断工具</a></li>
 <li><a href="http://www.kailing.pub/article/index/arcid/233.html" target="_blank" rel="noopener">Arthas排查Kubernetes中的应用频繁挂掉重启问题</a></li>
@@ -525,7 +540,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#构建含有arthas的xwiki-docker镜像"><span class="nav-number">1.</span> <span class="nav-text">构建含有arthas的xwiki-docker镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#官方下载jdk包"><span class="nav-number">1.1.</span> <span class="nav-text">官方下载jdk包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用dockerfile构建镜像"><span class="nav-number">1.2.</span> <span class="nav-text">使用dockerfile构建镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传镜像到docker-hub"><span class="nav-number">1.3.</span> <span class="nav-text">上传镜像到docker hub</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用docker-compose启动xwiki"><span class="nav-number">2.</span> <span class="nav-text">利用docker-compose启动xwiki</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据导入"><span class="nav-number">3.</span> <span class="nav-text">数据导入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动监听"><span class="nav-number">4.</span> <span class="nav-text">启动监听</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Arthas命令的使用"><span class="nav-number">5.</span> <span class="nav-text">Arthas命令的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#构建含有arthas的xwiki-docker镜像"><span class="nav-number">1.</span> <span class="nav-text">构建含有arthas的xwiki-docker镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#官方下载jdk包"><span class="nav-number">1.1.</span> <span class="nav-text">官方下载jdk包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用dockerfile构建镜像"><span class="nav-number">1.2.</span> <span class="nav-text">使用dockerfile构建镜像</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#上传镜像到docker-hub"><span class="nav-number">1.3.</span> <span class="nav-text">上传镜像到docker hub</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#利用docker-compose启动xwiki"><span class="nav-number">2.</span> <span class="nav-text">利用docker-compose启动xwiki</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#数据导入"><span class="nav-number">3.</span> <span class="nav-text">数据导入</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#启动监听"><span class="nav-number">4.</span> <span class="nav-text">启动监听</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Arthas命令的使用"><span class="nav-number">5.</span> <span class="nav-text">Arthas命令的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#调试结果"><span class="nav-number">6.</span> <span class="nav-text">调试结果</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">7.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -566,7 +581,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共49.9k字</span>
+  <span class="post-count">博客全站共50.2k字</span>
 </div>
 
 
