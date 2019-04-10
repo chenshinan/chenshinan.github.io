@@ -87,7 +87,7 @@
 <meta property="og:description" content="什么是kubernetsKubernetes，因为首尾字母中间有8个字符，所以被简写成K8s K8s 是 Google 开源的容器集群管理系统。是底层资源与容器间的一个抽象层，在 Docker 技术的基础上，为容器化的应用提供部署运行、资源调度、服务发现和动态伸缩等一系列完整功能，提高了大规模容器集群管理的便捷性。用于自动部署，扩展和管理容器化应用程序的开源系统。 特点 可移植：支持公有云，私有云">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190303191150.png">
-<meta property="og:updated_time" content="2019-03-06T08:31:43.330Z">
+<meta property="og:updated_time" content="2019-04-10T12:58:24.601Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="kubernetes学习">
 <meta name="twitter:description" content="什么是kubernetsKubernetes，因为首尾字母中间有8个字符，所以被简写成K8s K8s 是 Google 开源的容器集群管理系统。是底层资源与容器间的一个抽象层，在 Docker 技术的基础上，为容器化的应用提供部署运行、资源调度、服务发现和动态伸缩等一系列完整功能，提高了大规模容器集群管理的便捷性。用于自动部署，扩展和管理容器化应用程序的开源系统。 特点 可移植：支持公有云，私有云">
@@ -302,7 +302,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  1.2k 字
+                  1.3k 字
                 </span>
               
 
@@ -411,6 +411,15 @@
 </ul>
 <p>Job任务一般运行完一次后就没有用了，需要手动删除</p>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 删除所有job</span><br><span class="line">kubectl delete job --all -n [namespace]</span><br></pre></td></tr></table></figure>
+<ul>
+<li>连接远程kube</li>
+</ul>
+<p>修改在.kube目录中config文件，配置：cluster、context、name</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">// 切换到配置的config</span><br><span class="line">kubectl config use-context hand-uat@uat-asw</span><br></pre></td></tr></table></figure>
+<ul>
+<li>复制文件到节点容器中</li>
+</ul>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">kubectl cp /tmp/foo &lt;some-namespace&gt;/&lt;some-pod&gt;:/tmp/bar</span><br></pre></td></tr></table></figure>
 <p>更多内容请参考<a href="https://kubernetes.io/zh/docs/user-guide/kubectl-overview/" target="_blank" rel="noopener">官方文档kubectl概述</a></p>
 <h2 id="helm（kubernetes应用的管理工具）"><a href="#helm（kubernetes应用的管理工具）" class="headerlink" title="helm（kubernetes应用的管理工具）"></a>helm（kubernetes应用的管理工具）</h2><p>Helm是一种简化Kubernetes<code>应用程序安装和管理的工具</code>。可以把它想象为Kubernetes的 apt/yum/<code>homebrew</code></p>
 <p><code>Helm chart</code>是用来封装kubernetes原生应用程序的<code>yaml文件</code>，可以在你部署应用的时候自定义应用程序的一些metadata，便与应用程序的分发</p>
@@ -627,7 +636,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共52.8k字</span>
+  <span class="post-count">博客全站共52.9k字</span>
 </div>
 
 
