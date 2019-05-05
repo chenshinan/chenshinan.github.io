@@ -1,0 +1,764 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是Myers差分算法举一个最常见的例子，我们使用git进行提交时，通常会使用git diff --cached来查看这次提交做了哪些改动，这里我们先简单定义一下什么是diff：diff就是目标文本和源文本之间的区别，也就是将源文本变成目标文本所需要的操作。Myers算法由Eugene W.Myers在1986年发表的一篇论文中提出，是一个能在大部分情况产生”最短的直观的“diff的一个算法。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="git生成diff原理：Myers差分算法">
+<meta property="og:url" content="http://chenshinan.github.io/2019/05/02/git生成diff原理：Myers差分算法/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="什么是Myers差分算法举一个最常见的例子，我们使用git进行提交时，通常会使用git diff --cached来查看这次提交做了哪些改动，这里我们先简单定义一下什么是diff：diff就是目标文本和源文本之间的区别，也就是将源文本变成目标文本所需要的操作。Myers算法由Eugene W.Myers在1986年发表的一篇论文中提出，是一个能在大部分情况产生”最短的直观的“diff的一个算法。">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190505145627.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190505093730.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190505145552.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190505145459.png">
+<meta property="og:updated_time" content="2019-05-05T06:57:15.524Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="git生成diff原理：Myers差分算法">
+<meta name="twitter:description" content="什么是Myers差分算法举一个最常见的例子，我们使用git进行提交时，通常会使用git diff --cached来查看这次提交做了哪些改动，这里我们先简单定义一下什么是diff：diff就是目标文本和源文本之间的区别，也就是将源文本变成目标文本所需要的操作。Myers算法由Eugene W.Myers在1986年发表的一篇论文中提出，是一个能在大部分情况产生”最短的直观的“diff的一个算法。">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190505145627.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2019/05/02/git生成diff原理：Myers差分算法/">
+
+
+
+
+
+  <title>git生成diff原理：Myers差分算法 | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2019/05/02/git生成diff原理：Myers差分算法/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">git生成diff原理：Myers差分算法</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-02T19:50:20+08:00">
+                2019-05-02
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  1.7k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  7 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="什么是Myers差分算法"><a href="#什么是Myers差分算法" class="headerlink" title="什么是Myers差分算法"></a>什么是Myers差分算法</h2><p>举一个最常见的例子，我们使用git进行提交时，通常会使用<code>git diff --cached</code>来查看这次提交做了哪些改动，这里我们先简单定义一下什么是diff：<em>diff就是目标文本和源文本之间的区别</em>，也就是将源文本变成目标文本所需要的操作。<strong>Myers算法</strong>由Eugene W.Myers在1986年发表的一篇<a href="http://xmailserver.org/diff2.pdf" target="_blank" rel="noopener">论文</a>中提出，是一个能在大部分情况产生”最短的直观的“diff的一个算法。</p>
+<h2 id="diff与图搜索"><a href="#diff与图搜索" class="headerlink" title="diff与图搜索"></a>diff与图搜索</h2><p>”寻找最短的直观的diff”是一个非常模糊的问题，首先，我们需要把这个问题抽象为一个具体的数学问题，然后再来寻找算法解决。抽象的过程交给算法科学家了，抽象的结果是：<strong>寻找diff的过程可以被表示为图搜索</strong></p>
+<p>什么意思呢？还是以两个字符串，src=<strong>ABCABBA</strong>，dst=<strong>CBABAC</strong>为例，根据这两个字符串我们可以构造下面一张图，横轴是src内容，纵轴是dst内容，那么图中每一条从左上角到右下角的路径，都表示一个diff。向右表示<strong>删除</strong>，向下表示<strong>新增</strong>，对角线则表示<strong>原内容保持不动</strong></p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190505145627.png" alt="image"></p>
+<p>根据图中形成的线路，我们可以选择一条路径看看它的效果</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190505093730.png" alt="image"></p>
+<p>现在，“寻找diff”这件事，被抽象成了“寻找图的路径”了。那么，“最短的直观的”diff对应的路径有什么特点呢？</p>
+<ul>
+<li><p>路径长度最短（对角线不算长度）</p>
+</li>
+<li><p>先向右，再向下（先删除，后新增）</p>
+</li>
+</ul>
+<h2 id="三个概念"><a href="#三个概念" class="headerlink" title="三个概念"></a>三个概念</h2><p>根据 Myers 的论文，他提出了三个概念：</p>
+<ul>
+<li><p><strong>snake</strong>: 一条snake代表走一步。例如从(0,0)-&gt;(0,1) / (0,0)-&gt;(1,0) / (0,1)-&gt;(0,2)-&gt;(2,4) 这分别为三条snake，<strong>走对角线不计入步数</strong>。</p>
+</li>
+<li><p><strong>k line</strong>: 定义 k = x - y （我们可以写成 y = x - k，是相同斜率的平行斜线组成的一个集合)</p>
+</li>
+<li><p><strong>d contour</strong>: 走一步算一个d</p>
+</li>
+</ul>
+<h2 id="算法原理"><a href="#算法原理" class="headerlink" title="算法原理"></a>算法原理</h2><p>根据路径图与提出的三个概念，我们可以画出如下一张图，横坐标代表d（步数），纵坐标代表k（斜率），图中每一点代表最优坐标</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190505145552.png" alt="image"></p>
+<p>现在我们可以知道，其实Myers算法是一个典型的<strong>动态规划</strong>算法，也就是说，父问题的求解归结为子问题的求解。要知道d=5时所有k对应的最优坐标，必须先要知道d=4时所有k对应的最优坐标，要知道d=4时的答案，必须先求解d=3，以此类推</p>
+<p>根据上图，我们也能直观的看到到达（7，6）的最短路径，见下图</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190505145459.png" alt="image"></p>
+<h2 id="算法实现（java）"><a href="#算法实现（java）" class="headerlink" title="算法实现（java）"></a>算法实现（java）</h2><p>外层循环步数d，内层循环斜率k，两个for循环找出<strong>最短diff路径</strong></p>
+<ul>
+<li>定义抽象基础节点PathNode，及实现类DiffNode（做操作的节点），Snake（对角线节点）</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="keyword">abstract</span> <span class="class"><span class="keyword">class</span> <span class="title">PathNode</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> i;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> <span class="keyword">int</span> j;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">final</span> PathNode prev;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">PathNode</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j, PathNode prev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.i = i;</span><br><span class="line">        <span class="keyword">this</span>.j = j;</span><br><span class="line">        <span class="keyword">this</span>.prev = prev;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">abstract</span> Boolean <span class="title">isSnake</span><span class="params">()</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> String <span class="title">toString</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        StringBuffer buf = <span class="keyword">new</span> StringBuffer(<span class="string">"["</span>);</span><br><span class="line">        PathNode node = <span class="keyword">this</span>;</span><br><span class="line">        <span class="keyword">while</span> (node != <span class="keyword">null</span>) &#123;</span><br><span class="line">            buf.append(<span class="string">"("</span>);</span><br><span class="line">            buf.append(Integer.toString(node.i));</span><br><span class="line">            buf.append(<span class="string">","</span>);</span><br><span class="line">            buf.append(Integer.toString(node.j));</span><br><span class="line">            buf.append(<span class="string">")"</span>);</span><br><span class="line">            node = node.prev;</span><br><span class="line">        &#125;</span><br><span class="line">        buf.append(<span class="string">"]"</span>);</span><br><span class="line">        <span class="keyword">return</span> buf.toString();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">Snake</span> <span class="keyword">extends</span> <span class="title">PathNode</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">Snake</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j, PathNode prev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(i, j, prev);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Boolean <span class="title">isSnake</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">true</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="keyword">final</span> <span class="class"><span class="keyword">class</span> <span class="title">DiffNode</span> <span class="keyword">extends</span> <span class="title">PathNode</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">DiffNode</span><span class="params">(<span class="keyword">int</span> i, <span class="keyword">int</span> j, PathNode prev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(i, j, prev);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Boolean <span class="title">isSnake</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">false</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>寻找最优路径</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyersDiff</span>&lt;<span class="title">T</span>&gt; </span>&#123;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 默认相等规则</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Equalizer&lt;T&gt; DEFAULT_EQUALIZER = (original, revised) -&gt; original.equals(revised);</span><br><span class="line">    <span class="keyword">private</span> <span class="keyword">final</span> Equalizer&lt;T&gt; equalizer;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyersDiff</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        equalizer = DEFAULT_EQUALIZER;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyersDiff</span><span class="params">(Equalizer&lt;T&gt; equalizer)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.equalizer = equalizer;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/**</span></span><br><span class="line"><span class="comment">     * 寻找最优路径</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> PathNode <span class="title">buildPath</span><span class="params">(List&lt;T&gt; orig, List&lt;T&gt; rev)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (orig == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"original sequence is null"</span>);</span><br><span class="line">        <span class="keyword">if</span> (rev == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException(<span class="string">"revised sequence is null"</span>);</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> N = orig.size();</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> M = rev.size();</span><br><span class="line">        <span class="comment">//最大步数（先全减后全加）</span></span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> MAX = N + M + <span class="number">1</span>;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> size = <span class="number">1</span> + <span class="number">2</span> * MAX;</span><br><span class="line">        <span class="keyword">final</span> <span class="keyword">int</span> middle = size / <span class="number">2</span>;</span><br><span class="line">        <span class="comment">//构建纵坐标数组（用于存储每一步的最优路径位置）</span></span><br><span class="line">        <span class="keyword">final</span> PathNode diagonal[] = <span class="keyword">new</span> PathNode[size];</span><br><span class="line">        <span class="comment">//用于获取初试位置的辅助节点</span></span><br><span class="line">        diagonal[middle + <span class="number">1</span>] = <span class="keyword">new</span> Snake(<span class="number">0</span>, -<span class="number">1</span>, <span class="keyword">null</span>);</span><br><span class="line">        <span class="comment">//外层循环步数</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> d = <span class="number">0</span>; d &lt; MAX; d++) &#123;</span><br><span class="line">            <span class="comment">//内层循环所处斜率，以2为步长，因为从所在位置走一步，斜率只会相差2</span></span><br><span class="line">            <span class="keyword">for</span> (<span class="keyword">int</span> k = -d; k &lt;= d; k += <span class="number">2</span>) &#123;</span><br><span class="line">                <span class="comment">//找出对应斜率所在的位置，以及它上一步的位置（高位与低位）</span></span><br><span class="line">                <span class="keyword">final</span> <span class="keyword">int</span> kmiddle = middle + k;</span><br><span class="line">                <span class="keyword">final</span> <span class="keyword">int</span> kplus = kmiddle + <span class="number">1</span>;</span><br><span class="line">                <span class="keyword">final</span> <span class="keyword">int</span> kminus = kmiddle - <span class="number">1</span>;</span><br><span class="line">                <span class="comment">//若k为-d，则一定是从上往下走，即i相同</span></span><br><span class="line">                <span class="comment">//若diagonal[kminus].i &lt; diagonal[kplus].i，则最优路径一定是从上往下走，即i相同</span></span><br><span class="line">                <span class="keyword">int</span> i;</span><br><span class="line">                PathNode prev;</span><br><span class="line">                <span class="keyword">if</span> ((k == -d) || (k != d &amp;&amp; diagonal[kminus].i &lt; diagonal[kplus].i)) &#123;</span><br><span class="line">                    i = diagonal[kplus].i;</span><br><span class="line">                    prev = diagonal[kplus];</span><br><span class="line">                &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">                    <span class="comment">//若k为d，则一定是从左往右走，即i+1</span></span><br><span class="line">                    <span class="comment">//若diagonal[kminus].i = diagonal[kplus].i，则最优路径一定是从左往右走，即i+1</span></span><br><span class="line">                    i = diagonal[kminus].i + <span class="number">1</span>;</span><br><span class="line">                    prev = diagonal[kminus];</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//根据i与k，计算出j</span></span><br><span class="line">                <span class="keyword">int</span> j = i - k;</span><br><span class="line">                <span class="comment">//上一步的低位数据不再存储在数组中（每个k只清空低位即可全部清空）</span></span><br><span class="line">                diagonal[kminus] = <span class="keyword">null</span>;</span><br><span class="line">                <span class="comment">//当前是diff节点</span></span><br><span class="line">                PathNode node = <span class="keyword">new</span> DiffNode(i, j, prev);</span><br><span class="line">                <span class="comment">//判断被比较的两个数组中，当前位置的数据是否相同，相同，则去到对角线位置</span></span><br><span class="line">                <span class="keyword">while</span> (i &lt; N &amp;&amp; j &lt; M &amp;&amp; equals(orig.get(i), rev.get(j))) &#123;</span><br><span class="line">                    i++;</span><br><span class="line">                    j++;</span><br><span class="line">                &#125;</span><br><span class="line">                <span class="comment">//判断是否去到对角线位置，若是，则生成snack节点，前节点为diff节点</span></span><br><span class="line">                <span class="keyword">if</span> (i &gt; node.i)</span><br><span class="line">                    node = <span class="keyword">new</span> Snake(i, j, node);</span><br><span class="line">                <span class="comment">//设置当前位置到数组中</span></span><br><span class="line">                diagonal[kmiddle] = node;</span><br><span class="line">                <span class="comment">//达到目标位置，返回当前node</span></span><br><span class="line">                <span class="keyword">if</span> (i &gt;= N &amp;&amp; j &gt;= M) &#123;</span><br><span class="line">                    <span class="keyword">return</span> diagonal[kmiddle];</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> Exception(<span class="string">"could not find a diff path"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">boolean</span> <span class="title">equals</span><span class="params">(T orig, T rev)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">return</span> equalizer.equals(orig, rev);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>测试及结果</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    String oldText = <span class="string">"A\nB\nC\nA\nB\nB\nA"</span>;</span><br><span class="line">    String newText = <span class="string">"C\nB\nA\nB\nA\nC"</span>;</span><br><span class="line">    List&lt;String&gt; oldList = Arrays.asList(oldText.split(<span class="string">"\\n"</span>));</span><br><span class="line">    List&lt;String&gt; newList = Arrays.asList(newText.split(<span class="string">"\\n"</span>));</span><br><span class="line">    MyersDiff&lt;String&gt; myersDiff = <span class="keyword">new</span> MyersDiff&lt;&gt;();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        PathNode pathNode = myersDiff.buildPath(oldList, newList);</span><br><span class="line">        System.out.println(pathNode);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[(7,6)(7,5)(6,4)(5,4)(3,2)(3,1)(2,0)(1,0)(0,0)(0,-1)]</span><br></pre></td></tr></table></figure>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://cjting.me/misc/how-git-generate-diff/" target="_blank" rel="noopener">Git是怎样生成diff的：Myers算法</a></li>
+<li><a href="http://xmailserver.org/diff2.pdf" target="_blank" rel="noopener">Myers论文</a></li>
+<li><a href="https://blog.csdn.net/Coo123_/article/details/87280401" target="_blank" rel="noopener">Myers 差分算法 (Myers Difference Algorithm)</a></li>
+<li><a href="http://blog.robertelder.org/diff-algorithm/" target="_blank" rel="noopener">Myers Diff Algorithm - Code &amp; Interactive Visualization</a></li>
+<li><a href="https://github.com/dnaumenko/java-diff-utils" target="_blank" rel="noopener">github-google开源工具：java-diff-utils</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/24/springboot项目启动源码分析/" rel="next" title="springboot项目启动源码分析">
+                <i class="fa fa-chevron-left"></i> springboot项目启动源码分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">24</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Myers差分算法"><span class="nav-number">1.</span> <span class="nav-text">什么是Myers差分算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#diff与图搜索"><span class="nav-number">2.</span> <span class="nav-text">diff与图搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三个概念"><span class="nav-number">3.</span> <span class="nav-text">三个概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法原理"><span class="nav-number">4.</span> <span class="nav-text">算法原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法实现（java）"><span class="nav-number">5.</span> <span class="nav-text">算法实现（java）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共54.6k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
