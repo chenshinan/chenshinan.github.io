@@ -90,7 +90,10 @@
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190505093730.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190505145552.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190505145459.png">
-<meta property="og:updated_time" content="2019-05-05T06:57:15.524Z">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190506203200.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190506203446.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190506203814.png">
+<meta property="og:updated_time" content="2019-05-06T12:51:07.965Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="git生成diff原理：Myers差分算法">
 <meta name="twitter:description" content="什么是Myers差分算法举一个最常见的例子，我们使用git进行提交时，通常会使用git diff --cached来查看这次提交做了哪些改动，这里我们先简单定义一下什么是diff：diff就是目标文本和源文本之间的区别，也就是将源文本变成目标文本所需要的操作。Myers算法由Eugene W.Myers在1986年发表的一篇论文中提出，是一个能在大部分情况产生”最短的直观的“diff的一个算法。">
@@ -305,7 +308,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  1.7k 字
+                  2.2k 字
                 </span>
               
 
@@ -318,7 +321,7 @@
                   <span class="post-meta-item-text">阅读时长 </span>
                 
                 <span title="阅读时长">
-                  7 分钟
+                  9 分钟
                 </span>
               
             </div>
@@ -380,6 +383,31 @@
 </ul>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    String oldText = <span class="string">"A\nB\nC\nA\nB\nB\nA"</span>;</span><br><span class="line">    String newText = <span class="string">"C\nB\nA\nB\nA\nC"</span>;</span><br><span class="line">    List&lt;String&gt; oldList = Arrays.asList(oldText.split(<span class="string">"\\n"</span>));</span><br><span class="line">    List&lt;String&gt; newList = Arrays.asList(newText.split(<span class="string">"\\n"</span>));</span><br><span class="line">    MyersDiff&lt;String&gt; myersDiff = <span class="keyword">new</span> MyersDiff&lt;&gt;();</span><br><span class="line">    <span class="keyword">try</span> &#123;</span><br><span class="line">        PathNode pathNode = myersDiff.buildPath(oldList, newList);</span><br><span class="line">        System.out.println(pathNode);</span><br><span class="line">    &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">        e.printStackTrace();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">[(7,6)(7,5)(6,4)(5,4)(3,2)(3,1)(2,0)(1,0)(0,0)(0,-1)]</span><br></pre></td></tr></table></figure>
+<h2 id="延伸：动态规划"><a href="#延伸：动态规划" class="headerlink" title="延伸：动态规划"></a>延伸：动态规划</h2><p>差分算法是典型的动态规划算法，动态规划算法是通过拆分问题，定义问题状态和状态之间的关系，使得问题能够以递推（或者说分治）的方式去解决</p>
+<pre><code>动态规划算法的基本思想与分治法类似，也是将待求解的问题分解为若干个子问题（阶段），按顺序求解子阶段，前一子问题的解，为后一子问题的求解提供了有用的信息。在求解任一子问题时，列出各种可能的局部解，通过决策保留那些有可能达到最优的局部解，丢弃其他局部解。依次解决各子问题，最后一个子问题就是初始问题的解
+</code></pre><h3 id="例子一"><a href="#例子一" class="headerlink" title="例子一"></a>例子一</h3><p>我们有个题目：有一座高度是10级台阶的楼梯，从下往上走，每跨一步只能向上1级或者2级台阶。要求用程序来求出一共有多少种走法。</p>
+<p>根据题目我们可以确定F(10)=F(8)+F(9)，即：<code>从0到10级台阶的走法数量=从0到8级台阶的走法数量+从0到9级台阶的走法数量</code>，则可推出如下公式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">F(1) = 1</span><br><span class="line">F(2) = 2</span><br><span class="line">F(n) = F(n-1)+F(n-2)（n&gt;=3）</span><br></pre></td></tr></table></figure>
+<h3 id="重要概念"><a href="#重要概念" class="headerlink" title="重要概念"></a>重要概念</h3><ul>
+<li><p><strong>最优子结构</strong>：F(8)和F(9)是F(10)的最优子结构</p>
+</li>
+<li><p><strong>边界</strong>：F(1)和F(2)是问题的【边界】，如果一个问题没有边界将永远无法得到有限的结果</p>
+</li>
+<li><p><strong>状态转移方程</strong>：F(n)=F(n-1)+F(n-2)是阶段与阶段之间的【状态转移方程】，这是动态规划的核心，决定了问题的每一个阶段和下一阶段的关系</p>
+</li>
+</ul>
+<h3 id="实现逻辑"><a href="#实现逻辑" class="headerlink" title="实现逻辑"></a>实现逻辑</h3><ul>
+<li>方法一：递归求解，时间复杂度：O(N^2）</li>
+</ul>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190506203200.png" alt="image"></p>
+<ul>
+<li>方法二：备忘录算法，缓存已经计算过的值，时间复杂度：O(N)，空间复杂度：O(N)</li>
+</ul>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190506203446.png" alt="image"></p>
+<ul>
+<li>方法三：思路逆转，从底往上算，每次只需要存储前一次的值，时间复杂度：O(N)，空间复杂度：O(1)</li>
+</ul>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190506203814.png" alt="image"></p>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
 <li><a href="https://cjting.me/misc/how-git-generate-diff/" target="_blank" rel="noopener">Git是怎样生成diff的：Myers算法</a></li>
 <li><a href="http://xmailserver.org/diff2.pdf" target="_blank" rel="noopener">Myers论文</a></li>
@@ -545,7 +573,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Myers差分算法"><span class="nav-number">1.</span> <span class="nav-text">什么是Myers差分算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#diff与图搜索"><span class="nav-number">2.</span> <span class="nav-text">diff与图搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三个概念"><span class="nav-number">3.</span> <span class="nav-text">三个概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法原理"><span class="nav-number">4.</span> <span class="nav-text">算法原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法实现（java）"><span class="nav-number">5.</span> <span class="nav-text">算法实现（java）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是Myers差分算法"><span class="nav-number">1.</span> <span class="nav-text">什么是Myers差分算法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#diff与图搜索"><span class="nav-number">2.</span> <span class="nav-text">diff与图搜索</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#三个概念"><span class="nav-number">3.</span> <span class="nav-text">三个概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法原理"><span class="nav-number">4.</span> <span class="nav-text">算法原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#算法实现（java）"><span class="nav-number">5.</span> <span class="nav-text">算法实现（java）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#延伸：动态规划"><span class="nav-number">6.</span> <span class="nav-text">延伸：动态规划</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#例子一"><span class="nav-number">6.1.</span> <span class="nav-text">例子一</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#重要概念"><span class="nav-number">6.2.</span> <span class="nav-text">重要概念</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#实现逻辑"><span class="nav-number">6.3.</span> <span class="nav-text">实现逻辑</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">7.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -586,7 +614,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共54.6k字</span>
+  <span class="post-count">博客全站共55.2k字</span>
 </div>
 
 
