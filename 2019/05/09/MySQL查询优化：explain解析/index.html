@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是EXPLAIN使用EXPLAIN与sql语句一起使用，可以查看有关sql的执行计划。也就是说，MySQL解释了它将如何处理语句，包括有关如何连接表、以何种顺序连接、如何查询等信息。  EXPLAIN关键字一般放在SELECT查询语句的前面，用于描述MySQL如何执行查询操作、以及MySQL成功返回结果集需要执行的行数。explain 可以帮助我们分析 select 语句,让我们知道查询效率低">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL查询优化：explain解析">
+<meta property="og:url" content="http://chenshinan.github.io/2019/05/09/MySQL查询优化：explain解析/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="什么是EXPLAIN使用EXPLAIN与sql语句一起使用，可以查看有关sql的执行计划。也就是说，MySQL解释了它将如何处理语句，包括有关如何连接表、以何种顺序连接、如何查询等信息。  EXPLAIN关键字一般放在SELECT查询语句的前面，用于描述MySQL如何执行查询操作、以及MySQL成功返回结果集需要执行的行数。explain 可以帮助我们分析 select 语句,让我们知道查询效率低">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190509114319.png">
+<meta property="og:updated_time" content="2019-05-09T09:33:00.412Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL查询优化：explain解析">
+<meta name="twitter:description" content="什么是EXPLAIN使用EXPLAIN与sql语句一起使用，可以查看有关sql的执行计划。也就是说，MySQL解释了它将如何处理语句，包括有关如何连接表、以何种顺序连接、如何查询等信息。  EXPLAIN关键字一般放在SELECT查询语句的前面，用于描述MySQL如何执行查询操作、以及MySQL成功返回结果集需要执行的行数。explain 可以帮助我们分析 select 语句,让我们知道查询效率低">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190509114319.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2019/05/09/MySQL查询优化：explain解析/">
+
+
+
+
+
+  <title>MySQL查询优化：explain解析 | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2019/05/09/MySQL查询优化：explain解析/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MySQL查询优化：explain解析</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-05-09T19:20:47+08:00">
+                2019-05-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  2.9k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  10 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="什么是EXPLAIN"><a href="#什么是EXPLAIN" class="headerlink" title="什么是EXPLAIN"></a>什么是EXPLAIN</h2><p>使用EXPLAIN与sql语句一起使用，可以查看有关sql的<strong>执行计划</strong>。也就是说，MySQL解释了它将如何处理语句，包括有关如何连接表、以何种顺序连接、如何查询等信息。</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190509114319.png" alt="image"></p>
+<p>EXPLAIN关键字一般放在SELECT查询语句的前面，用于描述MySQL如何执行查询操作、以及MySQL成功返回结果集需要执行的行数。explain 可以帮助我们分析 select 语句,让我们知道查询效率低下的原因,从而改进我们查询,让查询优化器能够更好的工作。</p>
+<blockquote>
+<p>MySQL 查询优化器是如何工作的？</p>
+</blockquote>
+<p>MySQL 查询优化器有几个目标,但是其中最主要的目标是尽可能地使用索引,并且使用最严格的索引来消除尽可能多的数据行。最终目标是提交 SELECT 语句查找数据行,而不是排除数据行。优化器试图排除数据行的原因在于它排除数据行的速度越快,那么找到与条件匹配的数据行也就越快。如果能够首先进行最严格的测试,查询就可以执行地更快。</p>
+<h2 id="EXPLAIN输出解析"><a href="#EXPLAIN输出解析" class="headerlink" title="EXPLAIN输出解析"></a>EXPLAIN输出解析</h2><p>MySQL 查询优化器有几个目标,但是其中最主要的目标是尽可能地使用索引,并且使用最严格的索引来消除尽可能多的数据行。最终目标是提交 SELECT 语句查找数据行,而不是排除数据行。优化器试图排除数据行的原因在于它排除数据行的速度越快,那么找到与条件匹配的数据行也就越快。如果能够首先进行最严格的测试,查询就可以执行地更快。</p>
+<h3 id="id：每个select子句的标识id"><a href="#id：每个select子句的标识id" class="headerlink" title="id：每个select子句的标识id"></a>id：每个select子句的标识id</h3><p>MySQL Query Optimizer 选定的执行计划中查询的序列号。表示查询中执行 select 子句或操作表的顺序,id 值越大优先级越高,越先被执行。id 相同,执行顺序由上至下</p>
+<h3 id="select-type：select查询的类型，主要是区别普通查询和联合查询、子查询之类的复杂查询"><a href="#select-type：select查询的类型，主要是区别普通查询和联合查询、子查询之类的复杂查询" class="headerlink" title="select_type：select查询的类型，主要是区别普通查询和联合查询、子查询之类的复杂查询"></a>select_type：select查询的类型，主要是区别普通查询和联合查询、子查询之类的复杂查询</h3><pre><code>SIMPLE：简单SELECT(不使用UNION或子查询等)
+
+PRIMARY：最外面的SELECT
+
+UNION：UNION中的第二个或后面的SELECT语句
+
+DEPENDENT UNION：UNION中的第二个或后面的SELECT语句，取决于外面的查询
+
+UNION RESULT：UNION的结果。
+
+SUBQUERY：子查询中的第一个SELECT
+
+DEPENDENT SUBQUERY：子查询中的第一个SELECT，取决于外面的查询
+
+DERIVED：导出表的SELECT(FROM子句的子查询)
+</code></pre><h3 id="table：输出的行所引用的表"><a href="#table：输出的行所引用的表" class="headerlink" title="table：输出的行所引用的表"></a>table：输出的行所引用的表</h3><p>显示的查询表名，如果查询使用了别名，那么这里显示的是别名，如果不涉及对数据表的操作，那么这显示为null，如果显示为尖括号括起来的<derived n="">就表示这个是临时表，后边的N就是执行计划中的id，表示结果来自于这个查询产生。如果是尖括号括起来的<union m,n="">，与<derived n="">类似，也是一个临时表，表示这个结果来自于union查询的id为M,N的结果集</derived></union></derived></p>
+<h3 id="type【关键点】：联合查询所使用的类型"><a href="#type【关键点】：联合查询所使用的类型" class="headerlink" title="type【关键点】：联合查询所使用的类型"></a>type【关键点】：联合查询所使用的类型</h3><p>联合查询所使用的类型. type显示的是访问类型，是较为重要的一个指标，结果值从好到坏依次是：\<br><code>system &gt; const &gt; eq_ref &gt; ref &gt; fulltext &gt; ref_or_null &gt; index_merge &gt; unique_subquery &gt; index_subquery &gt; range &gt; index &gt; ALL</code> 一般来说，得保证查询至少达到range级别，最好能达到ref</p>
+<h3 id="possible-keys：查询可能使用到的索引都会在这里列出来"><a href="#possible-keys：查询可能使用到的索引都会在这里列出来" class="headerlink" title="possible_keys：查询可能使用到的索引都会在这里列出来"></a>possible_keys：查询可能使用到的索引都会在这里列出来</h3><p>指出MySQL能使用哪个索引在该表中找到行。如果是空的，没有相关的索引。这时要提高性能，可通过检验WHERE子句，看是否引用某些字段，或者检查字段不是适合索引。</p>
+<h3 id="key：显示MySQL实际决定使用的索引"><a href="#key：显示MySQL实际决定使用的索引" class="headerlink" title="key：显示MySQL实际决定使用的索引"></a>key：显示MySQL实际决定使用的索引</h3><p>查询真正使用到的索引，如果没有索引被选择，则是NULL。select_type为index_merge时，这里可能出现两个以上的索引，其他的select_type这里只会出现一个。</p>
+<p>key=primary的话，表示使用了主键；key=null表示没用到索引</p>
+<h3 id="key-len：显示MySQL决定使用的索引长度"><a href="#key-len：显示MySQL决定使用的索引长度" class="headerlink" title="key_len：显示MySQL决定使用的索引长度"></a>key_len：显示MySQL决定使用的索引长度</h3><p>显示MySQL决定使用的键长度。如果键是NULL，长度就是NULL。<strong>文档提示特别注意这个值可以得出一个多重主键里mysql实际使用了哪一部分</strong>。如果是单列索引，那就整个索引长度算进去，如果是多列索引，那么查询不一定都能使用到所有的列，具体使用到了多少个列的索引，这里就会计算进去，没有使用到的列，这里不会计算进去。留意下这个列的值，算一下你的多列索引总长度就知道有没有使用到所有的列了。要注意，mysql的ICP特性使用到的索引不会计入其中。另外，key_len只计算where条件用到的索引长度，而排序和分组就算用到了索引，也不会计算到key_len中。</p>
+<h3 id="ref：显示哪个字段或常数与key一起被使用"><a href="#ref：显示哪个字段或常数与key一起被使用" class="headerlink" title="ref：显示哪个字段或常数与key一起被使用"></a>ref：显示哪个字段或常数与key一起被使用</h3><p>如果是使用的常数等值查询，这里会显示const，如果是连接查询，被驱动表的执行计划这里会显示驱动表的关联字段，如果是条件使用了表达式或者函数，或者条件列发生了内部隐式转换，这里可能显示为func</p>
+<h3 id="rows：显示MySQL认为它执行查询时必须检查的行数"><a href="#rows：显示MySQL认为它执行查询时必须检查的行数" class="headerlink" title="rows：显示MySQL认为它执行查询时必须检查的行数"></a>rows：显示MySQL认为它执行查询时必须检查的行数</h3><p>这个数表示mysql要遍历多少数据才能找到，在innodb上是不准确的。这里是执行计划中估算的扫描行数，不是精确值</p>
+<h3 id="filtered：查询记录数量的百分比"><a href="#filtered：查询记录数量的百分比" class="headerlink" title="filtered：查询记录数量的百分比"></a>filtered：查询记录数量的百分比</h3><p>这个字段表示存储引擎返回的数据在server层过滤后，剩下多少满足查询的记录数量的比例，注意是百分比，不是具体记录数。</p>
+<h3 id="Extra【关键点】：包含MySQL解决查询的详细信息，也是关键参考项之一"><a href="#Extra【关键点】：包含MySQL解决查询的详细信息，也是关键参考项之一" class="headerlink" title="Extra【关键点】：包含MySQL解决查询的详细信息，也是关键参考项之一"></a>Extra【关键点】：包含MySQL解决查询的详细信息，也是关键参考项之一</h3><h2 id="type：联合查询所使用的类型"><a href="#type：联合查询所使用的类型" class="headerlink" title="type：联合查询所使用的类型"></a>type：联合查询所使用的类型</h2><p>联合查询所使用的类型 type 显示的是访问类型，是较为重要的一个指标，结果值<strong>从好到坏</strong>依次是：\<br><code>system &gt; const &gt; eq_ref &gt; ref &gt; fulltext &gt; ref_or_null &gt; index_merge &gt; unique_subquery &gt; index_subquery &gt; range &gt; index &gt; ALL</code> 一般来说，得保证查询<strong>至少达到range级别，最好能达到ref</strong></p>
+<h3 id="system"><a href="#system" class="headerlink" title="system"></a>system</h3><p>表仅有一行(=系统表)。这是 const 连接类型的一个特例。</p>
+<h3 id="const"><a href="#const" class="headerlink" title="const"></a>const</h3><p>将PRIMARY KEY或UNIQUE索引的所有部分与常量值进行比较时使用const。使用唯一索引或者主键，返回记录一定是1行记录的等值where条件时，通常type是const。</p>
+<h3 id="eq-ref"><a href="#eq-ref" class="headerlink" title="eq_ref"></a>eq_ref</h3><p>出现在要连接过个表的查询计划中，<strong>驱动表只返回一行数据，且这行数据是第二个表的主键或者唯一索引</strong>，且必须为not null，唯一索引和主键是多列时，只有所有的列都用作比较时才会出现eq_ref</p>
+<h3 id="ref"><a href="#ref" class="headerlink" title="ref"></a>ref</h3><p>不像eq_ref那样要求连接顺序，也没有主键和唯一索引的要求，只要使用相等条件检索时就可能出现，常见与辅助索引的等值查找。或者多列主键、唯一索引中，使用第一个列之外的列作为等值查找也会出现，总之，返回数据不唯一的等值查找就可能出现</p>
+<h3 id="fulltext"><a href="#fulltext" class="headerlink" title="fulltext"></a>fulltext</h3><p>全文索引检索，要注意，全文索引的优先级很高，若全文索引和普通索引同时存在时，mysql不管代价，优先选择使用全文索引</p>
+<blockquote>
+<p>注意</p>
+</blockquote>
+<p>在MySQL数据库中，有四种索引：聚集索引(主键索引)、普通索引、唯一索引和全文索引，全文索引(也称全文检索)是目前搜索引擎使用的一种关键技术。它能够利用<strong>分词技术</strong>等多种算法智能分析出文本文字中关键字词的频率及重要性，然后按照一定的算法规则智能地筛选出我们想要的搜索结果</p>
+<h3 id="ref-or-null"><a href="#ref-or-null" class="headerlink" title="ref_or_null"></a>ref_or_null</h3><p>与ref方法类似，只是增加了null值的比较。实际用的不多</p>
+<h3 id="index-merge"><a href="#index-merge" class="headerlink" title="index_merge"></a>index_merge</h3><p>表示查询使用了两个以上的索引，最后取交集或者并集，常见and ，or的条件使用了不同的索引，官方排序这个在ref_or_null之后，但是实际上由于要读取所个索引，性能可能大部分时间都不如range</p>
+<h3 id="unique-subquery"><a href="#unique-subquery" class="headerlink" title="unique_subquery"></a>unique_subquery</h3><p>用于where中的in形式子查询，子查询返回不重复值唯一值</p>
+<h3 id="index-subquery"><a href="#index-subquery" class="headerlink" title="index_subquery"></a>index_subquery</h3><p>用于in形式子查询使用到了辅助索引或者in常数列表，子查询可能返回重复值，可以使用索引将子查询去重</p>
+<h3 id="range"><a href="#range" class="headerlink" title="range"></a>range</h3><p>索引范围扫描，常见于使用&gt;,&lt;,is null,between ,in ,like等运算符的查询中</p>
+<h3 id="index"><a href="#index" class="headerlink" title="index"></a>index</h3><p>索引全表扫描，把索引从头到尾扫一遍，常见于使用索引列就可以处理不需要读取数据文件的查询、可以使用索引排序或者分组的查询。主要优点就是避免了排序, 但是开销仍然非常大</p>
+<h3 id="all"><a href="#all" class="headerlink" title="all"></a>all</h3><p>最坏的情况，从头到尾全表扫描</p>
+<h2 id="Extra：额外信息"><a href="#Extra：额外信息" class="headerlink" title="Extra：额外信息"></a>Extra：额外信息</h2><p>这个列可以显示的信息非常多，有几十种，是执行计划的额外信息，下面举出几个常见的</p>
+<h3 id="Distinct"><a href="#Distinct" class="headerlink" title="Distinct"></a>Distinct</h3><p>一旦MYSQL找到了与行相联合匹配的行，就不再搜索了</p>
+<h3 id="Not-exists"><a href="#Not-exists" class="headerlink" title="Not exists"></a>Not exists</h3><p>MYSQL 优化了LEFT JOIN，一旦它找到了匹配LEFT JOIN标准的行，就不再搜索了</p>
+<h3 id="Range-checked-for-each-Record"><a href="#Range-checked-for-each-Record" class="headerlink" title="Range checked for each Record"></a>Range checked for each Record</h3><p>MySQL发现没有好的索引可以使用，但发现在前面的表的列值已知之后可能会使用某些索引。<br>对于上表中的每个行组合，MySQL检查是否可以使用range或index_merge访问方法来检索行。这是使用索引的最慢的连接之一</p>
+<h3 id="Using-index"><a href="#Using-index" class="headerlink" title="Using index"></a>Using index</h3><p>查询时不需要回表查询，直接通过索引就可以获取查询的数据，效率不错</p>
+<h3 id="Using-where"><a href="#Using-where" class="headerlink" title="Using where"></a>Using where</h3><p>除非您特别打算从表中获取或检查所有行，否则如果没有使用where，并且表联接类型为all或index，那么您的查询可能会出错。</p>
+<h3 id="Using-filesort【需要优化】"><a href="#Using-filesort【需要优化】" class="headerlink" title="Using filesort【需要优化】"></a>Using filesort【需要优化】</h3><p>看到这个的时候，查询就需要优化了。MYSQL需要进行额外的步骤来发现如何对返回的行排序。它根据连接类型以及存储排序键值和匹配条件的全部行的行指针来排序全部行。当Query 中包含 ORDER BY 操作，而且无法利用索引完成排序操作的时候，MySQL Query Optimizer 不得不选择相应的排序算法来实现</p>
+<h3 id="Using-temporary【需要优化】"><a href="#Using-temporary【需要优化】" class="headerlink" title="Using temporary【需要优化】"></a>Using temporary【需要优化】</h3><p>看到这个的时候，查询就需要优化了。在解析查询并排序时，MySQL需要创建一个临时表来保存结果。如果查询包含以不同方式列出列的GROUP BY和ORDER BY子句，则通常会发生这种情况。</p>
+<blockquote>
+<p>注意</p>
+</blockquote>
+<p>如果此信息显示Using filesort或者Using temporary的话会很吃力，WHERE和ORDER BY的索引经常无法兼顾，如果按照WHERE来确定索引，那么在ORDER BY时，就必然会引起Using filesort，这就要看是先过滤再排序划算，还是先排序再过滤划算。</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://dev.mysql.com/doc/refman/5.7/en/execution-plan-information.html" target="_blank" rel="noopener">官网：Understanding the Query Execution Plan</a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1184702" target="_blank" rel="noopener">MySQL性能分析</a></li>
+<li><a href="https://blog.csdn.net/poxiaonie/article/details/77757471" target="_blank" rel="noopener">MySQL中explain执行计划中额外信息字段(Extra)详解</a></li>
+<li><a href="https://www.jb51.net/article/38357.htm" target="_blank" rel="noopener">explain的深入解析</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/05/02/git生成diff原理：Myers差分算法/" rel="next" title="git生成diff原理：Myers差分算法">
+                <i class="fa fa-chevron-left"></i> git生成diff原理：Myers差分算法
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">25</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是EXPLAIN"><span class="nav-number">1.</span> <span class="nav-text">什么是EXPLAIN</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EXPLAIN输出解析"><span class="nav-number">2.</span> <span class="nav-text">EXPLAIN输出解析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#id：每个select子句的标识id"><span class="nav-number">2.1.</span> <span class="nav-text">id：每个select子句的标识id</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#select-type：select查询的类型，主要是区别普通查询和联合查询、子查询之类的复杂查询"><span class="nav-number">2.2.</span> <span class="nav-text">select_type：select查询的类型，主要是区别普通查询和联合查询、子查询之类的复杂查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#table：输出的行所引用的表"><span class="nav-number">2.3.</span> <span class="nav-text">table：输出的行所引用的表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#type【关键点】：联合查询所使用的类型"><span class="nav-number">2.4.</span> <span class="nav-text">type【关键点】：联合查询所使用的类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#possible-keys：查询可能使用到的索引都会在这里列出来"><span class="nav-number">2.5.</span> <span class="nav-text">possible_keys：查询可能使用到的索引都会在这里列出来</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key：显示MySQL实际决定使用的索引"><span class="nav-number">2.6.</span> <span class="nav-text">key：显示MySQL实际决定使用的索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#key-len：显示MySQL决定使用的索引长度"><span class="nav-number">2.7.</span> <span class="nav-text">key_len：显示MySQL决定使用的索引长度</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ref：显示哪个字段或常数与key一起被使用"><span class="nav-number">2.8.</span> <span class="nav-text">ref：显示哪个字段或常数与key一起被使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#rows：显示MySQL认为它执行查询时必须检查的行数"><span class="nav-number">2.9.</span> <span class="nav-text">rows：显示MySQL认为它执行查询时必须检查的行数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#filtered：查询记录数量的百分比"><span class="nav-number">2.10.</span> <span class="nav-text">filtered：查询记录数量的百分比</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Extra【关键点】：包含MySQL解决查询的详细信息，也是关键参考项之一"><span class="nav-number">2.11.</span> <span class="nav-text">Extra【关键点】：包含MySQL解决查询的详细信息，也是关键参考项之一</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#type：联合查询所使用的类型"><span class="nav-number">3.</span> <span class="nav-text">type：联合查询所使用的类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#system"><span class="nav-number">3.1.</span> <span class="nav-text">system</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#const"><span class="nav-number">3.2.</span> <span class="nav-text">const</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#eq-ref"><span class="nav-number">3.3.</span> <span class="nav-text">eq_ref</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ref"><span class="nav-number">3.4.</span> <span class="nav-text">ref</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fulltext"><span class="nav-number">3.5.</span> <span class="nav-text">fulltext</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ref-or-null"><span class="nav-number">3.6.</span> <span class="nav-text">ref_or_null</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index-merge"><span class="nav-number">3.7.</span> <span class="nav-text">index_merge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#unique-subquery"><span class="nav-number">3.8.</span> <span class="nav-text">unique_subquery</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index-subquery"><span class="nav-number">3.9.</span> <span class="nav-text">index_subquery</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#range"><span class="nav-number">3.10.</span> <span class="nav-text">range</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#index"><span class="nav-number">3.11.</span> <span class="nav-text">index</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#all"><span class="nav-number">3.12.</span> <span class="nav-text">all</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Extra：额外信息"><span class="nav-number">4.</span> <span class="nav-text">Extra：额外信息</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Distinct"><span class="nav-number">4.1.</span> <span class="nav-text">Distinct</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Not-exists"><span class="nav-number">4.2.</span> <span class="nav-text">Not exists</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Range-checked-for-each-Record"><span class="nav-number">4.3.</span> <span class="nav-text">Range checked for each Record</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-index"><span class="nav-number">4.4.</span> <span class="nav-text">Using index</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-where"><span class="nav-number">4.5.</span> <span class="nav-text">Using where</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-filesort【需要优化】"><span class="nav-number">4.6.</span> <span class="nav-text">Using filesort【需要优化】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Using-temporary【需要优化】"><span class="nav-number">4.7.</span> <span class="nav-text">Using temporary【需要优化】</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共58.4k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
