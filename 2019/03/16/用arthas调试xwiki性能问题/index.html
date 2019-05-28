@@ -94,7 +94,7 @@
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190324094746.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190324095734.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190329093227.png">
-<meta property="og:updated_time" content="2019-03-29T01:34:46.634Z">
+<meta property="og:updated_time" content="2019-05-28T07:45:41.583Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用arthas调试xwiki性能问题">
 <meta name="twitter:description" content="由于xwiki在线上运行出现性能问题，于是在本地利用docker搭建xwiki环境，并导入与线上同等量的数据，使用阿里巴巴的开源工具arthas进行调试 构建含有arthas的xwiki-docker镜像arthas调试工具与被调试的程序需要运行在同一个环境下，因此需要在xwiki镜像中载入arthas，arthas的运行需要在jdk环境下，而xwiki的基础镜像是jre环境，jre环境没有需要运">
@@ -322,7 +322,7 @@
                   <span class="post-meta-item-text">阅读时长 </span>
                 
                 <span title="阅读时长">
-                  4 分钟
+                  5 分钟
                 </span>
               
             </div>
@@ -344,7 +344,8 @@
 
       
         <p>由于xwiki在线上运行出现性能问题，于是在本地利用docker搭建xwiki环境，并导入与线上同等量的数据，使用阿里巴巴的开源工具arthas进行调试</p>
-<h2 id="构建含有arthas的xwiki-docker镜像"><a href="#构建含有arthas的xwiki-docker镜像" class="headerlink" title="构建含有arthas的xwiki-docker镜像"></a>构建含有arthas的xwiki-docker镜像</h2><p>arthas调试工具与被调试的程序需要运行在同一个环境下，因此需要在xwiki镜像中载入arthas，arthas的运行需要在jdk环境下，而xwiki的基础镜像是jre环境，<em>jre环境没有需要运行arthas的tools.jar包</em>，最终的解决办法是下载完整的jdk包，直接用<code>./jdk1.8.0_201/bin/java -jar arthas-boot.jar</code>的方式启动arthas</p>
+<h2 id="构建含有arthas的xwiki-docker镜像"><a href="#构建含有arthas的xwiki-docker镜像" class="headerlink" title="构建含有arthas的xwiki-docker镜像"></a>构建含有arthas的xwiki-docker镜像</h2><p>arthas调试工具与被调试的程序需要运行在同一个环境下，因此需要在xwiki镜像中载入arthas，arthas的运行需要在jdk环境下，而xwiki的基础镜像是jre环境，<em>jre环境没有需要运行arthas的tools.jar包</em>，最终的解决办法是下载完整的jdk包，直接用<code>./jdk1.8.0_201/bin/java -jar arthas-boot.jar</code>的方式启动arthas，还可以查看java进程pid，指定pid运行</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">ps -A</span><br><span class="line">java -jar arthas-boot.jar 1</span><br></pre></td></tr></table></figure>
 <h3 id="官方下载jdk包"><a href="#官方下载jdk包" class="headerlink" title="官方下载jdk包"></a>官方下载jdk包</h3><p><a href="https://www.oracle.com/technetwork/java/javase/downloads/jdk8-downloads-2133151.html" target="_blank" rel="noopener">Java SE Development Kit 8 Downloads</a></p>
 <h3 id="使用dockerfile构建镜像"><a href="#使用dockerfile构建镜像" class="headerlink" title="使用dockerfile构建镜像"></a>使用dockerfile构建镜像</h3><figure class="highlight docker"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">FROM</span> registry.saas.hand-china.com/hitoa/xwiki:<span class="number">10.4</span>-mysql-tomcat-<span class="number">0.14</span>.<span class="number">0</span></span><br><span class="line"><span class="keyword">COPY</span> jdk-8u201-linux-x64.tar.gz /jdk-8u201-linux-x64.tar.gz</span><br><span class="line">RUN tar --extract --file /jdk-8u201-linux-x64.tar.gz; \</span><br><span class="line">    rm /jdk-8u201-linux-x64.tar.gz; \</span><br><span class="line">    java -version; \</span><br><span class="line">    wget https://alibaba.github.io/arthas/arthas-boot.jar</span><br></pre></td></tr></table></figure>
 <p>在dockerfile所在目录下运行命令</p>
