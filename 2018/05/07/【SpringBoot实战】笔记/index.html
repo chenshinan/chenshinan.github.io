@@ -86,10 +86,15 @@
 <meta property="og:site_name" content="大艺术家_SN">
 <meta property="og:description" content="——————Spring——————  AOP：面向切面编程面向切面编程，可以采用注解式拦截和方法规则式拦截，使用注解拦截方法，然后编写一个切面，使用@Aspect注解切面类，通过@Pointcut声明切点。【P27】 EL-SpringSpring EL-Spring 表达式语言，支持在xml和注解中使用表达式。【P33】 ProfileProfile 为在不同环境下使用不同的配置提供了支持。">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-05-31T06:29:15.630Z">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190531143407.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190531143501.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190531143537.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190531143600.png">
+<meta property="og:updated_time" content="2019-05-31T06:36:38.071Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【SpringBoot实战】笔记">
 <meta name="twitter:description" content="——————Spring——————  AOP：面向切面编程面向切面编程，可以采用注解式拦截和方法规则式拦截，使用注解拦截方法，然后编写一个切面，使用@Aspect注解切面类，通过@Pointcut声明切点。【P27】 EL-SpringSpring EL-Spring 表达式语言，支持在xml和注解中使用表达式。【P33】 ProfileProfile 为在不同环境下使用不同的配置提供了支持。">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190531143407.png">
 
 
 
@@ -395,7 +400,7 @@
 <pre><code>1.服务器被迫为每个客户端使用许多不同的底层TCP连接：一个用于向客户端发送信息，其它用于接收每个传入消息。
 2.有线协议有很高的开销，每一个客户端和服务器之间都有HTTP头。
 3.客户端脚本被迫维护从传出连接到传入连接的映射来追踪回复。
-</code></pre><p>一个更简单的解决方案是使用单个TCP连接双向通信。 这就是WebSocket协议所提供的功能。 结合WebSocket API ，WebSocket协议提供了一个用来替代HTTP轮询实现网页到远程主机的双向通信的方法。<br>在实现websocket连线过程中，需要通过浏览器发出websocket连线请求，然后服务器发出回应，这个过程通常称为“握手” 。在 WebSocket API，浏览器和服务器只需要做一个握手的动作，然后，浏览器和服务器之间就形成了一条快速通道。两者之间就直接可以数据互相传送。在此WebSocket 协议中，为我们实现即时服务带来了两大好处：</p>
+</code></pre><p><strong>一个更简单的解决方案是使用单个TCP连接双向通信</strong>。 这就是WebSocket协议所提供的功能。 结合WebSocket API ，WebSocket协议提供了一个用来替代HTTP轮询实现网页到远程主机的双向通信的方法。<br>在实现websocket连线过程中，需要通过浏览器发出websocket连线请求，然后服务器发出回应，这个过程通常称为“握手” 。在 WebSocket API，浏览器和服务器只需要做一个握手的动作，然后，浏览器和服务器之间就形成了一条快速通道。两者之间就直接可以数据互相传送。在此WebSocket 协议中，为我们实现即时服务带来了两大好处：</p>
 <ul>
 <li><p>Header<br>互相沟通的Header是很小的-大概只有 2 Bytes</p>
 </li>
@@ -415,7 +420,7 @@
 <li><p>长轮询：客户端发起连接请求，服务端等到有新信息时才返回信息给客户端，并断开连接。</p>
 </li>
 </ul>
-<h2 id="表述性状态传递：REST"><a href="#表述性状态传递：REST" class="headerlink" title="表述性状态传递：REST"></a>表述性状态传递：REST</h2><p>REST即表述性状态传递（英文：Representational State Transfer，简称REST）是Roy Fielding博士在2000年他的博士论文中提出来的一种软件架构风格。它是一种针对网络应用的设计和开发方式，可以降低开发的复杂性，提高系统的可伸缩性。<br>目前在三种主流的Web服务实现方案中，因为REST模式的Web服务与复杂的SOAP和XML-RPC对比来讲明显的更加简洁，越来越多的web服务开始采用REST风格设计和实现。REST就是一种请求原则，和ajax完美结合。</p>
+<h2 id="表述性状态传递：REST"><a href="#表述性状态传递：REST" class="headerlink" title="表述性状态传递：REST"></a>表述性状态传递：REST</h2><p>REST即表述性状态传递（英文：Representational State Transfer，简称REST）是Roy Fielding博士在2000年他的博士论文中提出来的一种<strong>软件架构风格</strong>。它是一种针对网络应用的设计和开发方式，可以降低开发的复杂性，提高系统的可伸缩性。<br>目前在三种主流的Web服务实现方案中，因为REST模式的Web服务与复杂的SOAP和XML-RPC对比来讲明显的更加简洁，越来越多的web服务开始采用REST风格设计和实现。<strong>REST就是一种请求原则，和ajax完美结合</strong>。</p>
 <h2 id="声明式事务"><a href="#声明式事务" class="headerlink" title="声明式事务"></a>声明式事务</h2><p>@Transactional的属性：</p>
 <ul>
 <li>propagationtion：传播级别</li>
@@ -427,13 +432,13 @@
 <p>默认值default，isolation（隔离）决定了事务的完整性，处理在多事务对相同数据下的处理机制，包含多种隔离级别。</p>
 <h2 id="数据缓存Cache"><a href="#数据缓存Cache" class="headerlink" title="数据缓存Cache"></a>数据缓存Cache</h2><p>CacheManager是Spring提供的各种缓存技术抽象接口。<strong>【P309】</strong></p>
 <h2 id="非关系型数据库NoSQL"><a href="#非关系型数据库NoSQL" class="headerlink" title="非关系型数据库NoSQL"></a>非关系型数据库NoSQL</h2><p>非关系型数据库NoSQL：MongoDB。<strong>【P321】</strong></p>
-<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>Redis是一个基于键值对的开源内存数据存储，当然Redis也可以做数据缓存。Redis支持主从同步。数据可以从主服务器向任意数量的从服务器上同步，从服务器可以是关联其他从服务器的主服务器。这使得Redis可执行单层树复制。存盘可以有意无意的对数据进行写操作。由于完全实现了发布/订阅机制，使得从数据库在任何地方同步树时，可订阅一个频道并接收主服务器完整的消息发布记录。同步对读取操作的可扩展性和数据冗余很有帮助。</p>
+<h2 id="Redis"><a href="#Redis" class="headerlink" title="Redis"></a>Redis</h2><p>Redis<strong>是一个基于键值对的开源内存数据存储，当然Redis也可以做数据缓存</strong>。Redis支持主从同步。数据可以从主服务器向任意数量的从服务器上同步，从服务器可以是关联其他从服务器的主服务器。这使得Redis可执行单层树复制。存盘可以有意无意的对数据进行写操作。由于完全实现了发布/订阅机制，使得从数据库在任何地方同步树时，可订阅一个频道并接收主服务器完整的消息发布记录。同步对读取操作的可扩展性和数据冗余很有帮助。</p>
 <blockquote>
 <p>——————SpringBoot企业级开发——————</p>
 </blockquote>
 <h2 id="Spring-Security"><a href="#Spring-Security" class="headerlink" title="Spring Security"></a>Spring Security</h2><p>Spring Security是专门针对基于Spring的项目的安全框架，充分利用了依赖注入和AOP来实现安全的功能。安全框架有两个重要的概念，即认证和授权。认证即确认用户可以访问当前系统，授权即确定用户在当前系统下所拥有的功能权限。<strong>【P341】</strong></p>
 <h2 id="Spring-Batch"><a href="#Spring-Batch" class="headerlink" title="Spring Batch"></a>Spring Batch</h2><p>Spring Batch是用来处理大量数据操作的一个框架，主要用来读取大量数据，然后进行一定处理后输出成指定的形式。组成部分：JobRepository、JobLauncher、Job、Step等。<strong>【P362】</strong></p>
-<h2 id="异步消息"><a href="#异步消息" class="headerlink" title="异步消息"></a>异步消息</h2><p>异步消息主要目的是为了系统与系统之间的通信。所谓异步消息即消息发送者无须等待消息接收者的处理及返回，甚至无须关心消息是否发送成功。异步消息中有两个重要的概念：消息代理和目的地。当消息发送者发送消息后，消息将由消息代理接管，消息代理保证消息传递到指定的目的地。形式有两种：队列和主题</p>
+<h2 id="异步消息"><a href="#异步消息" class="headerlink" title="异步消息"></a>异步消息</h2><p>异步消息主要目的是为了系统与系统之间的通信。所谓异步消息即消息发送者无须等待消息接收者的处理及返回，甚至无须关心消息是否发送成功。异步消息中有两个重要的概念：消息代理和目的地。<strong>当消息发送者发送消息后，消息将由消息代理接管，消息代理保证消息传递到指定的目的地</strong>。形式有两种：队列和主题</p>
 <ul>
 <li><p>队列：点对点式，消息放到队列中，每一条消息只有唯一的发送者和接收者。</p>
 </li>
@@ -451,6 +456,10 @@
 <li>支持可拓展性：</li>
 </ul>
 <p>RabbitMQ能实现系统扩展的一个重要功能在于，可以两个邮箱收同一个地址的信，翻译成专业的话 RabbitMQ 可以两个队列Queue订阅同一个RoutingKey的信息。RabbitMQ在投递的时候,会把一份信息,投递到多个队列邮箱中Queue，这是系统可扩展性的基础。</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190531143407.png" alt="image"></p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190531143501.png" alt="image"></p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190531143537.png" alt="image"></p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190531143600.png" alt="image"></p>
 <ul>
 <li>满足性能的可伸缩性. 也就是可集群性：</li>
 </ul>
