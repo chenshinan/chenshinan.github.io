@@ -99,7 +99,7 @@
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190525154623.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190525154828.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190524164840.png">
-<meta property="og:updated_time" content="2019-05-25T07:51:25.618Z">
+<meta property="og:updated_time" content="2019-06-20T07:28:28.758Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="用JMeter调试api并行测试">
 <meta name="twitter:description" content="由于后端服务创建issue采用的是synchronized同步方法（防止出现相同的issue编号，最大的编码会存在projectInfo中），由于service是单例的导致并行创建issue时需要等待同步，从而出现创建issue缓慢的问题，这里采用原子类AtomicLong来控制并发，提升并行时的创建速度 构建工具类，采用AtomicLong控制并发123456789101112131415161">
@@ -314,7 +314,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  606 字
+                  743 字
                 </span>
               
 
@@ -327,7 +327,7 @@
                   <span class="post-meta-item-text">阅读时长 </span>
                 
                 <span title="阅读时长">
-                  2 分钟
+                  3 分钟
                 </span>
               
             </div>
@@ -404,6 +404,8 @@
 <p>结论</p>
 </blockquote>
 <p>最后证明可以用原子类可以替代基于全局单例的<code>synchronized</code>，使用<code>AtomicLong</code>在不同项目间控制并行，以此来提升createIssue的并行速度</p>
+<h2 id="结合RedisAtomicLong"><a href="#结合RedisAtomicLong" class="headerlink" title="结合RedisAtomicLong"></a>结合RedisAtomicLong</h2><p>在微服务环境下多pod的情况中，AtomicLong缓存在一个服务中，则会出现issueNum重复的情况，因此要采用外部缓存，这里采用的是<code>RedisAtomicLong</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">IssueNumUtil</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> String REDIS_ISSUE_NUM_FLAG = <span class="string">"issueNum:"</span>;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> Long <span class="title">getNewIssueNum</span><span class="params">(Long projeceId)</span> </span>&#123;</span><br><span class="line">        RedisTemplate&lt;String, Object&gt; redisTemplate = ApplicationContextHelper.getSpringFactory().getBean(RedisUtil.class).getRedisTemplate();</span><br><span class="line">        RedisAtomicLong atomicLong = <span class="keyword">new</span> RedisAtomicLong(REDIS_ISSUE_NUM_FLAG + projeceId, redisTemplate.getConnectionFactory());</span><br><span class="line">        <span class="keyword">if</span> (atomicLong.get() == <span class="number">0</span>) &#123;</span><br><span class="line">            <span class="keyword">synchronized</span> (IssueNumUtil.class) &#123;</span><br><span class="line">                atomicLong = <span class="keyword">new</span> RedisAtomicLong(REDIS_ISSUE_NUM_FLAG + projeceId, redisTemplate.getConnectionFactory());</span><br><span class="line">                <span class="keyword">if</span> (atomicLong.get() == <span class="number">0</span>) &#123;</span><br><span class="line">                    ProjectInfoMapper projectInfoMapper = ApplicationContextHelper.getSpringFactory().getBean(ProjectInfoMapper.class);</span><br><span class="line">                    Long issueNum = projectInfoMapper.queryByProjectId(projeceId).getIssueMaxNum();</span><br><span class="line">                    atomicLong = <span class="keyword">new</span> RedisAtomicLong(REDIS_ISSUE_NUM_FLAG + projeceId, redisTemplate.getConnectionFactory(), issueNum);</span><br><span class="line">                &#125;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> atomicLong.incrementAndGet();</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="延伸：并行与并发"><a href="#延伸：并行与并发" class="headerlink" title="延伸：并行与并发"></a>延伸：并行与并发</h2><ul>
 <li><p>并发：并发的关键是你有处理多个任务的能力，不一定要同时</p>
 </li>
@@ -571,7 +573,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#构建工具类，采用AtomicLong控制并发"><span class="nav-number">1.</span> <span class="nav-text">构建工具类，采用AtomicLong控制并发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新projectInfo的issueMaxNum值"><span class="nav-number">2.</span> <span class="nav-text">更新projectInfo的issueMaxNum值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载与安装JMeter"><span class="nav-number">3.</span> <span class="nav-text">下载与安装JMeter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用JMeter进行并行测试"><span class="nav-number">4.</span> <span class="nav-text">用JMeter进行并行测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#延伸：并行与并发"><span class="nav-number">5.</span> <span class="nav-text">延伸：并行与并发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">6.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#构建工具类，采用AtomicLong控制并发"><span class="nav-number">1.</span> <span class="nav-text">构建工具类，采用AtomicLong控制并发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#更新projectInfo的issueMaxNum值"><span class="nav-number">2.</span> <span class="nav-text">更新projectInfo的issueMaxNum值</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#下载与安装JMeter"><span class="nav-number">3.</span> <span class="nav-text">下载与安装JMeter</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用JMeter进行并行测试"><span class="nav-number">4.</span> <span class="nav-text">用JMeter进行并行测试</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#结合RedisAtomicLong"><span class="nav-number">5.</span> <span class="nav-text">结合RedisAtomicLong</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#延伸：并行与并发"><span class="nav-number">6.</span> <span class="nav-text">延伸：并行与并发</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">7.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -612,7 +614,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共86.1k字</span>
+  <span class="post-count">博客全站共86.3k字</span>
 </div>
 
 
