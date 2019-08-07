@@ -1,0 +1,809 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是RocketChatRocket.Chat 是特性最丰富的 Slack 开源替代品之一。github仓库地址，主要功能：群组聊天，直接通信，私聊群，桌面通知，媒体嵌入，链接预览，文件上传，语音/视频 聊天，截图等等。Rocket.Chat 原生支持 Windows，Mac OS X ，Linux，iOS 和 Android 平台。Rocket.Chat 通过 hubot 集成了非常流行的服务">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RocketChat研究">
+<meta property="og:url" content="http://chenshinan.github.io/2019/08/10/RocketChat研究/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="什么是RocketChatRocket.Chat 是特性最丰富的 Slack 开源替代品之一。github仓库地址，主要功能：群组聊天，直接通信，私聊群，桌面通知，媒体嵌入，链接预览，文件上传，语音/视频 聊天，截图等等。Rocket.Chat 原生支持 Windows，Mac OS X ，Linux，iOS 和 Android 平台。Rocket.Chat 通过 hubot 集成了非常流行的服务">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190731104748.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190807193841.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190807194821.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190806144751.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190806150151.png">
+<meta property="og:updated_time" content="2019-08-07T11:56:52.390Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="RocketChat研究">
+<meta name="twitter:description" content="什么是RocketChatRocket.Chat 是特性最丰富的 Slack 开源替代品之一。github仓库地址，主要功能：群组聊天，直接通信，私聊群，桌面通知，媒体嵌入，链接预览，文件上传，语音/视频 聊天，截图等等。Rocket.Chat 原生支持 Windows，Mac OS X ，Linux，iOS 和 Android 平台。Rocket.Chat 通过 hubot 集成了非常流行的服务">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190731104748.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2019/08/10/RocketChat研究/">
+
+
+
+
+
+  <title>RocketChat研究 | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2019/08/10/RocketChat研究/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">RocketChat研究</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-08-10T19:54:47+08:00">
+                2019-08-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  2.1k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  10 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="什么是RocketChat"><a href="#什么是RocketChat" class="headerlink" title="什么是RocketChat"></a>什么是RocketChat</h2><p>Rocket.Chat 是特性最丰富的 Slack 开源替代品之一。<a href="https://github.com/RocketChat/Rocket.Chat" target="_blank" rel="noopener">github仓库地址</a>，主要功能：群组聊天，直接通信，私聊群，桌面通知，媒体嵌入，链接预览，文件上传，语音/视频 聊天，截图等等。Rocket.Chat 原生支持 Windows，Mac OS X ，Linux，iOS 和 Android 平台。Rocket.Chat 通过 hubot 集成了非常流行的服务，比如 GitHub，GitLab，Confluence，JIRA 等等</p>
+<h2 id="mendix的Buzz功能分析"><a href="#mendix的Buzz功能分析" class="headerlink" title="mendix的Buzz功能分析"></a>mendix的Buzz功能分析</h2><h3 id="主页聊天"><a href="#主页聊天" class="headerlink" title="主页聊天"></a>主页聊天</h3><ul>
+<li><p>发起投票、发消息</p>
+</li>
+<li><p>消息窗口可以分为组织层（全局）以及各个项目层（数据是相互隔离的，项目层窗口也看不到组织层窗口内容）</p>
+</li>
+<li><p>回复消息在相应消息的下面（类似论坛帖子）</p>
+</li>
+</ul>
+<h3 id="在具体页面聊天"><a href="#在具体页面聊天" class="headerlink" title="在具体页面聊天"></a>在具体页面聊天</h3><ul>
+<li><p>右侧显示聊天窗口，仅针对当前页面</p>
+</li>
+<li><p>该窗口的聊天信息在项目层的聊天窗口中展示，并带上链接（关联具体页面）</p>
+</li>
+</ul>
+<h2 id="RocketChat的功能分析"><a href="#RocketChat的功能分析" class="headerlink" title="RocketChat的功能分析"></a>RocketChat的功能分析</h2><h3 id="架构"><a href="#架构" class="headerlink" title="架构"></a>架构</h3><p>采用MongoDB做数据存储，用Meteor构建的js服务端，可以提供<code>GraphQL API</code>、<code>REST API</code>、<code>实时API</code>的请求方式</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190731104748.png" alt="image"></p>
+<h3 id="功能分析"><a href="#功能分析" class="headerlink" title="功能分析"></a>功能分析</h3><h4 id="频道"><a href="#频道" class="headerlink" title="频道"></a>频道</h4><blockquote>
+<p>可以设置频道的自定义字段</p>
+</blockquote>
+<ul>
+<li>公共频道：使用渠道进行对整个团队开放的对话。您的团队中的任何人都可以加入频道</li>
+</ul>
+<p>频道下面可以创建<strong>讨论</strong>（邀请部分成员），讨论的内容会显示在频道下</p>
+<ul>
+<li><p>私人团体：私人团体只能通过邀请加入</p>
+</li>
+<li><p>私聊：1对1</p>
+</li>
+</ul>
+<h2 id="用REST-API请求接口"><a href="#用REST-API请求接口" class="headerlink" title="用REST API请求接口"></a>用REST API请求接口</h2><ul>
+<li>注入maven依赖retrofit</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>com.squareup.retrofit2<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>retrofit<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>2.5.0<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>请求接口:RequestInterface</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> shinan.chen</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2019/3/3</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">RequestInterface</span> </span>&#123;</span><br><span class="line">    <span class="meta">@POST</span>(<span class="string">"api/v1/login"</span>)</span><br><span class="line">    <span class="function">Call&lt;String&gt; <span class="title">userLogin</span><span class="params">(@Body UserLogin userLogin)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GET</span>(<span class="string">"api/v1/channels.list"</span>)</span><br><span class="line">    <span class="function">Call&lt;String&gt; <span class="title">getChannelsList</span><span class="params">(@Query(<span class="string">"query"</span>)</span>String query)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@POST</span>(<span class="string">"api/v1/chat.sendMessage"</span>)</span><br><span class="line">    <span class="function">Call&lt;String&gt; <span class="title">sendMessage</span><span class="params">(@Body SendMessage message)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@POST</span>(<span class="string">"api/v1/chat.reportMessage"</span>)</span><br><span class="line">    <span class="function">Call&lt;String&gt; <span class="title">reportMessage</span><span class="params">(@Body ReportMessage message)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@GET</span>(<span class="string">"api/v1/channels.messages"</span>)</span><br><span class="line">    <span class="function">Call&lt;String&gt; <span class="title">getAllMessageByRid</span><span class="params">(@Query(<span class="string">"roomId"</span>)</span> String roomId)</span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@POST</span>(<span class="string">"api/v1/rooms.createDiscussion"</span>)</span><br><span class="line">    <span class="function">Call&lt;String&gt; <span class="title">createDiscussion</span><span class="params">(@Body Discussion discussion)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@POST</span>(<span class="string">"api/v1/users.create"</span>)</span><br><span class="line">    <span class="function">Call&lt;String&gt; <span class="title">createUser</span><span class="params">(@Body UserCreate create)</span></span>;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@POST</span>(<span class="string">"api/v1/channels.setCustomFields"</span>)</span><br><span class="line">    <span class="function">Call&lt;String&gt; <span class="title">channelSetCustomFields</span><span class="params">(@Body ChannelCustField channelCustField)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>请求拦截器增加token信息:AddCookiesInterceptor</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> shinan.chen</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2019/8/2</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">AddCookiesInterceptor</span> <span class="keyword">implements</span> <span class="title">Interceptor</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Response <span class="title">intercept</span><span class="params">(Chain chain)</span> <span class="keyword">throws</span> IOException </span>&#123;</span><br><span class="line">        Request.Builder builder = chain.request().newBuilder();</span><br><span class="line">        String authToken = RestMain.headerMap.get(<span class="string">"X-Auth-Token"</span>);</span><br><span class="line">        String userId = RestMain.headerMap.get(<span class="string">"X-User-Id"</span>);</span><br><span class="line">        <span class="keyword">if</span> (authToken != <span class="keyword">null</span>) &#123;</span><br><span class="line">            builder.addHeader(<span class="string">"X-Auth-Token"</span>, authToken);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">if</span> (userId != <span class="keyword">null</span>) &#123;</span><br><span class="line">            builder.addHeader(<span class="string">"X-User-Id"</span>, userId);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> chain.proceed(builder.build());</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>发送REST请求:RestMain</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> shinan.chen</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2019/7/31</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">RestMain</span> </span>&#123;</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">final</span> Logger LOGGER = LoggerFactory.getLogger(RestMain.class);</span><br><span class="line">    <span class="keyword">public</span> <span class="keyword">static</span> Map&lt;String, String&gt; headerMap = <span class="keyword">new</span> HashMap&lt;&gt;();</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        OkHttpClient client = <span class="keyword">new</span> OkHttpClient.Builder()</span><br><span class="line">                .addInterceptor(<span class="keyword">new</span> AddCookiesInterceptor())</span><br><span class="line">                .build();</span><br><span class="line">        <span class="comment">//创建 Retrofit 实例</span></span><br><span class="line">        Retrofit retrofit = <span class="keyword">new</span> Retrofit.Builder()</span><br><span class="line">                <span class="comment">//设置网络请求url地址</span></span><br><span class="line">                .baseUrl(<span class="string">"http://localhost:3000"</span>)</span><br><span class="line">                <span class="comment">//设置数据解析器</span></span><br><span class="line">                .addConverterFactory(ScalarsConverterFactory.create())</span><br><span class="line">                .addConverterFactory(GsonConverterFactory.create())</span><br><span class="line">                .client(client)</span><br><span class="line">                .build();</span><br><span class="line">        <span class="comment">//创建网络请求接口实例</span></span><br><span class="line">        RequestInterface requestInterface = retrofit.create(RequestInterface.class);</span><br><span class="line">        <span class="comment">//获取封装的请求</span></span><br><span class="line">        UserLogin login = <span class="keyword">new</span> UserLogin();</span><br><span class="line">        login.setUser(<span class="string">"admin"</span>);</span><br><span class="line">        login.setPassword(<span class="string">"csn000000"</span>);</span><br><span class="line">        Call&lt;String&gt; call = requestInterface.userLogin(login);</span><br><span class="line">        <span class="comment">//发送网络请求(同步)</span></span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Response&lt;String&gt; response = call.execute();</span><br><span class="line">            System.out.println(response.body());</span><br><span class="line">            headerMap.put(<span class="string">"X-Auth-Token"</span>, ((Map&lt;String, String&gt;) (<span class="keyword">new</span> Gson().fromJson(response.body(), Map.class).get(<span class="string">"data"</span>))).get(<span class="string">"authToken"</span>));</span><br><span class="line">            headerMap.put(<span class="string">"X-User-Id"</span>, ((Map&lt;String, String&gt;) (<span class="keyword">new</span> Gson().fromJson(response.body(), Map.class).get(<span class="string">"data"</span>))).get(<span class="string">"userId"</span>));</span><br><span class="line">            System.out.println(headerMap);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (IOException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//获取频道列表</span></span><br><span class="line">        Map&lt;String, Object&gt; channels = request(<span class="string">"获取频道列表"</span>, requestInterface.getChannelsList(<span class="keyword">null</span>));</span><br><span class="line">        String rid = (String) ((Map) ((List) channels.get(<span class="string">"channels"</span>)).get(<span class="number">0</span>)).get(<span class="string">"_id"</span>);</span><br><span class="line">        String rname = (String) ((Map) ((List) channels.get(<span class="string">"channels"</span>)).get(<span class="number">0</span>)).get(<span class="string">"name"</span>);</span><br><span class="line">        <span class="comment">//发送聊天信息</span></span><br><span class="line">        Map&lt;String, Object&gt; sendMessage = request(<span class="string">"发送聊天信息"</span>, requestInterface.sendMessage(<span class="keyword">new</span> SendMessage(SendMessageParam.forSendMessage(<span class="keyword">null</span>, <span class="string">"from java"</span>, rid))));</span><br><span class="line">        String mid = (String) ((Map) sendMessage.get(<span class="string">"message"</span>)).get(<span class="string">"_id"</span>);</span><br><span class="line">        <span class="comment">//举报聊天信息</span></span><br><span class="line">        Map&lt;String, Object&gt; reportMessage = request(<span class="string">"举报聊天信息"</span>, requestInterface.reportMessage(<span class="keyword">new</span> ReportMessage(mid, <span class="string">"report java"</span>)));</span><br><span class="line">        <span class="comment">//根据房间id获取所有聊天信息</span></span><br><span class="line">        Map&lt;String, Object&gt; allMessage = request(<span class="string">"根据房间id获取所有聊天信息"</span>, requestInterface.getAllMessageByRid(rid));</span><br><span class="line">        <span class="comment">//创建讨论</span></span><br><span class="line">        Map&lt;String, Object&gt; createDiscussion = request(<span class="string">"创建讨论"</span>, requestInterface.createDiscussion(<span class="keyword">new</span> Discussion(rid, <span class="string">"新讨论"</span>)));</span><br><span class="line">        <span class="comment">//创建用户</span></span><br><span class="line">        Map&lt;String, Object&gt; createUser = request(<span class="string">"创建用户"</span>, requestInterface.createUser(<span class="keyword">new</span> UserCreate(<span class="string">"cstt"</span>, <span class="string">"574466609@qq.com"</span>, <span class="string">"csn000000"</span>, <span class="string">"cstt"</span>)));</span><br><span class="line">        <span class="comment">//给房间添加自定义字段</span></span><br><span class="line">        ChannelCustField channelCustField = <span class="keyword">new</span> ChannelCustField();</span><br><span class="line">        channelCustField.setRoomId(rid);</span><br><span class="line">        channelCustField.setRoomName(rname);</span><br><span class="line">        Map&lt;String, String&gt; cusFieldMap = <span class="keyword">new</span> HashMap&lt;&gt;(<span class="number">2</span>);</span><br><span class="line">        cusFieldMap.put(<span class="string">"organizationId"</span>, <span class="string">"1"</span>);</span><br><span class="line">        channelCustField.setCustomFields(cusFieldMap);</span><br><span class="line">        Map&lt;String, Object&gt; channelSetCustomFields = request(<span class="string">"给房间添加自定义字段"</span>, requestInterface.channelSetCustomFields(channelCustField));</span><br><span class="line">        <span class="comment">//获取频道列表，根据自定义搜索</span></span><br><span class="line">        Map&lt;String, Object&gt; channelsBySearch = request(<span class="string">"获取频道列表，根据自定义搜索"</span>, requestInterface.getChannelsList(<span class="string">"&#123; \"customFields.organizationId\": &#123; \"$eq\": \"1\" &#125; &#125;"</span>));</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">static</span> Map&lt;String, Object&gt; <span class="title">request</span><span class="params">(String log, Call&lt;String&gt; call)</span> </span>&#123;</span><br><span class="line">        System.out.println(log);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Response&lt;String&gt; response = call.execute();</span><br><span class="line">            System.out.println(response.body());</span><br><span class="line">            <span class="keyword">return</span> Json2Map.json2Map(response.body());</span><br><span class="line">        &#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">            LOGGER.error(e.getMessage());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>运行结果</li>
+</ul>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190807193841.png" alt="image"></p>
+<h2 id="用实时API请求接口（websocket）"><a href="#用实时API请求接口（websocket）" class="headerlink" title="用实时API请求接口（websocket）"></a>用实时API请求接口（websocket）</h2><ul>
+<li>注入maven依赖java-websocket客户端</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.java-websocket<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>Java-WebSocket<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">version</span>&gt;</span>1.3.8<span class="tag">&lt;/<span class="name">version</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<ul>
+<li>自定义websocket客户端对象:MyWebSocketClient</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> shinan.chen</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2019/8/1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MyWebSocketClient</span> <span class="keyword">extends</span> <span class="title">WebSocketClient</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(MyWebSocketClient.class);</span><br><span class="line"></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">MyWebSocketClient</span><span class="params">(URI serverUri)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">super</span>(serverUri);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onOpen</span><span class="params">(ServerHandshake arg0)</span> </span>&#123;</span><br><span class="line">        logger.info(<span class="string">"------ MyWebSocket onOpen ------"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onClose</span><span class="params">(<span class="keyword">int</span> arg0, String arg1, <span class="keyword">boolean</span> arg2)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        logger.info(<span class="string">"------ MyWebSocket onClose ------"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onError</span><span class="params">(Exception arg0)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        logger.info(<span class="string">"------ MyWebSocket onError ------"</span>);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(String arg0)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// TODO Auto-generated method stub</span></span><br><span class="line">        logger.info(<span class="string">"-------- 接收到服务端数据： "</span> + arg0 + <span class="string">"--------"</span>);</span><br><span class="line">        <span class="keyword">if</span>(arg0.equals(<span class="string">"&#123;\"msg\":\"ping\"&#125;"</span>))&#123;</span><br><span class="line">            logger.info(<span class="string">"-------- 客户端发送数据： &#123;\"msg\":\"pong\"&#125;--------"</span>);</span><br><span class="line">            <span class="keyword">this</span>.send(<span class="string">"&#123;\"msg\":\"pong\"&#125;"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>建立websocket连接:SocketMain</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br><span class="line">83</span><br><span class="line">84</span><br><span class="line">85</span><br><span class="line">86</span><br><span class="line">87</span><br><span class="line">88</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">/**</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@author</span> shinan.chen</span></span><br><span class="line"><span class="comment"> * <span class="doctag">@since</span> 2019/8/1</span></span><br><span class="line"><span class="comment"> */</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">SocketMain</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">        MyWebSocketClient myClient = <span class="keyword">null</span>;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            myClient = <span class="keyword">new</span> MyWebSocketClient(<span class="keyword">new</span> URI(<span class="string">"ws://localhost:3000/websocket"</span>));</span><br><span class="line">        &#125; <span class="keyword">catch</span> (URISyntaxException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        myClient.connect();</span><br><span class="line">        <span class="keyword">while</span> (!myClient.getReadyState().equals(WebSocket.READYSTATE.OPEN)) &#123;</span><br><span class="line">            System.out.println(<span class="string">"还没有打开"</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        System.out.println(<span class="string">"打开了"</span>);</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            Thread.sleep(<span class="number">1000</span>);</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">            e.printStackTrace();</span><br><span class="line">        &#125;</span><br><span class="line">        myClient.send(<span class="string">"&#123;\n"</span> +</span><br><span class="line">                <span class="string">"\t\"msg\": \"connect\",\n"</span> +</span><br><span class="line">                <span class="string">"\t\"version\": \"1\",\n"</span> +</span><br><span class="line">                <span class="string">"\t\"support\": [\"1\", \"pre2\", \"pre1\"]\n"</span> +</span><br><span class="line">                <span class="string">"&#125;"</span>);</span><br><span class="line">        <span class="comment">//登陆</span></span><br><span class="line">        myClient.send(<span class="string">"&#123;\n"</span> +</span><br><span class="line">                <span class="string">"    \"msg\": \"method\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"method\": \"login\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"id\":\""</span>+ UUID.randomUUID().toString()+<span class="string">"\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"params\":[\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"user\": &#123;         \"username\":\"cstt\" &#125;,\n"</span> +</span><br><span class="line">                <span class="string">"            \"password\": &#123;\n"</span> +</span><br><span class="line">                <span class="string">"                \"digest\":\"6237c385db8f889e133c86844472f606051e1b3eebe6f08e1ec4b5a9ff73b3ee\",\n"</span> +</span><br><span class="line">                <span class="string">"                \"algorithm\":\"sha-256\"\n"</span> +</span><br><span class="line">                <span class="string">"            &#125;\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;\n"</span> +</span><br><span class="line">                <span class="string">"    ]\n"</span> +</span><br><span class="line">                <span class="string">"&#125;"</span>);</span><br><span class="line">        <span class="comment">//获取历史记录</span></span><br><span class="line">        myClient.send(<span class="string">"&#123;\n"</span> +</span><br><span class="line">                <span class="string">"    \"msg\": \"method\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"method\": \"loadHistory\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"id\": \""</span>+ UUID.randomUUID().toString()+<span class="string">"\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"params\": [ \"GENERAL\", null, 50, &#123; \"$date\": 1480377601 &#125; ]\n"</span> +</span><br><span class="line">                <span class="string">"&#125;"</span>);</span><br><span class="line">        <span class="comment">//获取房间消息流</span></span><br><span class="line">        myClient.send(<span class="string">"&#123;\n"</span> +</span><br><span class="line">                <span class="string">"    \"msg\": \"sub\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"id\": \""</span>+ UUID.randomUUID().toString()+<span class="string">"\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"name\": \"stream-room-messages\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"params\":[\n"</span> +</span><br><span class="line">                <span class="string">"        \"GENERAL\",\n"</span> +</span><br><span class="line">                <span class="string">"        false\n"</span> +</span><br><span class="line">                <span class="string">"    ]\n"</span> +</span><br><span class="line">                <span class="string">"&#125;"</span>);</span><br><span class="line">        <span class="comment">//发送消息</span></span><br><span class="line">        myClient.send(<span class="string">"&#123;\n"</span> +</span><br><span class="line">                <span class="string">"    \"msg\": \"method\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"method\": \"sendMessage\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"id\": \""</span>+ UUID.randomUUID().toString()+<span class="string">"\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"params\": [\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"_id\": \"100\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"rid\": \"GENERAL\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"msg\": \"Hello World!\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;\n"</span> +</span><br><span class="line">                <span class="string">"    ]\n"</span> +</span><br><span class="line">                <span class="string">"&#125;"</span>);</span><br><span class="line">        <span class="comment">//回复消息</span></span><br><span class="line">        myClient.send(<span class="string">"&#123;\n"</span> +</span><br><span class="line">                <span class="string">"    \"msg\": \"method\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"method\": \"sendMessage\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"id\": \""</span>+ UUID.randomUUID().toString()+<span class="string">"\",\n"</span> +</span><br><span class="line">                <span class="string">"    \"params\": [\n"</span> +</span><br><span class="line">                <span class="string">"        &#123;\n"</span> +</span><br><span class="line">                <span class="string">"            \"_id\": \""</span>+ UUID.randomUUID().toString()+<span class="string">"\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"rid\": \"GENERAL\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"tmid\": \"100\",\n"</span> +</span><br><span class="line">                <span class="string">"            \"msg\": \"reply message\"\n"</span> +</span><br><span class="line">                <span class="string">"        &#125;\n"</span> +</span><br><span class="line">                <span class="string">"    ]\n"</span> +</span><br><span class="line">                <span class="string">"&#125;"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<ul>
+<li>运行结果</li>
+</ul>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190807194821.png" alt="image"></p>
+<h2 id="考虑是否用RocketChat实现协作连接"><a href="#考虑是否用RocketChat实现协作连接" class="headerlink" title="考虑是否用RocketChat实现协作连接"></a>考虑是否用RocketChat实现协作连接</h2><h3 id="Choerodon整合RocketChat带来的问题"><a href="#Choerodon整合RocketChat带来的问题" class="headerlink" title="Choerodon整合RocketChat带来的问题"></a>Choerodon整合RocketChat带来的问题</h3><h4 id="用户数据"><a href="#用户数据" class="headerlink" title="用户数据"></a>用户数据</h4><p>操作RocketChat必须要有用户授权登陆，如果choerodon通过<code>实时API/RestAPI</code>去调用RocketChat的数据需要先调用登陆api获取token</p>
+<ul>
+<li><p>如果采用LDAP，那就需要用户同步，这样就担心会和xwiki一样，带来问题</p>
+</li>
+<li><p>如果采用LDAP，登陆的过程如何整合在choerodon中【如果要在前端建立websocket连接，需要用户密码】</p>
+</li>
+<li><p>如果不采用LDAP，发消息的用户需要在使用协作连接时后端自动进行rocketChat的用户创建</p>
+</li>
+</ul>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190806144751.png" alt="image"></p>
+<h4 id="websocket交互"><a href="#websocket交互" class="headerlink" title="websocket交互"></a>websocket交互</h4><p>RocketChat自己的前端是通过建立websocket建立实时数据通道</p>
+<ul>
+<li><p>如果想在choerodon这边做一层封装的话，就得在后端连接RocketChat服务端，然后再做一层webSocket</p>
+</li>
+<li><p>还可以获取数据的不做封装，发送数据的在后端做一层封装（做额外动作）</p>
+</li>
+</ul>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190806150151.png" alt="image"></p>
+<h4 id="拦截接口做通知封装"><a href="#拦截接口做通知封装" class="headerlink" title="拦截接口做通知封装"></a>拦截接口做通知封装</h4><p>整合在choerodon中，用户通知等则需要做一层接口拦截，即需要封装rocketchat的请求</p>
+<h4 id="服务器资源消耗"><a href="#服务器资源消耗" class="headerlink" title="服务器资源消耗"></a>服务器资源消耗</h4><p>需要额外启动RocketChat服务端+MongoDB</p>
+<h3 id="Choerodon整合RocketChat带来的好处"><a href="#Choerodon整合RocketChat带来的好处" class="headerlink" title="Choerodon整合RocketChat带来的好处"></a>Choerodon整合RocketChat带来的好处</h3><h4 id="存储"><a href="#存储" class="headerlink" title="存储"></a>存储</h4><p>相当于只是用RocketChat做一层数据存储，以及增删改查的基础功能，其他都需要choerodon这边做封装</p>
+<h4 id="机器人"><a href="#机器人" class="headerlink" title="机器人"></a>机器人</h4><p>可以用RocketChat做机器人自动回复等功能</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://rocket.chat/docs/developer-guides/" target="_blank" rel="noopener">RocketChat官方开发手册</a></li>
+<li><a href="https://blog.csdn.net/qq_39548592/article/details/83379282" target="_blank" rel="noopener">mongoDB查询条件运算符</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/07/07/基于ElasticSearch的全文搜索/" rel="next" title="基于ElasticSearch的全文搜索">
+                <i class="fa fa-chevron-left"></i> 基于ElasticSearch的全文搜索
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是RocketChat"><span class="nav-number">1.</span> <span class="nav-text">什么是RocketChat</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mendix的Buzz功能分析"><span class="nav-number">2.</span> <span class="nav-text">mendix的Buzz功能分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#主页聊天"><span class="nav-number">2.1.</span> <span class="nav-text">主页聊天</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在具体页面聊天"><span class="nav-number">2.2.</span> <span class="nav-text">在具体页面聊天</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#RocketChat的功能分析"><span class="nav-number">3.</span> <span class="nav-text">RocketChat的功能分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#架构"><span class="nav-number">3.1.</span> <span class="nav-text">架构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#功能分析"><span class="nav-number">3.2.</span> <span class="nav-text">功能分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#频道"><span class="nav-number">3.2.1.</span> <span class="nav-text">频道</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用REST-API请求接口"><span class="nav-number">4.</span> <span class="nav-text">用REST API请求接口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#用实时API请求接口（websocket）"><span class="nav-number">5.</span> <span class="nav-text">用实时API请求接口（websocket）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#考虑是否用RocketChat实现协作连接"><span class="nav-number">6.</span> <span class="nav-text">考虑是否用RocketChat实现协作连接</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Choerodon整合RocketChat带来的问题"><span class="nav-number">6.1.</span> <span class="nav-text">Choerodon整合RocketChat带来的问题</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#用户数据"><span class="nav-number">6.1.1.</span> <span class="nav-text">用户数据</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#websocket交互"><span class="nav-number">6.1.2.</span> <span class="nav-text">websocket交互</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#拦截接口做通知封装"><span class="nav-number">6.1.3.</span> <span class="nav-text">拦截接口做通知封装</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#服务器资源消耗"><span class="nav-number">6.1.4.</span> <span class="nav-text">服务器资源消耗</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Choerodon整合RocketChat带来的好处"><span class="nav-number">6.2.</span> <span class="nav-text">Choerodon整合RocketChat带来的好处</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#存储"><span class="nav-number">6.2.1.</span> <span class="nav-text">存储</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#机器人"><span class="nav-number">6.2.2.</span> <span class="nav-text">机器人</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">7.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共94.4k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
