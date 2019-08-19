@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="概念List是一个接口，它继承于Collection的接口。它代表着有序的队列 List的架构图 ArrayList 继承关系：ArrayList -&amp;gt; AbstractList 实现 List接口  ArrayList 是一个数组队列，相当于 动态数组。与Java中的数组相比，它的容量能动态增长。不是线程安全的。ArrayList包含了两个重要的对象：elementData(Object[">
+<meta name="description" content="概念List是一个接口，它继承于Collection的接口。它代表着有序的队列 List相关实现类的源码解析（JDK1.8）List的架构图 ArrayList 继承关系：ArrayList -&amp;gt; AbstractList 实现 List接口  ArrayList 是一个数组队列，相当于 动态数组。与Java中的数组相比，它的容量能动态增长。不是线程安全的。ArrayList包含了两个重要的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="List的相关实现类的源码解析（JDK1.8）">
 <meta property="og:url" content="http://chenshinan.github.io/2018/09/22/List的相关实现类的源码解析/index.html">
 <meta property="og:site_name" content="大艺术家_SN">
-<meta property="og:description" content="概念List是一个接口，它继承于Collection的接口。它代表着有序的队列 List的架构图 ArrayList 继承关系：ArrayList -&amp;gt; AbstractList 实现 List接口  ArrayList 是一个数组队列，相当于 动态数组。与Java中的数组相比，它的容量能动态增长。不是线程安全的。ArrayList包含了两个重要的对象：elementData(Object[">
+<meta property="og:description" content="概念List是一个接口，它继承于Collection的接口。它代表着有序的队列 List相关实现类的源码解析（JDK1.8）List的架构图 ArrayList 继承关系：ArrayList -&amp;gt; AbstractList 实现 List接口  ArrayList 是一个数组队列，相当于 动态数组。与Java中的数组相比，它的容量能动态增长。不是线程安全的。ArrayList包含了两个重要的">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190114172003.png">
-<meta property="og:updated_time" content="2019-01-14T09:35:12.824Z">
+<meta property="og:updated_time" content="2019-08-19T15:31:43.826Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="List的相关实现类的源码解析（JDK1.8）">
-<meta name="twitter:description" content="概念List是一个接口，它继承于Collection的接口。它代表着有序的队列 List的架构图 ArrayList 继承关系：ArrayList -&amp;gt; AbstractList 实现 List接口  ArrayList 是一个数组队列，相当于 动态数组。与Java中的数组相比，它的容量能动态增长。不是线程安全的。ArrayList包含了两个重要的对象：elementData(Object[">
+<meta name="twitter:description" content="概念List是一个接口，它继承于Collection的接口。它代表着有序的队列 List相关实现类的源码解析（JDK1.8）List的架构图 ArrayList 继承关系：ArrayList -&amp;gt; AbstractList 实现 List接口  ArrayList 是一个数组队列，相当于 动态数组。与Java中的数组相比，它的容量能动态增长。不是线程安全的。ArrayList包含了两个重要的">
 <meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190114172003.png">
 
 
@@ -302,7 +302,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  1.1k 字
+                  1.3k 字
                 </span>
               
 
@@ -315,7 +315,7 @@
                   <span class="post-meta-item-text">阅读时长 </span>
                 
                 <span title="阅读时长">
-                  4 分钟
+                  5 分钟
                 </span>
               
             </div>
@@ -337,7 +337,7 @@
 
       
         <h2 id="概念"><a href="#概念" class="headerlink" title="概念"></a>概念</h2><p>List是一个接口，它继承于Collection的接口。它代表着有序的队列</p>
-<h2 id="List的架构图"><a href="#List的架构图" class="headerlink" title="List的架构图"></a>List的架构图</h2><p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190114172003.png" alt="List的结构图"></p>
+<h1 id="List相关实现类的源码解析（JDK1-8）"><a href="#List相关实现类的源码解析（JDK1-8）" class="headerlink" title="List相关实现类的源码解析（JDK1.8）"></a>List相关实现类的源码解析（JDK1.8）</h1><h2 id="List的架构图"><a href="#List的架构图" class="headerlink" title="List的架构图"></a>List的架构图</h2><p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190114172003.png" alt="List的结构图"></p>
 <h2 id="ArrayList"><a href="#ArrayList" class="headerlink" title="ArrayList"></a>ArrayList</h2><ul>
 <li><p>继承关系：ArrayList -&gt; AbstractList 实现 List接口</p>
 </li>
@@ -348,6 +348,15 @@
 <li><p>转数组：Integer[] newText = v.toArray(new Integer[v.size()])</p>
 </li>
 </ul>
+<h2 id="CopyOnWriteArrayList"><a href="#CopyOnWriteArrayList" class="headerlink" title="CopyOnWriteArrayList"></a>CopyOnWriteArrayList</h2><ul>
+<li><p>内部持有一个ReentrantLock lock = new ReentrantLock()</p>
+</li>
+<li><p>底层是用volatile transient声明的数组array</p>
+</li>
+<li><p>读写分离，写时复制出一个新的数组，完成插入、修改或者移除操作后将新数组赋值给array</p>
+</li>
+</ul>
+<p>ArrayList是非线程安全的，内部的增删改查都没有加锁。而CopyOnWriteArrayList只是在<strong>增删改上加锁，但是读不加锁</strong>。在增删改操作时会创建一个新的数组，操作完成之后再赋给原来的引用，这样高并发读时就不会异常。所以适用于<strong>读多写少的并发情况</strong></p>
 <h2 id="Fail-Fast机制"><a href="#Fail-Fast机制" class="headerlink" title="Fail-Fast机制"></a>Fail-Fast机制</h2><ul>
 <li><p>fail-fast 机制是java集合(Collection)中的一种错误机制。当多个线程对同一个集合的内容进行操作时，就可能会产生fail-fast事件。</p>
 </li>
@@ -376,7 +385,7 @@
 </li>
 <li><p>Vector本质是数组</p>
 </li>
-<li><p>和ArrayList不同，Vector中的操作是线程安全的</p>
+<li><p>和ArrayList不同，Vector中的操作是线程安全的，增删改查方法都加了synchronized，保证同步</p>
 </li>
 </ul>
 <h2 id="Stack：栈"><a href="#Stack：栈" class="headerlink" title="Stack：栈"></a>Stack：栈</h2><ul>
@@ -418,9 +427,9 @@
 </li>
 </ul>
 <h2 id="总结⭐️"><a href="#总结⭐️" class="headerlink" title="总结⭐️"></a>总结⭐️</h2><ul>
-<li><p>对于需要快速插入，删除元素，应该使用LinkedList。</p>
+<li><p>对于需要快速插入，删除元素，应该使用LinkedList（本质是链表）。</p>
 </li>
-<li><p>对于需要快速随机访问元素，应该使用ArrayList。</p>
+<li><p>对于需要快速随机访问元素，应该使用ArrayList（本质是数组）。</p>
 </li>
 <li><p>对于“单线程环境” 或者 “多线程环境，但List仅仅只会被单个线程操作”，此时应该使用非同步的类(如ArrayList、LinkedList)。</p>
 </li>
@@ -593,7 +602,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#List的架构图"><span class="nav-number">2.</span> <span class="nav-text">List的架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayList"><span class="nav-number">3.</span> <span class="nav-text">ArrayList</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fail-Fast机制"><span class="nav-number">4.</span> <span class="nav-text">Fail-Fast机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinkedList"><span class="nav-number">5.</span> <span class="nav-text">LinkedList</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vector：矢量队列（已经被淘汰，很少用到）"><span class="nav-number">6.</span> <span class="nav-text">Vector：矢量队列（已经被淘汰，很少用到）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stack：栈"><span class="nav-number">7.</span> <span class="nav-text">Stack：栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他知识点"><span class="nav-number">8.</span> <span class="nav-text">其他知识点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结⭐️"><span class="nav-number">9.</span> <span class="nav-text">总结⭐️</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">10.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#概念"><span class="nav-number">1.</span> <span class="nav-text">概念</span></a></li></ol><li class="nav-item nav-level-1"><a class="nav-link" href="#List相关实现类的源码解析（JDK1-8）"><span class="nav-number"></span> <span class="nav-text">List相关实现类的源码解析（JDK1.8）</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#List的架构图"><span class="nav-number">1.</span> <span class="nav-text">List的架构图</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ArrayList"><span class="nav-number">2.</span> <span class="nav-text">ArrayList</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CopyOnWriteArrayList"><span class="nav-number">3.</span> <span class="nav-text">CopyOnWriteArrayList</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Fail-Fast机制"><span class="nav-number">4.</span> <span class="nav-text">Fail-Fast机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#LinkedList"><span class="nav-number">5.</span> <span class="nav-text">LinkedList</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Vector：矢量队列（已经被淘汰，很少用到）"><span class="nav-number">6.</span> <span class="nav-text">Vector：矢量队列（已经被淘汰，很少用到）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Stack：栈"><span class="nav-number">7.</span> <span class="nav-text">Stack：栈</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他知识点"><span class="nav-number">8.</span> <span class="nav-text">其他知识点</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结⭐️"><span class="nav-number">9.</span> <span class="nav-text">总结⭐️</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">10.</span> <span class="nav-text">参考文献</span></a></li></ol></li></div>
             
 
           </div>
@@ -634,7 +643,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共94.8k字</span>
+  <span class="post-count">博客全站共95k字</span>
 </div>
 
 
