@@ -87,7 +87,7 @@
 <meta property="og:description" content="概念Map是一种把键对象和值对象映射的集合，它的每一个元素都包含一对键对象和值对象。Map没有继承于Collection接口 从Map集合中检索元素时，只要给出键对象，就会返回对应的值对象 Map的架构图 Map相关 Map：不包含重复键的映射集合  entrySet()用于返回键-值集的Set集合  keySet()用于返回键集的Set集合  values()用户返回值集的Collection集">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190213200918.png">
-<meta property="og:updated_time" content="2019-02-16T08:01:40.602Z">
+<meta property="og:updated_time" content="2019-08-20T01:27:39.505Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Map相关实现类的源码解析（JDK1.8）">
 <meta name="twitter:description" content="概念Map是一种把键对象和值对象映射的集合，它的每一个元素都包含一对键对象和值对象。Map没有继承于Collection接口 从Map集合中检索元素时，只要给出键对象，就会返回对应的值对象 Map的架构图 Map相关 Map：不包含重复键的映射集合  entrySet()用于返回键-值集的Set集合  keySet()用于返回键集的Set集合  values()用户返回值集的Collection集">
@@ -302,7 +302,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  3.5k 字
+                  3.6k 字
                 </span>
               
 
@@ -315,7 +315,7 @@
                   <span class="post-meta-item-text">阅读时长 </span>
                 
                 <span title="阅读时长">
-                  12 分钟
+                  13 分钟
                 </span>
               
             </div>
@@ -384,6 +384,10 @@
 <li>扩容机制</li>
 </ul>
 <p>当数组中的数据数量达到阈值时，触发扩容，容量扩大一倍，重新分布原数组中的数据，相对消耗性能。在常规构造器中，没有为数组table分配内存空间（有一个入参为指定Map的构造器例外），而是在执行put操作的时候才真正构建table数组。<code>扩容是一个特别耗性能的操作，所以当程序员在使用HashMap的时候，估算map的大小，初始化的时候给一个大致的数值，避免map进行频繁的扩容</code></p>
+<blockquote>
+<p>注意：HashMap在高并发的环境下可能造成死锁的原因</p>
+</blockquote>
+<p>HashMap在进行扩容操作时，会执行<code>rehash()</code>，对内部的数据进行重新分布。而在rehash的过程中进行了put操作，put最后会执行<code>transfer()</code>，导致的死锁问题就出在这个<code>transfer()</code>函数上。transfer会导致指针出现<code>2-&gt;1/1-&gt;2</code>的情况，最后但执行get操作时，就会出现死锁</p>
 <ul>
 <li>hashCode</li>
 </ul>
@@ -731,7 +735,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共95k字</span>
+  <span class="post-count">博客全站共95.1k字</span>
 </div>
 
 
