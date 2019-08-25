@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="配置状态机状态 分层状态  withStates() 配置状态 states状态列表   可以使用多个withStates进行parent分层  配置区域:当相同的分层状态机具有多组状态时，每个都具有初始状态，就产生正交状态，多个独立区域  123456789101112131415.withStates()    .initial(States2.S1)    .state(States2.S2">
+<meta property="og:type" content="article">
+<meta property="og:title" content="SpringStateMachine学习">
+<meta property="og:url" content="http://chenshinan.github.io/2018/10/10/SpringStateMachine学习/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="配置状态机状态 分层状态  withStates() 配置状态 states状态列表   可以使用多个withStates进行parent分层  配置区域:当相同的分层状态机具有多组状态时，每个都具有初始状态，就产生正交状态，多个独立区域  123456789101112131415.withStates()    .initial(States2.S1)    .state(States2.S2">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2019-08-25T10:50:34.712Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="SpringStateMachine学习">
+<meta name="twitter:description" content="配置状态机状态 分层状态  withStates() 配置状态 states状态列表   可以使用多个withStates进行parent分层  配置区域:当相同的分层状态机具有多组状态时，每个都具有初始状态，就产生正交状态，多个独立区域  123456789101112131415.withStates()    .initial(States2.S1)    .state(States2.S2">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2018/10/10/SpringStateMachine学习/">
+
+
+
+
+
+  <title>SpringStateMachine学习 | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2018/10/10/SpringStateMachine学习/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">SpringStateMachine学习</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-10T18:50:00+08:00">
+                2018-10-10
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  2.7k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  10 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="配置状态机"><a href="#配置状态机" class="headerlink" title="配置状态机"></a>配置状态机</h2><h3 id="状态"><a href="#状态" class="headerlink" title="状态"></a>状态</h3><ul>
+<li><p>分层状态</p>
+</li>
+<li><p>withStates() 配置状态 states状态列表</p>
+</li>
+</ul>
+<p>可以使用多个withStates进行parent分层</p>
+<ul>
+<li>配置区域:当相同的分层状态机具有多组状态时，每个都具有初始状态，就产生正交状态，多个独立区域</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">.withStates()</span><br><span class="line">    .initial(States2.S1)</span><br><span class="line">    .state(States2.S2)</span><br><span class="line">    .and()</span><br><span class="line">    .withStates()</span><br><span class="line">        .parent(States2.S2)</span><br><span class="line">        .initial(States2.S2I)</span><br><span class="line">        .state(States2.S21)</span><br><span class="line">        .end(States2.S2F)</span><br><span class="line">        .and()</span><br><span class="line">    .withStates()</span><br><span class="line">        .parent(States2.S2)</span><br><span class="line">        .initial(States2.S3I)</span><br><span class="line">        .state(States2.S31)</span><br><span class="line">        .end(States2.S3F);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>配置转换：三种不同类型的转换external， internal和local</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">.withExternal()</span><br><span class="line">    .source(States.S1).target(States.S2)</span><br><span class="line">    .event(Events.E1)</span><br><span class="line">    .and()</span><br><span class="line">.withInternal()</span><br><span class="line">    .source(States.S2)</span><br><span class="line">    .event(Events.E2)</span><br><span class="line">    .and()</span><br><span class="line">.withLocal()</span><br><span class="line">    .source(States.S2).target(States.S3)</span><br><span class="line">    .event(Events.E3);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>END 标记为结束状态 .end(States.SF)</li>
+</ul>
+<p>只需使用end()方法将特定状态标记为结束状态。这可以在每个单独的子机器或区域最多进行一次</p>
+<ul>
+<li>？history 历史状态 .history(States3.SH, History.SHALLOW);</li>
+</ul>
+<p>可以为每个单独的状态机定义历史状态一次。你需要选择其状态标识，History.SHALLOW或 History.DEEP分别</p>
+<ul>
+<li><p>withChoice() 根据警卫结果选择状态</p>
+</li>
+<li><p>？withJunction() 连接状态</p>
+</li>
+<li><p>？withFork() 叉状态</p>
+</li>
+<li><p>？withJoin() 加入状态：需要在两个状态和转换中定义连接才能正常工作</p>
+</li>
+<li><p>？Configuring Common Settings 配置通用设置</p>
+</li>
+<li><p>withEntry\withExit进入和退出，对进入和退出的过程设置更多的节点</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在状态配置中</span></span><br><span class="line">.entry(<span class="string">"S2ENTRY"</span>)</span><br><span class="line">.exit(<span class="string">"S2EXIT"</span>)</span><br><span class="line"><span class="comment">//在转换中</span></span><br><span class="line">.withEntry()</span><br><span class="line">.source(<span class="string">"S2ENTRY"</span>).target(<span class="string">"S22"</span>)</span><br><span class="line">.and()</span><br><span class="line">.withExit()</span><br><span class="line">.source(<span class="string">"S2EXIT"</span>).target(<span class="string">"S3"</span>);</span><br></pre></td></tr></table></figure>
+<ul>
+<li>withModel() 配置模型:StateMachineModelFactory,通过自定义工厂模型</li>
+</ul>
+<h4 id="状态机ID-状态机实例的标志"><a href="#状态机ID-状态机实例的标志" class="headerlink" title="状态机ID 状态机实例的标志"></a>状态机ID 状态机实例的标志</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">.withConfiguration()</span><br><span class="line">    .machineId(<span class="string">"mymachine"</span>);</span><br></pre></td></tr></table></figure>
+<h4 id="状态机工厂EnableStateMachineFactory：工厂的配置通过config，编译限制"><a href="#状态机工厂EnableStateMachineFactory：工厂的配置通过config，编译限制" class="headerlink" title="状态机工厂EnableStateMachineFactory：工厂的配置通过config，编译限制"></a>状态机工厂EnableStateMachineFactory：工厂的配置通过config，编译限制</h4><p>工厂的当前限制是所有动作和保护它与创建的状态机相关联将共享相同的实例</p>
+<h4 id="构建器模式StateMachineBuilder-builder：此构建器模式可用于在Spring应用程序上下文之外构建完全动态的状态机"><a href="#构建器模式StateMachineBuilder-builder：此构建器模式可用于在Spring应用程序上下文之外构建完全动态的状态机" class="headerlink" title="构建器模式StateMachineBuilder.builder：此构建器模式可用于在Spring应用程序上下文之外构建完全动态的状态机"></a>构建器模式StateMachineBuilder.builder：此构建器模式可用于在Spring应用程序上下文之外构建完全动态的状态机</h4><p><code>目前builder.configureStates()，builder.configureTransitions() 和builder.configureConfiguration()接口方法不能被链接在一起意味着生成器方法需要单独调用。</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="function">StateMachine&lt;String, String&gt; <span class="title">buildMachine2</span><span class="params">()</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">    Builder&lt;String, String&gt; builder = StateMachineBuilder.builder();</span><br><span class="line">    builder.configureConfiguration()</span><br><span class="line">        .withConfiguration()</span><br><span class="line">            .autoStartup(<span class="keyword">false</span>)</span><br><span class="line">            .beanFactory(<span class="keyword">null</span>)</span><br><span class="line">            .taskExecutor(<span class="keyword">null</span>)</span><br><span class="line">            .taskScheduler(<span class="keyword">null</span>)</span><br><span class="line">            .listener(<span class="keyword">null</span>);</span><br><span class="line">    <span class="keyword">return</span> builder.build();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>重要的是要了解在从构建器实例化的机器需要使用的常见配置的情况</p>
+<h4 id="使用延期事件"><a href="#使用延期事件" class="headerlink" title="使用延期事件"></a>使用延期事件</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在状态配置中，事件DEPLOY推迟到DEPLOYPREPARE和DEPLOYEXECUTE</span></span><br><span class="line">.state(<span class="string">"DEPLOYPREPARE"</span>, <span class="string">"DEPLOY"</span>)</span><br><span class="line">.state(<span class="string">"DEPLOYEXECUTE"</span>, <span class="string">"DEPLOY"</span>);</span><br><span class="line"><span class="comment">//在转换配置中</span></span><br><span class="line">.withExternal()</span><br><span class="line">    .source(<span class="string">"READY"</span>).target(<span class="string">"DEPLOYPREPARE"</span>)</span><br><span class="line">    .event(<span class="string">"DEPLOY"</span>)</span><br><span class="line">    .and()</span><br><span class="line">.withExternal()</span><br><span class="line">    .source(<span class="string">"DEPLOYPREPARE"</span>).target(<span class="string">"DEPLOYEXECUTE"</span>)</span><br><span class="line">    .and()</span><br><span class="line">.withExternal()</span><br><span class="line">    .source(<span class="string">"DEPLOYEXECUTE"</span>).target(<span class="string">"READY"</span>);</span><br></pre></td></tr></table></figure>
+<p>在上面的状态机中，状态为READY，表示机器已准备好处理将使其进入实际部署的DEPLOY状态的事件。执行部署操作后，机器将返回READY状态。如果计算机正在使用同步执行程序，则在READY状态下发送多个事件 不会造成任何问题，因为事件发送会在事件调用之间阻塞。但是，如果执行程序正在使用线程，则其他事件可能会丢失，因为计算机不再处于可以处理事件的状态。因此推迟一些这些事件允许机器保存这些事件。</p>
+<h4 id="使用范围"><a href="#使用范围" class="headerlink" title="使用范围"></a>使用范围</h4><p>对状态机中的作用域的支持非常有限，但可以使用普通的spring 注释来启用会话作用域@Scope，前提是@Bean</p>
+<p>一旦你将状态机作为范围session，@Controller将它自动装入一个将为每个会话提供新的状态机实例。然后在HttpSession无效时销毁状态机。</p>
+<p>在session作用域中使用状态机需要仔细规划，主要是因为它是一个相对较重的组件</p>
+<h4 id="Action操作"><a href="#Action操作" class="headerlink" title="Action操作"></a>Action操作</h4><p>Action：执行转换之间的动作 <code>可以设置进入状态与退出状态的动作</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">.stateEntry(States.S2, action(), errorAction())</span><br><span class="line">    .stateDo(States.S2, action(), errorAction())</span><br><span class="line">    .stateExit(States.S2, action(), errorAction())</span><br></pre></td></tr></table></figure>
+<p>可以直接将Action实现为匿名函数，也可以创建自己的实现并将适当的实现定义为bean</p>
+<h4 id="Guard防护"><a href="#Guard防护" class="headerlink" title="Guard防护"></a>Guard防护</h4><p>Guard防护保护状态转换，Guard接口用于评估方法的StateContext：<code>用于判断是否可以转换</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.withExternal()</span><br><span class="line">    .source(States.S2).target(States.S3)</span><br><span class="line">    .event(Events.E2)</span><br><span class="line">    .guardExpression(<span class="string">"extendedState.variables.get('myvar')"</span>);</span><br></pre></td></tr></table></figure>
+<p>在上面的示例guardExpression中，只需检查扩展状态变量myvar是否为TRUE，是可以使用Spel表达式替代完整的Guard实现</p>
+<h4 id="扩展状态"><a href="#扩展状态" class="headerlink" title="扩展状态"></a>扩展状态</h4><p>StateContext有一个方法getExtendedState()返回一个接口ExtendedState，该接口提供对扩展状态变量的访问。您可以直接通过状态机或StateContext在从操作或转换回调期间访问变量</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(StateContext&lt;String, String&gt; context)</span> </span>&#123;</span><br><span class="line">    context.getExtendedState()</span><br><span class="line">        .getVariables().put(<span class="string">"mykey"</span>, <span class="string">"myvalue"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>如果需要获得扩展状态变量的通知：<br>1、使用StateMachineListener和收听extendedStateChanged(key, value)<br>2、为其实现Spring Application上下文侦听器 OnExtendedStateChanged</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ExtendedStateVariableListener</span> <span class="keyword">extends</span> <span class="title">StateMachineListenerAdapter</span>&lt;<span class="title">String</span>, <span class="title">String</span>&gt; </span>&#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">extendedStateChanged</span><span class="params">(Object key, Object value)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// do something with changed variable</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="使用StateContext"><a href="#使用StateContext" class="headerlink" title="使用StateContext"></a>使用StateContext</h4><p>StateContext是使用状态机时最重要的对象之一，因为它被传递到各种方法和回调中，以提供状态机的当前状态及其可能的状态。如果稍微简化一下，可以将其视为当前状态机阶段的快照，其中传递 StateContext</p>
+<blockquote>
+<p>作用：</p>
+</blockquote>
+<pre><code>访问当前Message，Event或者他们 MessageHeaders如果知道的话。
+访问状态机Extended State。
+获得StateMachine自己。
+访问可能的状态机错误。
+Transition如果适用， 访问当前。
+访问状态机可能来自和前往的源和目标状态
+Stage阶段
+</code></pre><p>阶段是stage状态机当前与用户交互的表示。目前的阶段是EVENT_NOT_ACCEPTED，EXTENDED_STATE_CHANGED， STATE_CHANGED，STATE_ENTRY，STATE_EXIT，STATEMACHINE_ERROR， STATEMACHINE_START，STATEMACHINE_STOP，TRANSITION， TRANSITION_START和TRANSITION_END</p>
+<h4 id="触发过渡"><a href="#触发过渡" class="headerlink" title="触发过渡"></a>触发过渡</h4><p>通过由触发器触发的转换来完成驱动状态机。目前支持的触发器是EventTrigger和 TimerTrigger。</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">stateMachine.sendEvent(Events.E1);</span><br><span class="line">Message&lt;Events&gt; message = MessageBuilder</span><br><span class="line">        .withPayload(Events.E2)</span><br><span class="line">        .setHeader(<span class="string">"foo"</span>, <span class="string">"bar"</span>)</span><br><span class="line">        .build();</span><br><span class="line">stateMachine.sendEvent(message);</span><br></pre></td></tr></table></figure>
+<p>在上面的例子中，我们使用两种不同的方式发送事件。首先，我们使用状态机api方法发送一个类型安全事件 sendEvent(E event)。其次，我们使用 带有自定义事件头的api方法发送包含在Spring消息消息中的sendEvent(Message<e> message)事件。这允许用户使用事件添加任意额外信息，然后当用户正在实施操作时，StateContext可以看到该事件</e></p>
+<p>TimerTrigger定时触发器：当需要在没有任何用户交互的情况下自动触发某些内容时， TimerTrigger非常有用</p>
+<h4 id="监听状态机事件"><a href="#监听状态机事件" class="headerlink" title="监听状态机事件"></a>监听状态机事件</h4><p>有两个选项，要么监听Spring应用程序上下文事件，要么直接将侦听器附加到状态机<br>1、应用程序上下文事件类是OnTransitionStartEvent， OnTransitionEvent，OnTransitionEndEvent，OnStateExitEvent， OnStateEntryEvent，OnStateChangedEvent，OnStateMachineStart和 OnStateMachineStop以及扩展基本事件类StateMachineEvent的其他类<br>2、实现监听器，并添加到状态机实例上</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">StateMachineEventListener listener = <span class="keyword">new</span> StateMachineEventListener();</span><br><span class="line">stateMachine.addStateListener(listener);</span><br></pre></td></tr></table></figure>
+<h4 id="语境整合"><a href="#语境整合" class="headerlink" title="语境整合"></a>语境整合</h4><p>通过监听事件或使用状态和转换的动作来与状态机进行交互有点受限。这种方法的时间太长，而且很难创建与状态机正在使用的应用程序的交互。对于这个特定的用例，我们进行了一种Spring样式上下文集成，可以轻松地将状态机功能附加到bean中</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在状态配置中</span></span><br><span class="line">builder.configureConfiguration()</span><br><span class="line">    .withConfiguration()</span><br><span class="line">    .machineId(<span class="string">"myMachineId"</span>)</span><br><span class="line">    .beanFactory(beanFactory);</span><br><span class="line"></span><br><span class="line"><span class="comment">//通过上下文集成状态机的配置</span></span><br><span class="line"><span class="meta">@WithStateMachine</span>(id = <span class="string">"myMachineId"</span>)</span><br><span class="line"><span class="keyword">static</span> <span class="class"><span class="keyword">class</span> <span class="title">Bean17</span> </span>&#123;</span><br><span class="line">    <span class="meta">@OnStateChanged</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStateChanged</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p><code>如果机器没有创建为Bean，则必须为机器设置 BeanFactory，如上所示。否则机器将不知道调用@WithStateMachine方法的处理程序</code></p>
+<h4 id="？状态机访问器"><a href="#？状态机访问器" class="headerlink" title="？状态机访问器"></a>？状态机访问器</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">stateMachine.getStateMachineAccessor().doWithAllRegions(access -&gt; access.setRelay(stateMachine));</span><br><span class="line">        stateMachine.getStateMachineAccessor().withAllRegions().stream().forEach(access -&gt; access.setRelay(stateMachine));</span><br><span class="line">        stateMachine.getStateMachineAccessor().withRegion().setRelay(stateMachine);</span><br></pre></td></tr></table></figure>
+<p>恢复状态机后恢复状态</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">stateMachine.stop();</span><br><span class="line">stateMachine.getStateMachineAccessor()</span><br><span class="line">    .doWithAllRegions(access -&gt;</span><br><span class="line">        access.resetStateMachine(<span class="keyword">new</span> DefaultStateMachineContext&lt;&gt;(startingState, <span class="keyword">null</span>, <span class="keyword">null</span>, <span class="keyword">null</span>)));</span><br><span class="line">        stateMachine.start();</span><br></pre></td></tr></table></figure>
+<h4 id="StateMachineInterceptor拦截器"><a href="#StateMachineInterceptor拦截器" class="headerlink" title="StateMachineInterceptor拦截器"></a>StateMachineInterceptor拦截器</h4><p>拦截器可用于拦截和停止当前状态变化或转换逻辑，还可以拦截到错误，通过访问器注册</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line">stateMachine.getStateMachineAccessor()</span><br><span class="line">    .withRegion().addStateMachineInterceptor(<span class="keyword">new</span> StateMachineInterceptor&lt;String, String&gt;() &#123;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Message&lt;String&gt; <span class="title">preEvent</span><span class="params">(Message&lt;String&gt; message, StateMachine&lt;String, String&gt; stateMachine)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> message;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> StateContext&lt;String, String&gt; <span class="title">preTransition</span><span class="params">(StateContext&lt;String, String&gt; stateContext)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> stateContext;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">preStateChange</span><span class="params">(State&lt;String, String&gt; state, Message&lt;String&gt; message,</span></span></span><br><span class="line"><span class="function"><span class="params">                Transition&lt;String, String&gt; transition, StateMachine&lt;String, String&gt; stateMachine)</span> </span>&#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> StateContext&lt;String, String&gt; <span class="title">postTransition</span><span class="params">(StateContext&lt;String, String&gt; stateContext)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> stateContext;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">postStateChange</span><span class="params">(State&lt;String, String&gt; state, Message&lt;String&gt; message,</span></span></span><br><span class="line"><span class="function"><span class="params">                Transition&lt;String, String&gt; transition, StateMachine&lt;String, String&gt; stateMachine)</span> </span>&#123;</span><br><span class="line">        &#125;</span><br><span class="line"></span><br><span class="line">        <span class="meta">@Override</span></span><br><span class="line">        <span class="function"><span class="keyword">public</span> Exception <span class="title">stateMachineError</span><span class="params">(StateMachine&lt;String, String&gt; stateMachine,</span></span></span><br><span class="line"><span class="function"><span class="params">                Exception exception)</span> </span>&#123;</span><br><span class="line">            <span class="keyword">return</span> exception;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;);</span><br></pre></td></tr></table></figure>
+<h4 id="？状态机安全-State-Machine-Security"><a href="#？状态机安全-State-Machine-Security" class="headerlink" title="？状态机安全 State Machine Security"></a>？状态机安全 State Machine Security</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">.withSecurity()</span><br><span class="line">    .enabled(<span class="keyword">true</span>)</span><br><span class="line">    .transitionAccessDecisionManager(<span class="keyword">null</span>)</span><br><span class="line">    .eventAccessDecisionManager(<span class="keyword">null</span>);</span><br></pre></td></tr></table></figure>
+<p>使用安全属性和表达式</p>
+<h4 id="状态机错误处理StateMachineInterceptor"><a href="#状态机错误处理StateMachineInterceptor" class="headerlink" title="状态机错误处理StateMachineInterceptor"></a>状态机错误处理StateMachineInterceptor</h4><p>如果状态机在状态转换逻辑期间检测到内部错误，则可能引发异常。在内部处理此异常之前，用户有机会进行拦截</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">stateMachine.getStateMachineAccessor()</span><br><span class="line">    .doWithRegion(<span class="keyword">new</span> StateMachineFunction&lt;StateMachineAccess&lt;String,String&gt;&gt;() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">apply</span><span class="params">(StateMachineAccess&lt;String, String&gt; function)</span> </span>&#123;</span><br><span class="line">        function.addStateMachineInterceptor(</span><br><span class="line">                <span class="keyword">new</span> StateMachineInterceptorAdapter&lt;String, String&gt;() &#123;</span><br><span class="line">            <span class="meta">@Override</span></span><br><span class="line">            <span class="function"><span class="keyword">public</span> Exception <span class="title">stateMachineError</span><span class="params">(StateMachine&lt;String,String&gt; stateMachine,</span></span></span><br><span class="line"><span class="function"><span class="params">                    Exception exception)</span> </span>&#123;</span><br><span class="line">                <span class="comment">// return null indicating handled error</span></span><br><span class="line">                <span class="keyword">return</span> exception;</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure>
+<p>还可以整合监听器</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">ErrorApplicationEventListener</span></span></span><br><span class="line"><span class="class">        <span class="keyword">implements</span> <span class="title">ApplicationListener</span>&lt;<span class="title">OnStateMachineError</span>&gt; </span>&#123;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onApplicationEvent</span><span class="params">(OnStateMachineError event)</span> </span>&#123;</span><br><span class="line">        <span class="comment">// do something with error</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="持久化状态机-StateMachinePersister"><a href="#持久化状态机-StateMachinePersister" class="headerlink" title="持久化状态机 StateMachinePersister"></a>持久化状态机 StateMachinePersister</h4><p>持久性功能允许用户将状态机本身的状态保存到外部存储库中，然后根据序列化状态重置状态机。例如，如果您有一个数据库表保持订单，如果需要为每个更改构建一个新实例，那么通过状态机更新订单状态会太昂贵。持久性功能允许您重置状态机状态，而无需实例化新的状态机实例</p>
+<p>可以使用状态机拦截器而不是在状态机内的状态改变期间完成将序列化状态保存到外部存储器的尝试。如果此拦截器回调失败，则状态更改尝试将暂停，而不是结束到不一致状态，然后用户可以手动处理此错误</p>
+<h4 id="状态机监控器-Monitoring-State-Machine"><a href="#状态机监控器-Monitoring-State-Machine" class="headerlink" title="状态机监控器 Monitoring State Machine"></a>状态机监控器 Monitoring State Machine</h4><p>可用于获取有关转换和操作执行时间的持续时间的更多信息。</p>
+<h4 id="分布式状态机（还未成熟）"><a href="#分布式状态机（还未成熟）" class="headerlink" title="分布式状态机（还未成熟）"></a>分布式状态机（还未成熟）</h4><h4 id="测试支持：一组实用程序类来轻松测试状态机实例"><a href="#测试支持：一组实用程序类来轻松测试状态机实例" class="headerlink" title="测试支持：一组实用程序类来轻松测试状态机实例"></a>测试支持：一组实用程序类来轻松测试状态机实例</h4><h4 id="？存储支持：Repository-Support，JPA-Redis-Mongo"><a href="#？存储支持：Repository-Support，JPA-Redis-Mongo" class="headerlink" title="？存储支持：Repository Support，JPA\Redis\Mongo"></a>？存储支持：Repository Support，JPA\Redis\Mongo</h4><h4 id="状态机示例"><a href="#状态机示例" class="headerlink" title="状态机示例"></a>状态机示例</h4><ul>
+<li><p>可以设置实例的范围：Scope是一个状态机示例，它使用会话范围为每个用户提供单独的实例。</p>
+</li>
+<li><p>完全性：整合spring security</p>
+</li>
+</ul>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://docs.spring.io/spring-statemachine/docs/3.0.0.M1/reference/" target="_blank" rel="noopener">SpringStateMachine官方文档</a></li>
+<li><a href="https://github.com/chenshinan/state-machine-service" target="_blank" rel="noopener">基于SpringStateMachine实现的状态机服务端</a></li>
+<li><a href="https://github.com/choerodon/choerodon-starters/tree/master/choerodon-starter-statemachine" target="_blank" rel="noopener">状态机客户端</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/09/23/Set相关实现类的源码解析/" rel="next" title="Set相关实现类的源码解析（JDK1.8）">
+                <i class="fa fa-chevron-left"></i> Set相关实现类的源码解析（JDK1.8）
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2018/10/16/并发编程相关/" rel="prev" title="并发编程相关">
+                并发编程相关 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">34</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#配置状态机"><span class="nav-number">1.</span> <span class="nav-text">配置状态机</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#状态"><span class="nav-number">1.1.</span> <span class="nav-text">状态</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#状态机ID-状态机实例的标志"><span class="nav-number">1.1.1.</span> <span class="nav-text">状态机ID 状态机实例的标志</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态机工厂EnableStateMachineFactory：工厂的配置通过config，编译限制"><span class="nav-number">1.1.2.</span> <span class="nav-text">状态机工厂EnableStateMachineFactory：工厂的配置通过config，编译限制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#构建器模式StateMachineBuilder-builder：此构建器模式可用于在Spring应用程序上下文之外构建完全动态的状态机"><span class="nav-number">1.1.3.</span> <span class="nav-text">构建器模式StateMachineBuilder.builder：此构建器模式可用于在Spring应用程序上下文之外构建完全动态的状态机</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用延期事件"><span class="nav-number">1.1.4.</span> <span class="nav-text">使用延期事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用范围"><span class="nav-number">1.1.5.</span> <span class="nav-text">使用范围</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Action操作"><span class="nav-number">1.1.6.</span> <span class="nav-text">Action操作</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Guard防护"><span class="nav-number">1.1.7.</span> <span class="nav-text">Guard防护</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#扩展状态"><span class="nav-number">1.1.8.</span> <span class="nav-text">扩展状态</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#使用StateContext"><span class="nav-number">1.1.9.</span> <span class="nav-text">使用StateContext</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#触发过渡"><span class="nav-number">1.1.10.</span> <span class="nav-text">触发过渡</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#监听状态机事件"><span class="nav-number">1.1.11.</span> <span class="nav-text">监听状态机事件</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#语境整合"><span class="nav-number">1.1.12.</span> <span class="nav-text">语境整合</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#？状态机访问器"><span class="nav-number">1.1.13.</span> <span class="nav-text">？状态机访问器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#StateMachineInterceptor拦截器"><span class="nav-number">1.1.14.</span> <span class="nav-text">StateMachineInterceptor拦截器</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#？状态机安全-State-Machine-Security"><span class="nav-number">1.1.15.</span> <span class="nav-text">？状态机安全 State Machine Security</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态机错误处理StateMachineInterceptor"><span class="nav-number">1.1.16.</span> <span class="nav-text">状态机错误处理StateMachineInterceptor</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#持久化状态机-StateMachinePersister"><span class="nav-number">1.1.17.</span> <span class="nav-text">持久化状态机 StateMachinePersister</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态机监控器-Monitoring-State-Machine"><span class="nav-number">1.1.18.</span> <span class="nav-text">状态机监控器 Monitoring State Machine</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#分布式状态机（还未成熟）"><span class="nav-number">1.1.19.</span> <span class="nav-text">分布式状态机（还未成熟）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#测试支持：一组实用程序类来轻松测试状态机实例"><span class="nav-number">1.1.20.</span> <span class="nav-text">测试支持：一组实用程序类来轻松测试状态机实例</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#？存储支持：Repository-Support，JPA-Redis-Mongo"><span class="nav-number">1.1.21.</span> <span class="nav-text">？存储支持：Repository Support，JPA\Redis\Mongo</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#状态机示例"><span class="nav-number">1.1.22.</span> <span class="nav-text">状态机示例</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">2.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共99.2k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
