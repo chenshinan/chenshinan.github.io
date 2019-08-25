@@ -86,12 +86,12 @@
 <meta property="og:site_name" content="大艺术家_SN">
 <meta property="og:description" content="字节流和字符流 字节流：以字节为单位，每次次读入或读出是8位数据。可以读任何类型数据。  字符流：以字符为单位，每次次读入或读出是16位数据。其只能读取字符类型数据。   输出流和输入流 输出流：从内存读出到文件。只能进行写操作。  输入流：从文件读入到内存。只能进行读操作。    注意：这里的出和入，都是相对于系统内存而言的  节点流和处理流 节点流：直接与数据源相连，读入或读出。  处理流：与">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:image" content="https://upload-images.jianshu.io/upload_images/4098122-0dd39a6f583f891d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/946">
-<meta property="og:updated_time" content="2019-08-25T11:01:36.092Z">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190825190302.png">
+<meta property="og:updated_time" content="2019-08-25T11:03:33.152Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IO与NIO">
 <meta name="twitter:description" content="字节流和字符流 字节流：以字节为单位，每次次读入或读出是8位数据。可以读任何类型数据。  字符流：以字符为单位，每次次读入或读出是16位数据。其只能读取字符类型数据。   输出流和输入流 输出流：从内存读出到文件。只能进行写操作。  输入流：从文件读入到内存。只能进行读操作。    注意：这里的出和入，都是相对于系统内存而言的  节点流和处理流 节点流：直接与数据源相连，读入或读出。  处理流：与">
-<meta name="twitter:image" content="https://upload-images.jianshu.io/upload_images/4098122-0dd39a6f583f891d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/946">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190825190302.png">
 
 
 
@@ -402,7 +402,7 @@
 </ul>
 <h2 id="NIO之Selector（选择器）"><a href="#NIO之Selector（选择器）" class="headerlink" title="NIO之Selector（选择器）"></a>NIO之Selector（选择器）</h2><p>Selector 一般称为选择器 ，当然你也可以翻译为 多路复用器 。它是Java NIO核心组件中的一个，用于检查一个或多个NIO Channel（通道）的状态是否处于可读、可写。如此可以实现单线程管理多个channels,也就是可以管理多个网络链接</p>
 <p>使用Selector的好处在于：使用更少的线程来就可以来处理通道了，相比使用多个线程，避免了线程上下文切换带来的开销</p>
-<p><img src="https://upload-images.jianshu.io/upload_images/4098122-0dd39a6f583f891d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/946" alt="Selector原理"></p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190825190302.png" alt="image"></p>
 <p>I/O多路复用：<code>I/O就是指的我们网络I/O,多路指多个TCP连接(或多个Channel)，复用指复用一个或少量线程。串起来理解就是很多个网络I/O复用一个或少量的线程来处理这些连接</code></p>
 <p>I/O复用模式下在第一个阶段大量的连接统统都可以过来直接注册到Selector复用器上面，同时只要单个或者少量的线程来循环处理这些连接事件就可以了，一旦达到“就绪”的条件，就可以立即执行真正的I/O操作。这就是I/O复用与传统的阻塞式I/O最大的不同。也正是I/O复用的精髓所在</p>
 <h2 id="白话解读"><a href="#白话解读" class="headerlink" title="白话解读"></a>白话解读</h2><ul>
