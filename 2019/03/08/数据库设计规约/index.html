@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="大艺术家_SN">
 <meta property="og:description" content="建表规约1.【强制】 表达是与否概念的字段，必须使用 is_xxx 的方式命名，数据类型是 unsigned tinyint（1 表示是， 0 表示否）。  说明： 任何字段如果为非负数，必须是 unsigned。 正例： 表达逻辑删除的字段名 is_deleted， 1 表示删除， 0 表示未删除。  2.【强制】 表名、字段名必须使用小写字母或数字，禁止出现数字开头，禁止两个下划线中间只出现数">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-03-09T03:24:28.613Z">
+<meta property="og:updated_time" content="2019-08-22T06:21:32.300Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="数据库设计规约">
 <meta name="twitter:description" content="建表规约1.【强制】 表达是与否概念的字段，必须使用 is_xxx 的方式命名，数据类型是 unsigned tinyint（1 表示是， 0 表示否）。  说明： 任何字段如果为非负数，必须是 unsigned。 正例： 表达逻辑删除的字段名 is_deleted， 1 表示删除， 0 表示未删除。  2.【强制】 表名、字段名必须使用小写字母或数字，禁止出现数字开头，禁止两个下划线中间只出现数">
@@ -300,7 +300,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  3.4k 字
+                  3.5k 字
                 </span>
               
 
@@ -441,23 +441,27 @@
 <ul>
 <li>说明：索引文件具有B-Tree的最左前缀匹配特性，如果左边的值未确定，那么无法使用此索引。</li>
 </ul>
-<p>5.【推荐】如果有order by的场景，请注意利用索引的有序性。order by 最后的字段是组合索引的一部分，并且放在索引组合顺序的最后，避免出现file_sort的情况，影响查询性能。</p>
+<p>5.<strong>【强制】</strong> 对于布尔类型的字段（性别/是否/01）这种，不推荐使用索引</p>
+<ul>
+<li>说明：性别字段只有两个值，冗余性太高，定位性太差，维护成本较高，加了也不会对查询效率有所提高，所以这种字段不适合加牵引</li>
+</ul>
+<p>6.【推荐】如果有order by的场景，请注意利用索引的有序性。order by 最后的字段是组合索引的一部分，并且放在索引组合顺序的最后，避免出现file_sort的情况，影响查询性能。</p>
 <ul>
 <li>正例： where a=? and b=? order by c; 索引： a_b_c</li>
 <li>反例： 索引中有范围查找，那么索引有序性无法利用，如： WHERE a&gt;10 ORDER BY b; 索引a_b无法排序。</li>
 </ul>
-<p>6.【推荐】利用覆盖索引来进行查询操作， 避免回表。</p>
+<p>7.【推荐】利用覆盖索引来进行查询操作， 避免回表。</p>
 <ul>
 <li>说明：如果一本书需要知道第 11 章是什么标题，会翻开第 11章对应的那一页吗？目录浏览一下就好，这个目录就是起到覆盖索引的作用。</li>
 <li>正例：能够建立索引的种类分为主键索引、唯一索引、普通索引三种，而覆盖索引只是一种查询的一种效果，用explain 的结果，extra 列会出现： using index。</li>
 </ul>
-<p>7.【推荐】利用延迟关联或者子查询优化超多分页场景。</p>
+<p>8.【推荐】利用延迟关联或者子查询优化超多分页场景。</p>
 <ul>
 <li>说明：MySQL 并不是跳过 offset 行，而是取 offset+N 行，然后返回放弃前offset行，返回N行，那当 offset 特别大的时候，效率就非常的低下，要么控制返回的总页数，要么对超过特定阈值的页数进行SQL改写。</li>
 <li>正例：先快速定位需要获取的 id 段，然后再关联：</li>
 </ul>
 <figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span> a.* <span class="keyword">FROM</span> 表 <span class="number">1</span> a, (<span class="keyword">select</span> <span class="keyword">id</span> <span class="keyword">from</span> 表 <span class="number">1</span> <span class="keyword">where</span> 条件 <span class="keyword">LIMIT</span> <span class="number">100000</span>,<span class="number">20</span> ) b <span class="keyword">where</span> a.id=b.id</span><br></pre></td></tr></table></figure>
-<p>8.【推荐】 SQL 性能优化的目标：至少要达到 range 级别，要求是ref级别，如果可以是consts最好。</p>
+<p>9.【推荐】 SQL 性能优化的目标：至少要达到 range 级别，要求是ref级别，如果可以是consts最好。</p>
 <ul>
 <li>说明：<ol>
 <li>consts 单表中最多只有一个匹配行（主键或者唯一索引），在优化阶段即可读取到数据。</li>
@@ -467,13 +471,13 @@
 </li>
 <li>反例： explain 表的结果， type=index，索引物理文件全扫描，速度非常慢，这个 index 级别比较 range 还低，与全表扫描是小巫见大巫。</li>
 </ul>
-<p>9.【推荐】建组合索引的时候，区分度最高的在最左边。</p>
+<p>10.【推荐】建组合索引的时候，区分度最高的在最左边。</p>
 <ul>
 <li>正例： 如果 where a=? and b=? ， a列的几乎接近于唯一值，那么只需要单建 idx_a 索引即<br>可。</li>
 <li>说明： 存在非等号和等号混合判断条件时，在建索引时，请把等号条件的列前置。如： where a&gt;?and b=? 那么即使 a 的区分度更高，也必须把 b 放在索引的最前列。</li>
 </ul>
-<p>10.【推荐】防止因字段类型不同造成的隐式转换， 导致索引失效。</p>
-<p>11.【参考】创建索引时避免有如下极端误解：</p>
+<p>11.【推荐】防止因字段类型不同造成的隐式转换， 导致索引失效。</p>
+<p>12.【参考】创建索引时避免有如下极端误解：</p>
 <pre><code>1. 宁滥勿缺：认为一个查询就需要建一个索引。
 2. 宁缺勿滥：认为索引会消耗空间、严重拖慢更新和新增速度。
 3. 抵制惟一索引：认为业务的惟一性一律需要在应用层通过“先查后插”方式解决。
@@ -652,7 +656,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">32</span>
+                  <span class="site-state-item-count">33</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -740,7 +744,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共95.3k字</span>
+  <span class="post-count">博客全站共96.5k字</span>
 </div>
 
 
