@@ -87,7 +87,7 @@
 <meta property="og:description" content="字节流和字符流 字节流：以字节为单位，每次次读入或读出是8位数据。可以读任何类型数据。  字符流：以字符为单位，每次次读入或读出是16位数据。其只能读取字符类型数据。   输出流和输入流 输出流：从内存读出到文件。只能进行写操作。  输入流：从文件读入到内存。只能进行读操作。    注意：这里的出和入，都是相对于系统内存而言的  节点流和处理流 节点流：直接与数据源相连，读入或读出。  处理流：与">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190825190302.png">
-<meta property="og:updated_time" content="2019-08-25T11:03:33.152Z">
+<meta property="og:updated_time" content="2019-08-26T05:58:42.474Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IO与NIO">
 <meta name="twitter:description" content="字节流和字符流 字节流：以字节为单位，每次次读入或读出是8位数据。可以读任何类型数据。  字符流：以字符为单位，每次次读入或读出是16位数据。其只能读取字符类型数据。   输出流和输入流 输出流：从内存读出到文件。只能进行写操作。  输入流：从文件读入到内存。只能进行读操作。    注意：这里的出和入，都是相对于系统内存而言的  节点流和处理流 节点流：直接与数据源相连，读入或读出。  处理流：与">
@@ -302,7 +302,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  1.6k 字
+                  1.8k 字
                 </span>
               
 
@@ -315,7 +315,7 @@
                   <span class="post-meta-item-text">阅读时长 </span>
                 
                 <span title="阅读时长">
-                  5 分钟
+                  6 分钟
                 </span>
               
             </div>
@@ -425,6 +425,14 @@
 <p>java.nio.file.Files类是和java.nio.file.Path相结合使用的</p>
 <h2 id="内存映射"><a href="#内存映射" class="headerlink" title="内存映射"></a>内存映射</h2><p>这个功能主要是为了提高大文件的读写速度而设计的。内存映射文件(memory-mappedfile)能让你创建和修改那些大到无法读入内存的文件。有了内存映射文件，你就可以认为文件已经全部读进了内存，然后把它当成一个非常大的数组来访问了。将文件的一段区域映射到内存中，比传统的文件处理速度要快很多</p>
 <p>涉及到的类：<code>java.nio.MappedByteBuffer</code>、<code>java.nio.channels.FileChannel</code></p>
+<h2 id="BIO、NIO和AIO"><a href="#BIO、NIO和AIO" class="headerlink" title="BIO、NIO和AIO"></a>BIO、NIO和AIO</h2><ul>
+<li><p>BIO (<code>Blocking I/O</code>)：<strong>同步阻塞</strong>I/O模式，数据的读取写入必须阻塞在一个线程内等待其完成</p>
+</li>
+<li><p>NIO (<code>Non-blocking I/O</code>)：<strong>同步非阻塞</strong>的I/O模型，它支持面向缓冲的，基于通道的I/O操作方法</p>
+</li>
+<li><p>AIO (<code>Asynchronous I/O</code>)：<strong>异步非阻塞</strong>的IO模型，也叫NIO2，异步 IO 是基于事件和回调机制实现的，也就是应用操作之后会直接返回，不会堵塞在那里，当后台处理完成，操作系统会通知相应的线程进行后续的操作</p>
+</li>
+</ul>
 <h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
 <li><a href="https://github.com/Snailclimb/JavaGuide/blob/master/docs/java/Java%20IO%E4%B8%8ENIO.md" target="_blank" rel="noopener">Java IO与NIO教程</a></li>
 </ul>
@@ -590,7 +598,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#字节流和字符流"><span class="nav-number">1.</span> <span class="nav-text">字节流和字符流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出流和输入流"><span class="nav-number">2.</span> <span class="nav-text">输出流和输入流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#节点流和处理流"><span class="nav-number">3.</span> <span class="nav-text">节点流和处理流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#随机流：RandomAccessFile"><span class="nav-number">4.</span> <span class="nav-text">随机流：RandomAccessFile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO与NIO的区别"><span class="nav-number">5.</span> <span class="nav-text">IO与NIO的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO之Buffer（缓冲区）"><span class="nav-number">6.</span> <span class="nav-text">NIO之Buffer（缓冲区）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO之Channel（通道）"><span class="nav-number">7.</span> <span class="nav-text">NIO之Channel（通道）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO之Channel：Scatter-Gather"><span class="nav-number">7.1.</span> <span class="nav-text">NIO之Channel：Scatter / Gather</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO之Selector（选择器）"><span class="nav-number">8.</span> <span class="nav-text">NIO之Selector（选择器）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#白话解读"><span class="nav-number">9.</span> <span class="nav-text">白话解读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件I-O基石：Path"><span class="nav-number">10.</span> <span class="nav-text">文件I/O基石：Path</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拥抱Files类"><span class="nav-number">11.</span> <span class="nav-text">拥抱Files类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存映射"><span class="nav-number">12.</span> <span class="nav-text">内存映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">13.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#字节流和字符流"><span class="nav-number">1.</span> <span class="nav-text">字节流和字符流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出流和输入流"><span class="nav-number">2.</span> <span class="nav-text">输出流和输入流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#节点流和处理流"><span class="nav-number">3.</span> <span class="nav-text">节点流和处理流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#随机流：RandomAccessFile"><span class="nav-number">4.</span> <span class="nav-text">随机流：RandomAccessFile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO与NIO的区别"><span class="nav-number">5.</span> <span class="nav-text">IO与NIO的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO之Buffer（缓冲区）"><span class="nav-number">6.</span> <span class="nav-text">NIO之Buffer（缓冲区）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO之Channel（通道）"><span class="nav-number">7.</span> <span class="nav-text">NIO之Channel（通道）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO之Channel：Scatter-Gather"><span class="nav-number">7.1.</span> <span class="nav-text">NIO之Channel：Scatter / Gather</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO之Selector（选择器）"><span class="nav-number">8.</span> <span class="nav-text">NIO之Selector（选择器）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#白话解读"><span class="nav-number">9.</span> <span class="nav-text">白话解读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件I-O基石：Path"><span class="nav-number">10.</span> <span class="nav-text">文件I/O基石：Path</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拥抱Files类"><span class="nav-number">11.</span> <span class="nav-text">拥抱Files类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存映射"><span class="nav-number">12.</span> <span class="nav-text">内存映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIO、NIO和AIO"><span class="nav-number">13.</span> <span class="nav-text">BIO、NIO和AIO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">14.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -631,7 +639,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共100.8k字</span>
+  <span class="post-count">博客全站共101k字</span>
 </div>
 
 
