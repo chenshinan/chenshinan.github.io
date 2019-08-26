@@ -88,7 +88,8 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190817153555.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190818142308.png">
-<meta property="og:updated_time" content="2019-08-18T15:02:42.471Z">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190826233935.png">
+<meta property="og:updated_time" content="2019-08-26T15:43:22.456Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【深入理解Java虚拟机】笔记">
 <meta name="twitter:description" content="走近JavaJDK版本号只有程序员内部使用的开发版本号才继续沿用1.5、1.6、1.7的版本号，而公开版本号则改为JDK5、JDK6、JDK7的命名方式 JDK（Java Development Kit）：Java程序设计语言、Java虚拟机、Java API类库这三部分统称为JDK JDK是用于支持Java程序开发的最小环境  可以把Java API类库中的Java SE API子集和Java虚">
@@ -450,7 +451,7 @@
 </li>
 <li><p>老年代GC（Major GC/Full GC）：是指发生在老年代的GC动作，慢</p>
 </li>
-<li><p>大对象直接进入老年代，可以设置临界值</p>
+<li><p><strong>大对象</strong>直接进入老年代，可以设置临界值</p>
 </li>
 <li><p>长期存活的对象进入老年代，通过Minor GC若存活则Age计数器增加，直到进入老年代</p>
 </li>
@@ -824,6 +825,7 @@
 <p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190818142308.png" alt="image"></p>
 <h3 id="内存模型"><a href="#内存模型" class="headerlink" title="内存模型"></a>内存模型</h3><p>Java虚拟机规范中试图定义一种Java内存模型来屏蔽掉各种硬件和操作系统的内存访问差异，以实现让Java程序在各种平台下都能达到一致的内存访问效果</p>
 <h4 id="主内存与工作内存"><a href="#主内存与工作内存" class="headerlink" title="主内存与工作内存"></a>主内存与工作内存</h4><p>Java内存模型规定了所有的变量都存储在主内存中，每条线程有自己的工作内存，<code>线程的工作内存中保存了被该线程使用到的变量的主内存副本拷贝，线程对变量的所有操作都必须在工作内存中进行</code>，而不能直接读写主内存中的变量，线程之间的变量值的传递均需要通过主内存来完成，线程、主内存、工作内存三者的交互关系如下：</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190826233935.png" alt="image"></p>
 <p>从更低层次上说，主内存就直接应对于物理硬件的内存，而为了获取更好的运行速度，虚拟机可能会让工作内存优先存储于寄存器和高速缓存中，因为程序运行时主要访问读写的是工作内存</p>
 <h4 id="内存间交互操作"><a href="#内存间交互操作" class="headerlink" title="内存间交互操作"></a>内存间交互操作</h4><p>Java内存模型中定义了以下8种操作来完成，虚拟机实现时必须保证下面提及的<code>每一种操作都是原子的、不可再分的</code></p>
 <ul>
@@ -861,8 +863,11 @@
 <li>禁止指令重排序优化</li>
 </ul>
 <p>并发操作中，指令在运行时可能会因为优化提前执行，而导致程序运行错误，而volatile关键字则可以避免此类情况的发生。<code>volatile修饰的变量通过在指令后增加了一个内存屏障，来防止指令排序错乱`</code></p>
-<p>总结：内存模型对volatile变量定义的特殊规则是：<br>1、每次执行这个变量前要先从主内存刷新得到最新值<br>2、每次修改这个变量后都必须立刻同步回主内存中<br>3、被volatile修饰的变量不会被指令重排序优化</p>
-<h4 id="原子性、可见性与有序性"><a href="#原子性、可见性与有序性" class="headerlink" title="原子性、可见性与有序性"></a>原子性、可见性与有序性</h4><ul>
+<p>总结：内存模型对volatile变量定义的特殊规则是：</p>
+<pre><code>1、每次执行这个变量前要先从主内存刷新得到最新值
+2、每次修改这个变量后都必须立刻同步回主内存中
+3、被volatile修饰的变量不会被指令重排序优化
+</code></pre><h4 id="原子性、可见性与有序性"><a href="#原子性、可见性与有序性" class="headerlink" title="原子性、可见性与有序性"></a>原子性、可见性与有序性</h4><ul>
 <li><p>原子性：我们大致可以认为基本数据类型的访问读写是具备原子性的。大范围的原子性：synchronized</p>
 </li>
 <li><p>可见性：是指当一个线程修改了共享变量的值，其他线程能够立即得知这个修改。<code>除了volatile还有synchronized和final</code></p>
