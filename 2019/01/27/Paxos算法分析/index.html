@@ -86,7 +86,7 @@
 <meta property="og:site_name" content="大艺术家_SN">
 <meta property="og:description" content="追本溯源Lamport在1990年提出了一个理论上的一致性解决方案，同时给出了严谨的数学证明。为描述 Paxos 算法，Lamport 虚拟了一个叫做 Paxos 的希腊小岛：岛上采用议会的形式来通过法令，议会中的议员通过信使进行消息的传递，而议员和信使都是兼职的，他们随时有可能离开议会厅，并且信使可能会重复的传递消息，也可能一去不复返，此处假设没有拜占庭将军问题（消息不会被篡改）。这样的环境下，">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2019-01-27T03:32:06.920Z">
+<meta property="og:updated_time" content="2019-08-27T07:33:31.724Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Paxos算法分析">
 <meta name="twitter:description" content="追本溯源Lamport在1990年提出了一个理论上的一致性解决方案，同时给出了严谨的数学证明。为描述 Paxos 算法，Lamport 虚拟了一个叫做 Paxos 的希腊小岛：岛上采用议会的形式来通过法令，议会中的议员通过信使进行消息的传递，而议员和信使都是兼职的，他们随时有可能离开议会厅，并且信使可能会重复的传递消息，也可能一去不复返，此处假设没有拜占庭将军问题（消息不会被篡改）。这样的环境下，">
@@ -348,11 +348,20 @@
 <p>在具体的实现中，一个进程可能同时充当多种角色。比如一个进程可能既是Proposer又是Acceptor又是Learner</p>
 <h3 id="提案"><a href="#提案" class="headerlink" title="提案"></a>提案</h3><p>最终要达成一致的value就在提案里（pid，value），Proposer可以提出（propose）提案；Acceptor可以接受（accept）提案；如果某个提案被选定（chosen），那么该提案里的value就被选定了</p>
 <h3 id="选定提案"><a href="#选定提案" class="headerlink" title="选定提案"></a>选定提案</h3><p>在何种情况下不同的进程认为提案被选中了？</p>
-<p>Proposer：只要Proposer发的提案被Acceptor接受，Proposer就认为该提案里的value被选定了<br>Acceptor：只要Acceptor接受了某个提案，Acceptor就认为该提案里的value被选定了<br>Learner：Acceptor告诉Learner哪个value被选定，Learner就认为那个value被选定</p>
-<h2 id="推导过程"><a href="#推导过程" class="headerlink" title="推导过程"></a>推导过程</h2><p>这个一致性需要满足三个要求：<br>1.v达成一致时的值是由某个进程提出的。这是为了防止像这样的作弊方式：无论如何，最终都令每个进程的v为同一个预先设置好的值，例如都令v=2，那么这样的一致也太容易了，也没有任何实际意义。<br>2.一旦v就某个值达成了一致，那么v不能对另一个值再次达成一致。这个要求称为<strong>安全性</strong>。<br>3.一致总是能够达成，即v总会被决定为某个值。这是因为不想无休止的等待，这个要求也称为活性。</p>
-<p>Paxos要求满足的前置假设只有一个：消息内容不会被篡改</p>
+<ul>
+<li>Proposer：只要Proposer发的提案被Acceptor接受，Proposer就认为该提案里的value被选定了</li>
+<li>Acceptor：只要Acceptor接受了某个提案，Acceptor就认为该提案里的value被选定了</li>
+<li>Learner：Acceptor告诉Learner哪个value被选定，Learner就认为那个value被选定</li>
+</ul>
+<h2 id="推导过程"><a href="#推导过程" class="headerlink" title="推导过程"></a>推导过程</h2><p>这个一致性需要满足三个要求：</p>
+<ul>
+<li>v达成一致时的值是由某个进程提出的。这是为了防止像这样的作弊方式：无论如何，最终都令每个进程的v为同一个预先设置好的值，例如都令v=2，那么这样的一致也太容易了，也没有任何实际意义。</li>
+<li>一旦v就某个值达成了一致，那么v不能对另一个值再次达成一致。这个要求称为<strong>安全性</strong>。</li>
+<li>一致总是能够达成，即v总会被决定为某个值。这是因为不想无休止的等待，这个要求也称为活性。</li>
+</ul>
+<p>Paxos要求满足的前置假设只有一个：<strong>消息内容不会被篡改</strong></p>
 <p>进程必须能够多次改写v的值（在还没达成一致性时）。同时我们也要意识到：当进程收到第一个消息时，进程是没有任何理由拒绝这个消息的请求的</p>
-<p>如果一个提案被大多数进程所接受，那么称提案被通过，此时显然v被决定为提案中的值。进程P记录的接受的提案ID记做a_proposal_id</p>
+<p>如果一个提案被大多数进程所接受，那么称提案被通过，此时显然v被决定为提案中的值。进程P记录的接受的提案ID记做<code>a_proposal_id</code></p>
 <h3 id="核心原理"><a href="#核心原理" class="headerlink" title="核心原理"></a>核心原理</h3><p>我们称超过半数的进程组成的集合为法定集合，两个法定集合必然存在非空交集，即至少有一个公共进程，称为法定集合性质。 例如A,B,C,D,F进程组成的全集，法定集合Q1包括进程A,B,C，Q2包括进程B,C,D，那么Q1和Q2的交集必然不在空，C就是Q1，Q2的公共进程</p>
 <h3 id="推导过程-1"><a href="#推导过程-1" class="headerlink" title="推导过程"></a>推导过程</h3><p>1、三个进程的场景P1,P2,P3（n个进程的场景类似），P1尝试令v的值被决定为a,P2尝试令v被决定为b</p>
 <p><code>为了满足安全性，需要拒绝策略</code>：根据提案ID的大小来作为拒绝或接受的依据</p>
@@ -365,7 +374,12 @@
 <blockquote>
 <p>目前的流程</p>
 </blockquote>
-<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">阶段一 提议者Proposer：向接受者Acceptor广播预提案，附带接下来提案Proposal的proposal_id 接受者Acceptor：收到预提案后更新a_proposal_id = max(proposal_id,a_proposal_id)</span><br><span class="line">阶段二 提议者Proposer：向接受者Acceptor广播提案，和之前的预提案共享同一个proposal_id 接受者Acceptor：如果收到的提案的proposal_id&gt;= a.proposal_id，那么接受这个提案，更新a_proposal_id = max(proposal_id,a_proposal_id)</span><br></pre></td></tr></table></figure>
+<ul>
+<li><p>阶段一 提议者Proposer：向接受者Acceptor广播预提案，附带接下来提案Proposal的proposal_id 接受者Acceptor：收到预提案后更新a_proposal_id = max(proposal_id,a_proposal_id)</p>
+</li>
+<li><p>阶段二 提议者Proposer：向接受者Acceptor广播提案，和之前的预提案共享同一个proposal_id 接受者Acceptor：如果收到的提案的proposal_id&gt;= a.proposal_id，那么接受这个提案，更新a_proposal_id = max(proposal_id,a_proposal_id)</p>
+</li>
+</ul>
 <p>2、N个进程的场景，存在两个进程Pi,Pj，Pi尝试另v被决定为a,Pj尝试另v被决定为b，Pi提出的预提案记作PreProposal-i，提案记作Proposal-i；Pj的预提案PreProsal-j，提案Proposal-j</p>
 <p><code>Pi的提案被通过代表了存在一个法定集合Q-i，Q-i中的进程都接受了Proposal-i，Pj同理，存在一个Q-j，Q-j中的进程都接受了Proposal-j。由于法定集合的性质，两个多数集Q-i和Q-j中必然存在一个公共进程Pk。Pk即相当于场景1中的P3，只要Pk能够拒绝Proposal-i和Proposal-j中的一个，协议依旧是安全的</code></p>
 <p>2.2.3、由于拒绝策略失效，所以只能令<code>Proposal-i.v = Proposal-j.v=b</code>，首先需要主动询问进程集合，假设回复的是法定集合Q-i，同理法定集合Q-j收到了<code>Proposal-j.v=b</code>，<code>因此存在一个Pk即接收到了Pj提案，也收到了Pi的预提案</code>，而该场景的前提下，Pk是先收到Pj提案，因此记录了<code>Proposal-j.v = b</code></p>
@@ -593,7 +607,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共101k字</span>
+  <span class="post-count">博客全站共101.7k字</span>
 </div>
 
 
