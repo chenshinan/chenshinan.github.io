@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是代理代理是一种软件设计模式，通过不直接访问被代理对象的方式，而访问代理对象的方法。代理既可以做原对象的增强也可以做原对象的替代。 代理适用的场景 设计模式中有一个设计原则是开闭原则，在不修改原来代码的基础上，我们可以采用代理的方式对类进行功能增强  在RPC框架中，通过代理接口来模拟访问远程服务的方法  Spring的AOP机制就是采用动态代理的机制来实现切面编程   静态代理与动态代理的区">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Java动态代理">
+<meta property="og:url" content="http://chenshinan.github.io/2019/04/01/Java动态代理/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="什么是代理代理是一种软件设计模式，通过不直接访问被代理对象的方式，而访问代理对象的方法。代理既可以做原对象的增强也可以做原对象的替代。 代理适用的场景 设计模式中有一个设计原则是开闭原则，在不修改原来代码的基础上，我们可以采用代理的方式对类进行功能增强  在RPC框架中，通过代理接口来模拟访问远程服务的方法  Spring的AOP机制就是采用动态代理的机制来实现切面编程   静态代理与动态代理的区">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190826203538.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190826203934.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190826230201.png">
+<meta property="og:updated_time" content="2019-09-01T07:53:52.273Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Java动态代理">
+<meta name="twitter:description" content="什么是代理代理是一种软件设计模式，通过不直接访问被代理对象的方式，而访问代理对象的方法。代理既可以做原对象的增强也可以做原对象的替代。 代理适用的场景 设计模式中有一个设计原则是开闭原则，在不修改原来代码的基础上，我们可以采用代理的方式对类进行功能增强  在RPC框架中，通过代理接口来模拟访问远程服务的方法  Spring的AOP机制就是采用动态代理的机制来实现切面编程   静态代理与动态代理的区">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190826203538.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2019/04/01/Java动态代理/">
+
+
+
+
+
+  <title>Java动态代理 | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2019/04/01/Java动态代理/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Java动态代理</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-04-01T19:35:31+08:00">
+                2019-04-01
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  1.9k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  7 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="什么是代理"><a href="#什么是代理" class="headerlink" title="什么是代理"></a>什么是代理</h2><p>代理是一种软件设计模式，通过不直接访问被代理对象的方式，而访问代理对象的方法。代理既可以做原对象的增强也可以做原对象的替代。</p>
+<h2 id="代理适用的场景"><a href="#代理适用的场景" class="headerlink" title="代理适用的场景"></a>代理适用的场景</h2><ul>
+<li><p>设计模式中有一个设计原则是开闭原则，在不修改原来代码的基础上，我们可以采用代理的方式对类进行功能增强</p>
+</li>
+<li><p>在RPC框架中，通过代理接口来模拟访问远程服务的方法</p>
+</li>
+<li><p>Spring的AOP机制就是采用动态代理的机制来实现切面编程</p>
+</li>
+</ul>
+<h2 id="静态代理与动态代理的区别"><a href="#静态代理与动态代理的区别" class="headerlink" title="静态代理与动态代理的区别"></a>静态代理与动态代理的区别</h2><p>我们根据加载被代理类的时机不同，将代理分为静态代理和动态代理。如果我们在代码编译时就确定了被代理的类是哪一个，那么就可以直接使用静态代理；如果不能确定，那么可以使用类的动态加载机制，在代码运行期间加载被代理的类这就是动态代理，比如RPC框架和Spring AOP机制</p>
+<h2 id="动态代理：InvocationHandler角色的由来"><a href="#动态代理：InvocationHandler角色的由来" class="headerlink" title="动态代理：InvocationHandler角色的由来"></a>动态代理：InvocationHandler角色的由来</h2><p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190826203538.png" alt="image"></p>
+<p>有上图可以看出，代理类处理的逻辑很简单：在调用某个方法前及方法后做一些额外的业务。换一种思路就是：在触发（invoke）真实角色的方法之前或者之后做一些额外的业务。那么，为了构造出具有通用性和简单性的代理类，可以将所有的触发真实角色动作交给一个触发的管理器，让这个管理器统一地管理触发。这种管理器就是<code>Invocation Handler</code>。</p>
+<p>动态代理工作的基本模式就是将自己的方法功能的实现交给 InvocationHandler角色，外界对Proxy角色中的每一个方法的调用，Proxy角色都会交给InvocationHandler来处理，而InvocationHandler则调用具体对象角色的方法</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190826203934.png" alt="image"></p>
+<p>在面向对象的编程之中，如果我们想要约定Proxy 和RealSubject可以实现相同的功能，有两种方式：</p>
+<ul>
+<li><p>一个比较直观的方式，就是定义一个功能接口，然后让Proxy 和RealSubject来实现这个接口。</p>
+</li>
+<li><p>还有比较隐晦的方式，就是通过继承。因为如果Proxy 继承自RealSubject，这样Proxy则拥有了RealSubject的功能</p>
+</li>
+</ul>
+<p>在Java中提供了两种常见的创建动态代理的机制，就是按照以上两种设计思路，<strong>JDK动态代理</strong>（实现接口）和<strong>CGlib动态代理</strong>（继承类）</p>
+<h2 id="JDK动态代理（通过接口）"><a href="#JDK动态代理（通过接口）" class="headerlink" title="JDK动态代理（通过接口）"></a>JDK动态代理（通过接口）</h2><h3 id="解析"><a href="#解析" class="headerlink" title="解析"></a>解析</h3><p>比如现在想为RealSubject这个类创建一个动态代理对象，JDK主要会做以下工作：</p>
+<pre><code>1.获取 RealSubject上的所有接口列表；
+2.确定要生成的代理类的类名，默认为：com.sun.proxy.$ProxyXXXX ；
+3.根据需要实现的接口信息，在代码中动态创建 该Proxy类的字节码；
+4.将对应的字节码转换为对应的class 对象；
+5.创建InvocationHandler 实例handler，用来处理Proxy所有方法调用；
+6.Proxy 的class对象 以创建的handler对象为参数，实例化一个proxy对象；
+</code></pre><p>JDK通过<code>java.lang.reflect.Proxy</code>包来支持动态代理，一般情况下，我们使用下面的<code>newProxyInstance()</code></p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//返回一个指定接口的代理类实例，该接口可以将方法调用指派到指定的调用处理程序</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> Object <span class="title">newProxyInstance</span><span class="params">(ClassLoader loader,Class&lt;?&gt;[] interfaces,InvocationHandler h)</span></span>;</span><br></pre></td></tr></table></figure>
+<p>而对于InvocationHandler，我们需要实现它的<code>invoke()</code>，在调用代理对象中的每一个方法时，在代码内部，都是直接调用了InvocationHandler的invoke方法，而invoke方法根据代理类传递给自己的method参数来区分是什么方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//在代理实例上处理方法调用并返回结果</span></span><br><span class="line"><span class="function">Object <span class="title">invoke</span><span class="params">(Object proxy,Method method,Object[] args)</span></span></span><br></pre></td></tr></table></figure>
+<p>通过观察生成的动态代理类具有以下几个特点：</p>
+<pre><code>1.继承自 java.lang.reflect.Proxy，实现了 Rechargable,Vehicle 这两个ElectricCar实现的接口；
+2.类中的所有方法都是final的；
+3.所有的方法功能的实现都统一调用了InvocationHandler的invoke()方法；
+</code></pre><p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190826230201.png" alt="image"></p>
+<h3 id="demo"><a href="#demo" class="headerlink" title="demo"></a>demo</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//继承InvocationHandler实现invoke</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">JdkDynamicProxy</span> <span class="keyword">implements</span> <span class="title">InvocationHandler</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Object target ;</span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="title">JdkDynamicProxy</span><span class="params">(Object target )</span> </span>&#123;</span><br><span class="line">        <span class="keyword">this</span>.target=target;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">//每次创建代理对象就会执行下面的方法，proxy是本代理对象，method是当前执行的法，可以在这里过滤获取目标方法，参数三是该方法的参数</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">invoke</span><span class="params">(Object proxy, Method method, Object[] args)</span><span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        before();</span><br><span class="line">        Object result = method.invoke(target, args);<span class="comment">//调用invoke，传入标对象和参数进行执行之前的方法</span></span><br><span class="line">        after();</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"before"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">after</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"after"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    Hello helloImpl = <span class="keyword">new</span> HelloImpl();</span><br><span class="line">    JdkDynamicProxy jdkDynamicProxy = <span class="keyword">new</span> JdkDynamicProxy(helloImpl);</span><br><span class="line">    <span class="comment">//创建代理对象，使用到静态工具方法Proxy.neweProxyInstace(类加载器,接类,增类);返回值为代理的对象</span></span><br><span class="line">    Hello helloProxy = (Hello) Proxy.newProxyInstanc(helloImpl.getClass().getClassLoader(), helloImpl.getClass(.getInterfaces(), jdkDynamicProxy);</span><br><span class="line">    helloProxy.say(<span class="string">"hello"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="CGlib动态代理（通过类继承）"><a href="#CGlib动态代理（通过类继承）" class="headerlink" title="CGlib动态代理（通过类继承）"></a>CGlib动态代理（通过类继承）</h2><h3 id="解析-1"><a href="#解析-1" class="headerlink" title="解析"></a>解析</h3><p>JDK中提供的生成动态代理类的机制有个鲜明的特点是：某个类必须有实现的接口，而生成的代理类也只能代理某个类接口定义的方法。如果某个类没有实现接口，那么这个类就不能同JDK产生动态代理了，而可以使用<code>CGLIB（Code Generation Library）</code>，通过“继承”可以继承父类所有的公开方法，然后可以重写这些方法，在重写时对这些方法增强，这就是cglib的思想。和JDK动态代理一样，底层是<strong>处理字节码</strong>，cglib创建某个类A的动态代理类的模式是：</p>
+<pre><code>1.查找A上的所有非final的public类型的方法定义；
+2.将这些方法的定义转换成字节码；
+3.将组成的字节码转换成相应的代理的class对象；
+4.实现MethodInterceptor接口，用来处理对代理类上所有方法的请求（这个接口和JDK动态代理InvocationHandler的功能和角色是一样的）
+</code></pre><h3 id="demo-1"><a href="#demo-1" class="headerlink" title="demo"></a>demo</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">CGLibProxy</span> <span class="keyword">implements</span> <span class="title">MethodInterceptor</span> </span>&#123;</span><br><span class="line">    <span class="comment">/***</span></span><br><span class="line"><span class="comment">     * 快速创建动态代理对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> cls 需要代理的字节码对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 代理对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="keyword">public</span> &lt;T&gt; <span class="function">T <span class="title">getProxy</span><span class="params">(Class&lt;T&gt; cls)</span></span>&#123;</span><br><span class="line">        <span class="keyword">return</span> (T) Enhancer.create(cls,<span class="keyword">this</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">/***</span></span><br><span class="line"><span class="comment">     * 拦截的方法</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> obj 原对象</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> method 源对象中的方法</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> args 源方法中的参数</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@param</span> proxy 方法代理</span></span><br><span class="line"><span class="comment">     *</span></span><br><span class="line"><span class="comment">     * <span class="doctag">@return</span> 返回代理对象</span></span><br><span class="line"><span class="comment">     */</span></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> Object <span class="title">intercept</span><span class="params">(Object obj, Method method, Object[] args, MethodProxy proxy)</span> <span class="keyword">throws</span> Throwable </span>&#123;</span><br><span class="line">        before();</span><br><span class="line">        <span class="comment">//执行原方法</span></span><br><span class="line">        Object result = proxy.invokeSuper(obj, args);</span><br><span class="line">        after();</span><br><span class="line">        <span class="keyword">return</span> result;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">before</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"before"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">after</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        System.out.println(<span class="string">"after"</span>);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">static</span> <span class="keyword">void</span> <span class="title">main</span><span class="params">(String[] args)</span> </span>&#123;</span><br><span class="line">    CGLibProxy cgLibProxy = <span class="keyword">new</span> CGLibProxy();</span><br><span class="line">    HelloImpl helloProxy = cgLibProxy.getProxy(HelloImpl.class);</span><br><span class="line">    helloProxy.say(<span class="string">"hello"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="原理区别"><a href="#原理区别" class="headerlink" title="原理区别"></a>原理区别</h2><ul>
+<li><p>java动态代理是利用反射机制生成一个实现代理接口的匿名类，在调用具体方法前调用InvokeHandler来处理。</p>
+</li>
+<li><p>而cglib动态代理是利用asm开源包，对代理对象类的class文件加载进来，通过修改其字节码生成子类来处理</p>
+</li>
+</ul>
+<h2 id="Spring在选择用JDK还是CGLib的依据"><a href="#Spring在选择用JDK还是CGLib的依据" class="headerlink" title="Spring在选择用JDK还是CGLib的依据"></a>Spring在选择用JDK还是CGLib的依据</h2><ul>
+<li><p>当Bean实现接口时，Spring就会用JDK的动态代理</p>
+</li>
+<li><p>当Bean没有实现接口时，Spring使用CGLib来实现</p>
+</li>
+</ul>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://www.cnblogs.com/rinack/p/7742682.html" target="_blank" rel="noopener">Java动态代理机制详解（JDK 和CGLIB，Javassist，ASM）</a></li>
+<li><a href="https://blog.csdn.net/u011784767/article/details/78281384" target="_blank" rel="noopener">详解java动态代理机制以及使用场景</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/03/24/springboot项目启动源码分析/" rel="next" title="springboot项目启动源码分析">
+                <i class="fa fa-chevron-left"></i> springboot项目启动源码分析
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+              <a href="/2019/05/02/git生成diff原理：Myers差分算法/" rel="prev" title="git生成diff原理：Myers差分算法">
+                git生成diff原理：Myers差分算法 <i class="fa fa-chevron-right"></i>
+              </a>
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是代理"><span class="nav-number">1.</span> <span class="nav-text">什么是代理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#代理适用的场景"><span class="nav-number">2.</span> <span class="nav-text">代理适用的场景</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#静态代理与动态代理的区别"><span class="nav-number">3.</span> <span class="nav-text">静态代理与动态代理的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#动态代理：InvocationHandler角色的由来"><span class="nav-number">4.</span> <span class="nav-text">动态代理：InvocationHandler角色的由来</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JDK动态代理（通过接口）"><span class="nav-number">5.</span> <span class="nav-text">JDK动态代理（通过接口）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解析"><span class="nav-number">5.1.</span> <span class="nav-text">解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#demo"><span class="nav-number">5.2.</span> <span class="nav-text">demo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#CGlib动态代理（通过类继承）"><span class="nav-number">6.</span> <span class="nav-text">CGlib动态代理（通过类继承）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#解析-1"><span class="nav-number">6.1.</span> <span class="nav-text">解析</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#demo-1"><span class="nav-number">6.2.</span> <span class="nav-text">demo</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#原理区别"><span class="nav-number">7.</span> <span class="nav-text">原理区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Spring在选择用JDK还是CGLib的依据"><span class="nav-number">8.</span> <span class="nav-text">Spring在选择用JDK还是CGLib的依据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共103.6k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
