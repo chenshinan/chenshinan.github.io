@@ -79,19 +79,20 @@
 
 
 
-<meta name="description" content="websocket概念WebSocket是一种在单个TCP连接上进行全双工通信的协议，在WebSocket API中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输 实现思路我们知道，前端与服务端建立websocket后，后端需要向对应的websocket推送数据，而在分布式环境中，服务端实例可能存在多个，因为微服务负载均衡导致不同实例会有各自的webso">
+<meta name="description" content="什么是socketSocket是应用层与TCP/IP协议族通信的中间软件抽象层，它是一组接口。在设计模式中，Socket其实就是一个门面模式，它把复杂的TCP/IP协议族隐藏在Socket接口后面，对用户来说，一组简单的接口就是全部，让Socket去组织数据，以符合指定的协议  我们知道网络中的进程是通过socket来通信的，那什么是socket呢？socket起源于Unix，而Unix/Linu">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Choerodon：分布式webSocket">
 <meta property="og:url" content="http://chenshinan.github.io/2019/08/20/Choerodon：分布式webSocket/index.html">
 <meta property="og:site_name" content="大艺术家_SN">
-<meta property="og:description" content="websocket概念WebSocket是一种在单个TCP连接上进行全双工通信的协议，在WebSocket API中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输 实现思路我们知道，前端与服务端建立websocket后，后端需要向对应的websocket推送数据，而在分布式环境中，服务端实例可能存在多个，因为微服务负载均衡导致不同实例会有各自的webso">
+<meta property="og:description" content="什么是socketSocket是应用层与TCP/IP协议族通信的中间软件抽象层，它是一组接口。在设计模式中，Socket其实就是一个门面模式，它把复杂的TCP/IP协议族隐藏在Socket接口后面，对用户来说，一组简单的接口就是全部，让Socket去组织数据，以符合指定的协议  我们知道网络中的进程是通过socket来通信的，那什么是socket呢？socket起源于Unix，而Unix/Linu">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190901205826.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190825175800.png">
-<meta property="og:updated_time" content="2019-08-25T10:01:25.313Z">
+<meta property="og:updated_time" content="2019-09-01T13:19:05.848Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Choerodon：分布式webSocket">
-<meta name="twitter:description" content="websocket概念WebSocket是一种在单个TCP连接上进行全双工通信的协议，在WebSocket API中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输 实现思路我们知道，前端与服务端建立websocket后，后端需要向对应的websocket推送数据，而在分布式环境中，服务端实例可能存在多个，因为微服务负载均衡导致不同实例会有各自的webso">
-<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190825175800.png">
+<meta name="twitter:description" content="什么是socketSocket是应用层与TCP/IP协议族通信的中间软件抽象层，它是一组接口。在设计模式中，Socket其实就是一个门面模式，它把复杂的TCP/IP协议族隐藏在Socket接口后面，对用户来说，一组简单的接口就是全部，让Socket去组织数据，以符合指定的协议  我们知道网络中的进程是通过socket来通信的，那什么是socket呢？socket起源于Unix，而Unix/Linu">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190901205826.png">
 
 
 
@@ -302,7 +303,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  1.1k 字
+                  1.5k 字
                 </span>
               
 
@@ -315,7 +316,7 @@
                   <span class="post-meta-item-text">阅读时长 </span>
                 
                 <span title="阅读时长">
-                  5 分钟
+                  6 分钟
                 </span>
               
             </div>
@@ -336,7 +337,16 @@
       
 
       
-        <h2 id="websocket概念"><a href="#websocket概念" class="headerlink" title="websocket概念"></a>websocket概念</h2><p>WebSocket是一种在单个TCP连接上进行全双工通信的协议，在WebSocket API中，浏览器和服务器只需要完成一次握手，两者之间就直接可以创建持久性的连接，并进行双向数据传输</p>
+        <h2 id="什么是socket"><a href="#什么是socket" class="headerlink" title="什么是socket"></a>什么是socket</h2><p><code>Socket</code>是应用层与TCP/IP协议族通信的中间软件抽象层，它是一组接口。在设计模式中，<code>Socket</code>其实就是一个门面模式，它把复杂的TCP/IP协议族隐藏在<code>Socket</code>接口后面，对用户来说，一组简单的接口就是全部，让<code>Socket</code>去组织数据，以符合指定的协议</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190901205826.png" alt="image"></p>
+<p>我们知道网络中的进程是通过socket来通信的，那什么是socket呢？socket起源于Unix，而Unix/Linux基本哲学之一就是“一切皆文件”，都可以用<code>“打开open –&gt; 读写write/read –&gt; 关闭close”</code>模式来操作。<code>Socket(套接字)</code>用来描述IP地址和端口，是通信链的句柄，应用程序可以通过Socket向网络发送请求或者应答网络请求。Socket是支持TCP/IP协议的网络通信的基础操作单元，是对网络通信过程中端点的抽象表示，包含了进行网络通信所必须的五种信息：</p>
+<pre><code>连接所使用的协议；
+本地主机的IP地址；
+本地远程的协议端口；
+远地主机的IP地址；
+远地进程的协议端口。
+</code></pre><p>一些socket函数就是对其进行的操作（读/写IO、打开、关闭）</p>
+<h2 id="websocket概念"><a href="#websocket概念" class="headerlink" title="websocket概念"></a>websocket概念</h2><p>WebSocket是一种在单个<code>TCP</code>连接上进行全双工通信的协议，在WebSocket API中，浏览器和服务器只需要完成<strong>一次握手</strong>，两者之间就直接可以创建持久性的连接，并进行双向数据传输</p>
 <h2 id="实现思路"><a href="#实现思路" class="headerlink" title="实现思路"></a>实现思路</h2><p>我们知道，前端与服务端建立websocket后，后端需要向对应的websocket推送数据，而在分布式环境中，服务端实例可能存在多个，因为微服务负载均衡导致不同实例会有各自的websocket连接，因而实例A无法推送数据到实例B中的websocket连接。这里利用<strong>redis的消息订阅做websocket的转发</strong>，每个建立的ws与key绑定，但推送数据时会根据key到redis转发到相应实例进行ws推送</p>
 <p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190825175800.png" alt="image"></p>
 <h2 id="关键代码"><a href="#关键代码" class="headerlink" title="关键代码"></a>关键代码</h2><p>基于<code>org.springframework</code>的<code>spring-websocket</code>开发</p>
@@ -511,7 +521,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#websocket概念"><span class="nav-number">1.</span> <span class="nav-text">websocket概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现思路"><span class="nav-number">2.</span> <span class="nav-text">实现思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键代码"><span class="nav-number">3.</span> <span class="nav-text">关键代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用redis做转发"><span class="nav-number">3.1.</span> <span class="nav-text">用redis做转发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存WebSocketSession及与key的关系"><span class="nav-number">3.2.</span> <span class="nav-text">缓存WebSocketSession及与key的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息推送与redis订阅"><span class="nav-number">3.3.</span> <span class="nav-text">消息推送与redis订阅</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#订阅redis‘Topic"><span class="nav-number">3.4.</span> <span class="nav-text">订阅redis‘Topic</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">4.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是socket"><span class="nav-number">1.</span> <span class="nav-text">什么是socket</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#websocket概念"><span class="nav-number">2.</span> <span class="nav-text">websocket概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#实现思路"><span class="nav-number">3.</span> <span class="nav-text">实现思路</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关键代码"><span class="nav-number">4.</span> <span class="nav-text">关键代码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#用redis做转发"><span class="nav-number">4.1.</span> <span class="nav-text">用redis做转发</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#缓存WebSocketSession及与key的关系"><span class="nav-number">4.2.</span> <span class="nav-text">缓存WebSocketSession及与key的关系</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#消息推送与redis订阅"><span class="nav-number">4.3.</span> <span class="nav-text">消息推送与redis订阅</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#订阅redis‘Topic"><span class="nav-number">4.4.</span> <span class="nav-text">订阅redis‘Topic</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">5.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -552,7 +562,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共103.6k字</span>
+  <span class="post-count">博客全站共103.9k字</span>
 </div>
 
 
