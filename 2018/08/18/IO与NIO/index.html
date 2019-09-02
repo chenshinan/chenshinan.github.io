@@ -79,18 +79,18 @@
 
 
 
-<meta name="description" content="字节流和字符流 字节流：以字节为单位，每次次读入或读出是8位数据。可以读任何类型数据。  字符流：以字符为单位，每次次读入或读出是16位数据。其只能读取字符类型数据。   输出流和输入流 输出流：从内存读出到文件。只能进行写操作。  输入流：从文件读入到内存。只能进行读操作。    注意：这里的出和入，都是相对于系统内存而言的  节点流和处理流 节点流：直接与数据源相连，读入或读出。  处理流：与">
+<meta name="description" content="五种IO模型在网络环境下，通俗的讲，将IO分为两步：等、数据搬迁。如果要想提高IO效率，需要将等的时间降低 五种IO模型包括：  阻塞IO  非阻塞IO  信号驱动IO  IO多路转接  异步IO（前四个被称为同步IO）   字节流和字符流 字节流：以字节为单位，每次次读入或读出是8位数据。可以读任何类型数据。  字符流：以字符为单位，每次次读入或读出是16位数据。其只能读取字符类型数据。   输">
 <meta property="og:type" content="article">
 <meta property="og:title" content="IO与NIO">
 <meta property="og:url" content="http://chenshinan.github.io/2018/08/18/IO与NIO/index.html">
 <meta property="og:site_name" content="大艺术家_SN">
-<meta property="og:description" content="字节流和字符流 字节流：以字节为单位，每次次读入或读出是8位数据。可以读任何类型数据。  字符流：以字符为单位，每次次读入或读出是16位数据。其只能读取字符类型数据。   输出流和输入流 输出流：从内存读出到文件。只能进行写操作。  输入流：从文件读入到内存。只能进行读操作。    注意：这里的出和入，都是相对于系统内存而言的  节点流和处理流 节点流：直接与数据源相连，读入或读出。  处理流：与">
+<meta property="og:description" content="五种IO模型在网络环境下，通俗的讲，将IO分为两步：等、数据搬迁。如果要想提高IO效率，需要将等的时间降低 五种IO模型包括：  阻塞IO  非阻塞IO  信号驱动IO  IO多路转接  异步IO（前四个被称为同步IO）   字节流和字符流 字节流：以字节为单位，每次次读入或读出是8位数据。可以读任何类型数据。  字符流：以字符为单位，每次次读入或读出是16位数据。其只能读取字符类型数据。   输">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190825190302.png">
-<meta property="og:updated_time" content="2019-08-26T05:58:42.474Z">
+<meta property="og:updated_time" content="2019-09-02T02:47:24.457Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="IO与NIO">
-<meta name="twitter:description" content="字节流和字符流 字节流：以字节为单位，每次次读入或读出是8位数据。可以读任何类型数据。  字符流：以字符为单位，每次次读入或读出是16位数据。其只能读取字符类型数据。   输出流和输入流 输出流：从内存读出到文件。只能进行写操作。  输入流：从文件读入到内存。只能进行读操作。    注意：这里的出和入，都是相对于系统内存而言的  节点流和处理流 节点流：直接与数据源相连，读入或读出。  处理流：与">
+<meta name="twitter:description" content="五种IO模型在网络环境下，通俗的讲，将IO分为两步：等、数据搬迁。如果要想提高IO效率，需要将等的时间降低 五种IO模型包括：  阻塞IO  非阻塞IO  信号驱动IO  IO多路转接  异步IO（前四个被称为同步IO）   字节流和字符流 字节流：以字节为单位，每次次读入或读出是8位数据。可以读任何类型数据。  字符流：以字符为单位，每次次读入或读出是16位数据。其只能读取字符类型数据。   输">
 <meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190825190302.png">
 
 
@@ -302,7 +302,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  1.8k 字
+                  1.9k 字
                 </span>
               
 
@@ -336,7 +336,21 @@
       
 
       
-        <h2 id="字节流和字符流"><a href="#字节流和字符流" class="headerlink" title="字节流和字符流"></a>字节流和字符流</h2><ul>
+        <h2 id="五种IO模型"><a href="#五种IO模型" class="headerlink" title="五种IO模型"></a>五种IO模型</h2><p>在网络环境下，通俗的讲，将IO分为两步：等、数据搬迁。如果要想提高IO效率，需要将等的时间降低</p>
+<p>五种IO模型包括：</p>
+<ul>
+<li><p>阻塞IO</p>
+</li>
+<li><p>非阻塞IO</p>
+</li>
+<li><p>信号驱动IO</p>
+</li>
+<li><p>IO多路转接</p>
+</li>
+<li><p>异步IO（前四个被称为同步IO）</p>
+</li>
+</ul>
+<h2 id="字节流和字符流"><a href="#字节流和字符流" class="headerlink" title="字节流和字符流"></a>字节流和字符流</h2><ul>
 <li><p>字节流：以字节为单位，每次次读入或读出是8位数据。可以读任何类型数据。</p>
 </li>
 <li><p>字符流：以字符为单位，每次次读入或读出是16位数据。其只能读取字符类型数据。</p>
@@ -598,7 +612,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#字节流和字符流"><span class="nav-number">1.</span> <span class="nav-text">字节流和字符流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出流和输入流"><span class="nav-number">2.</span> <span class="nav-text">输出流和输入流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#节点流和处理流"><span class="nav-number">3.</span> <span class="nav-text">节点流和处理流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#随机流：RandomAccessFile"><span class="nav-number">4.</span> <span class="nav-text">随机流：RandomAccessFile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO与NIO的区别"><span class="nav-number">5.</span> <span class="nav-text">IO与NIO的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO之Buffer（缓冲区）"><span class="nav-number">6.</span> <span class="nav-text">NIO之Buffer（缓冲区）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO之Channel（通道）"><span class="nav-number">7.</span> <span class="nav-text">NIO之Channel（通道）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO之Channel：Scatter-Gather"><span class="nav-number">7.1.</span> <span class="nav-text">NIO之Channel：Scatter / Gather</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO之Selector（选择器）"><span class="nav-number">8.</span> <span class="nav-text">NIO之Selector（选择器）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#白话解读"><span class="nav-number">9.</span> <span class="nav-text">白话解读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件I-O基石：Path"><span class="nav-number">10.</span> <span class="nav-text">文件I/O基石：Path</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拥抱Files类"><span class="nav-number">11.</span> <span class="nav-text">拥抱Files类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存映射"><span class="nav-number">12.</span> <span class="nav-text">内存映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIO、NIO和AIO"><span class="nav-number">13.</span> <span class="nav-text">BIO、NIO和AIO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">14.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#五种IO模型"><span class="nav-number">1.</span> <span class="nav-text">五种IO模型</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#字节流和字符流"><span class="nav-number">2.</span> <span class="nav-text">字节流和字符流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#输出流和输入流"><span class="nav-number">3.</span> <span class="nav-text">输出流和输入流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#节点流和处理流"><span class="nav-number">4.</span> <span class="nav-text">节点流和处理流</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#随机流：RandomAccessFile"><span class="nav-number">5.</span> <span class="nav-text">随机流：RandomAccessFile</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#IO与NIO的区别"><span class="nav-number">6.</span> <span class="nav-text">IO与NIO的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO之Buffer（缓冲区）"><span class="nav-number">7.</span> <span class="nav-text">NIO之Buffer（缓冲区）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO之Channel（通道）"><span class="nav-number">8.</span> <span class="nav-text">NIO之Channel（通道）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#NIO之Channel：Scatter-Gather"><span class="nav-number">8.1.</span> <span class="nav-text">NIO之Channel：Scatter / Gather</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#NIO之Selector（选择器）"><span class="nav-number">9.</span> <span class="nav-text">NIO之Selector（选择器）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#白话解读"><span class="nav-number">10.</span> <span class="nav-text">白话解读</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#文件I-O基石：Path"><span class="nav-number">11.</span> <span class="nav-text">文件I/O基石：Path</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#拥抱Files类"><span class="nav-number">12.</span> <span class="nav-text">拥抱Files类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#内存映射"><span class="nav-number">13.</span> <span class="nav-text">内存映射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#BIO、NIO和AIO"><span class="nav-number">14.</span> <span class="nav-text">BIO、NIO和AIO</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">15.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -639,7 +653,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共103.9k字</span>
+  <span class="post-count">博客全站共104.7k字</span>
 </div>
 
 
