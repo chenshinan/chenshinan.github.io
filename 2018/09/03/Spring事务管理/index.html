@@ -87,7 +87,7 @@
 <meta property="og:description" content="什么是事务事务是一系列的动作，它们综合在一起才是一个完整的工作单元，这些动作必须全部完成，如果有一个失败的话，那么事务就会回滚到最开始的状态，仿佛什么都没发生过一样。在企业级应用程序开发中，事务管理必不可少的技术，用来确保数据的完整性和一致性。 事务有四个特性：ACID 原子性（Atomicity）：事务是一个原子操作，由一系列动作组成。事务的原子性确保动作要么全部完成，要么完全不起作用。  一致">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190301155126.png">
-<meta property="og:updated_time" content="2019-08-21T11:32:26.241Z">
+<meta property="og:updated_time" content="2019-09-16T01:43:17.418Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Spring事务管理">
 <meta name="twitter:description" content="什么是事务事务是一系列的动作，它们综合在一起才是一个完整的工作单元，这些动作必须全部完成，如果有一个失败的话，那么事务就会回滚到最开始的状态，仿佛什么都没发生过一样。在企业级应用程序开发中，事务管理必不可少的技术，用来确保数据的完整性和一致性。 事务有四个特性：ACID 原子性（Atomicity）：事务是一个原子操作，由一系列动作组成。事务的原子性确保动作要么全部完成，要么完全不起作用。  一致">
@@ -302,7 +302,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  2.1k 字
+                  2.2k 字
                 </span>
               
 
@@ -405,6 +405,47 @@
 <li><p><code>ISOLATION_SERIALIZABLE（可串行化）</code>：最高的隔离级别，完全服从ACID的隔离级别，<strong>写操作完全加锁</strong>，其他读也要等待，确保阻止脏读、不可重复读以及幻读，也是最慢的事务隔离级别，因为它通常是通过完全锁定事务相关的数据库表来实现的</p>
 </li>
 </ul>
+<table>
+<thead>
+<tr>
+<th>隔离级别</th>
+<th>读数据一致性</th>
+<th>脏读</th>
+<th>不可重复读</th>
+<th>幻读</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>未提交读（Read uncommitted）</td>
+<td>最低级别，只能保证不读取物理上损坏的数据</td>
+<td>是</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>已提交度（Read committed）</td>
+<td>语句级</td>
+<td>否</td>
+<td>是</td>
+<td>是</td>
+</tr>
+<tr>
+<td>可重复读（Repeatable read）</td>
+<td>事务级</td>
+<td>否</td>
+<td>否</td>
+<td>是</td>
+</tr>
+<tr>
+<td>可序列化（Serializable）</td>
+<td>最高级别，事务级</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+</tr>
+</tbody>
+</table>
 <h2 id="编程式事务"><a href="#编程式事务" class="headerlink" title="编程式事务"></a>编程式事务</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 定义一个某个框架平台的TransactionManager，如JDBC、Hibernate</span></span><br><span class="line">DataSourceTransactionManager dataSourceTransactionManager = <span class="keyword">new</span> DataSourceTransactionManager();</span><br><span class="line"><span class="comment">// 设置数据源</span></span><br><span class="line">dataSourceTransactionManager.setDataSource(<span class="keyword">this</span>.getJdbcTemplate().getDataSource());</span><br><span class="line"><span class="comment">// 定义事务属性</span></span><br><span class="line">DefaultTransactionDefinition transDef = <span class="keyword">new</span> DefaultTransactionDefinition();</span><br><span class="line"><span class="comment">// 设置传播行为属性</span></span><br><span class="line">transDef.setPropagationBehavior(DefaultTransactionDefinition.PROPAGATION_REQUIRED);</span><br><span class="line"><span class="comment">// 获得事务状态</span></span><br><span class="line">TransactionStatus status = dataSourceTransactionManager.getTransaction(transDef);</span><br><span class="line"><span class="keyword">try</span> &#123;</span><br><span class="line">    <span class="comment">// 数据库操作：提交</span></span><br><span class="line">    dataSourceTransactionManager.commit(status);</span><br><span class="line">&#125; <span class="keyword">catch</span> (Exception e) &#123;</span><br><span class="line">    <span class="comment">// 数据库操作：回滚</span></span><br><span class="line">    dataSourceTransactionManager.rollback(status);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="常见问题"><a href="#常见问题" class="headerlink" title="常见问题"></a>常见问题</h2><ul>
 <li>@Transactional不生效的原因</li>
@@ -550,7 +591,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">36</span>
+                  <span class="site-state-item-count">37</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -638,7 +679,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共105.4k字</span>
+  <span class="post-count">博客全站共112k字</span>
 </div>
 
 

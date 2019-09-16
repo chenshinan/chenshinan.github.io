@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="什么是索引索引是一种高效获取数据的存储结构，例：hash、 二叉、 红黑，索引的建立对于MySQL的高效运行是很重要的，索引可以大大提高MySQL的检索速度  Mysql为什么不用上面三种数据结构而采用B+Tree ？  若仅仅是select * from table where id=1, 上面三种算法可以轻易实现，但若是select * from table where id&amp;lt;6, 就不">
+<meta property="og:type" content="article">
+<meta property="og:title" content="MySQL学习：索引、引擎与锁">
+<meta property="og:url" content="http://chenshinan.github.io/2019/09/14/MySQL学习：索引、引擎与锁/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="什么是索引索引是一种高效获取数据的存储结构，例：hash、 二叉、 红黑，索引的建立对于MySQL的高效运行是很重要的，索引可以大大提高MySQL的检索速度  Mysql为什么不用上面三种数据结构而采用B+Tree ？  若仅仅是select * from table where id=1, 上面三种算法可以轻易实现，但若是select * from table where id&amp;lt;6, 就不">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915114126.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915115747.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915195839.png">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915201305.png">
+<meta property="og:updated_time" content="2019-09-16T13:01:07.529Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="MySQL学习：索引、引擎与锁">
+<meta name="twitter:description" content="什么是索引索引是一种高效获取数据的存储结构，例：hash、 二叉、 红黑，索引的建立对于MySQL的高效运行是很重要的，索引可以大大提高MySQL的检索速度  Mysql为什么不用上面三种数据结构而采用B+Tree ？  若仅仅是select * from table where id=1, 上面三种算法可以轻易实现，但若是select * from table where id&amp;lt;6, 就不">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915114126.png">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2019/09/14/MySQL学习：索引、引擎与锁/">
+
+
+
+
+
+  <title>MySQL学习：索引、引擎与锁 | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2019/09/14/MySQL学习：索引、引擎与锁/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">MySQL学习：索引、引擎与锁</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2019-09-14T20:55:23+08:00">
+                2019-09-14
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  6.6k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  23 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h2 id="什么是索引"><a href="#什么是索引" class="headerlink" title="什么是索引"></a>什么是索引</h2><p>索引是一种高效获取数据的存储结构，例：hash、 二叉、 红黑，索引的建立对于MySQL的高效运行是很重要的，索引可以大大提高MySQL的检索速度</p>
+<blockquote>
+<p>Mysql为什么不用上面三种数据结构而采用B+Tree ？</p>
+</blockquote>
+<p>若仅仅是<code>select * from table where id=1</code>, 上面三种算法可以轻易实现，但若是<code>select * from table where id&lt;6</code>, 就不好使了，它们的查找方式就类似于”全表扫描”，因为他们的高度是不可控的。B+Tree的高度是可控的，mysql通常是3到5层。<code>注意：B+Tree只在最末端叶子节点存数据，叶子节点是以链表的形势互相指向的</code></p>
+<h2 id="索引类型"><a href="#索引类型" class="headerlink" title="索引类型"></a>索引类型</h2><h3 id="FULLTEXT"><a href="#FULLTEXT" class="headerlink" title="FULLTEXT"></a>FULLTEXT</h3><p><strong>全文索引</strong>，目前只有<code>MyISAM</code>引擎支持，只有<code>CHAR</code>、<code>VARCHAR</code>，<code>TEXT</code>列上可以创建全文索引，它的出现是为了解决<code>WHERE name LIKE &quot;%word%&quot;</code>这类针对文本的模糊查询效率较低的问题</p>
+<h3 id="HASH"><a href="#HASH" class="headerlink" title="HASH"></a>HASH</h3><p><strong>哈希索引</strong>，由于HASH的唯一（几乎100%的唯一）及类似键值对的形式，很适合作为索引。HASH索引可以一次定位，不需要像树形索引那样逐层查找，因此具有极高的效率。但是，这种高效是有条件的，即只在<code>“=”</code>和<code>“in”</code>条件下高效，对于范围查询、排序及组合索引仍然效率不高</p>
+<h3 id="BTREE"><a href="#BTREE" class="headerlink" title="BTREE"></a>BTREE</h3><p>BTREE索引就是一种将索引值按一定的算法，存入一个树形的数据结构中（二叉树），每次查询都是从树的入口root开始，依次遍历node，获取leaf，实质上是<code>B+Tree</code>，这是MySQL里<strong>默认</strong>和<strong>最常用的</strong>索引类型</p>
+<blockquote>
+<p>建议</p>
+</blockquote>
+<p>通常我们对查询次数比较频繁，值比较多的列才建索引</p>
+<h2 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h2><p>MySQL支持两种存储引擎，<code>MyiSAM</code>引擎和<code>InnoDB</code>引擎</p>
+<h3 id="MyiSAM引擎：非聚集索引"><a href="#MyiSAM引擎：非聚集索引" class="headerlink" title="MyiSAM引擎：非聚集索引"></a>MyiSAM引擎：非聚集索引</h3><p>若以这个引擎创建数据库表<code>create table user ...</code>，它实际是生成三个文件</p>
+<pre><code>user.myi    索引文件
+user.myd    数据文件
+user.frm    数据结构类型
+</code></pre><p>如下图：当我们执行<code>select * from user where id = 1</code>的时候，它的执行流程。</p>
+<pre><code>1、查看该表的myi文件有没有以id为索引的索引树
+2、根据这个id索引找到叶子节点的id值，从而得到它里面的**数据地址**(叶子节点存的是索引和数据地址)
+3、根据数据地址去myd文件里面找到对应的数据返回出来
+</code></pre><p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915114126.png" alt="image"></p>
+<h3 id="InnoDB引擎：聚集索引"><a href="#InnoDB引擎：聚集索引" class="headerlink" title="InnoDB引擎：聚集索引"></a>InnoDB引擎：聚集索引</h3><p>若以这个引擎创建数据库表<code>create table user...</code>，它实际是生成两个文件：</p>
+<pre><code>user.ibd    索引数据文件
+user.frm    数据结构类型
+</code></pre><p><code>InnoDB</code>与<code>MyiSAM</code>最大的区别是将<strong>整条数据存在叶子节点</strong>，而不是地址。(叶子节点存的是主键索引和数据信息)，若此时，你在其他列创建索引例如name，它就会在idb中创建一个以name为索引的索引树，(叶子节点存的是索引和主键索引)</p>
+<p>如下图：当我们执行<code>select * from user where name = ‘test’</code>的时候，它的执行流程。</p>
+<pre><code>1、找到name索引树
+2、根据name的值找到该树下叶子的name索引和主键值
+3、用主键值去主键索引树去叶子节点到该条数据信息
+</code></pre><p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915115747.png" alt="image"></p>
+<h2 id="MyiSAM引擎和InnoDB引擎的区别"><a href="#MyiSAM引擎和InnoDB引擎的区别" class="headerlink" title="MyiSAM引擎和InnoDB引擎的区别"></a>MyiSAM引擎和InnoDB引擎的区别</h2><table>
+<thead>
+<tr>
+<th>引擎类型</th>
+<th>全文索引</th>
+<th>事务</th>
+<th>保存表的具体行数</th>
+<th>行锁</th>
+<th>表锁</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MyiSAM</td>
+<td>支持</td>
+<td>X</td>
+<td>支持</td>
+<td>X</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>InnoDB</td>
+<td>支持（5.6之后）</td>
+<td>支持</td>
+<td>X</td>
+<td>支持</td>
+<td>支持</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>建议</p>
+</blockquote>
+<p>不用事务的时候，<code>count</code>计算多的时候适合<code>MyiSAM</code>引擎。对可靠性要求高就是用<code>InnoDB</code>引擎。<strong>推荐</strong>用<code>InnoDB</code>引擎</p>
+<h2 id="B-Tree与B-Tree"><a href="#B-Tree与B-Tree" class="headerlink" title="B-Tree与B+Tree"></a>B-Tree与B+Tree</h2><h3 id="B-Tree（平衡多路查找树）"><a href="#B-Tree（平衡多路查找树）" class="headerlink" title="B-Tree（平衡多路查找树）"></a>B-Tree（平衡多路查找树）</h3><p>为磁盘等外存储设备设计的一种平衡查找树，系统从磁盘读取数据到内存时是以磁盘块位基本单位的，位于同一磁盘块中的数据会被一次性读取出来，而不是按需读取。<code>B-Tree</code>结构的数据可以让系统高效的找到数据所在的磁盘块。</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915195839.png" alt="image"></p>
+<p>每个节点占用一个盘块的磁盘空间，一个节点上有两个升序排序的关键字和三个指向子树根节点的指针，指针存储的是子节点所在磁盘块的地址。MySQL的<code>InnoDB</code>存储引擎在设计时是将<strong>根节点常驻内存的</strong>，因此力求达到<strong>树的深度不超过3</strong>，也就是<strong>I/O不需要超过三次</strong>；</p>
+<p>由于内存中的关键字是一个有序表结构，可以利用二分法查找提高效率；而三次磁盘I/O操作时影响整个B-Tree查找效率的决定因素。</p>
+<h3 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B+Tree"></a>B+Tree</h3><p><code>B+Tree</code>是在<code>B-Tree</code>基础上的一种优化，使其更适合实现外存储索引结构，<code>B-Tree</code>中每个节点中有<code>key</code>，也有<code>data</code>，而每一页的存储空间是有限的，如果data数据较大时将会导致每个节点（即一个页）能存储的key的数量很小。当存储的数据量很大时同样会导致B-Tree的深度较大，增大查询时的磁盘I/O次数，进而影响查询效率。</p>
+<p>在B+Tree中<strong>所有数据记录节点都是按照键值大小顺序存放在同一层的叶子节点上</strong>，而<strong>非叶子节点上只存储key值信息</strong>，这样可以大大加大每个节点存储的key值数量，降低B+Tree的高度；</p>
+<blockquote>
+<p>B+Tree在B-Tree的基础上有两点变化</p>
+</blockquote>
+<pre><code>1、数据是存在叶子节点中的
+2、数据节点之间是有指针指向的
+</code></pre><p>由于B+Tree的非叶子节点只存储键值信息，假设每个磁盘块能存储4个键值及指针信息，则变成B+Tree后其结构如下图所示：</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915201305.png" alt="image"></p>
+<p>通常在B+Tree上有<strong>两个头指针</strong>，一个指向<strong>根节点</strong>，另一个指向<strong>关键字最小的叶子节点</strong>，而且所有叶子节点（即数据节点）之间是一种链式环结构。</p>
+<p>因此可以对B+Tree进行两种查找运算，一种是对于主键的范围查找和分页查找，另一种是从根节点开始，进行随机查找</p>
+<blockquote>
+<p>注意</p>
+</blockquote>
+<p>InnoDB引擎采用的是<code>B+Tree</code>的方式建立索引的</p>
+<blockquote>
+<p>特性</p>
+</blockquote>
+<ul>
+<li>单节点能存储更多数据，使得磁盘IO次数更少。</li>
+<li>叶子节点形成有序链表，便于执行范围操作。</li>
+<li>聚集索引中，叶子节点的data直接包含数据；非聚集索引中，叶子节点存储数据地址的指针。</li>
+</ul>
+<h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><h3 id="什么是锁"><a href="#什么是锁" class="headerlink" title="什么是锁"></a>什么是锁</h3><p>锁，在现实生活中是为我们想要隐藏于外界所使用的一种工具。在计算机中，是协调多个进程或县城并发访问某一资源的一种机制。在数据库当中，除了传统的计算资源（CPU、RAM、I/O等等）的争用之外，数据也是一种供许多用户共享访问的资源。如何保证数据并发访问的一致性、有效性，是所有数据库必须解决的一个问题，锁的冲突也是影响数据库并发访问性能的一个重要因素。从这一角度来说，锁对于数据库而言就显得尤为重要</p>
+<h3 id="MySQL锁的比较"><a href="#MySQL锁的比较" class="headerlink" title="MySQL锁的比较"></a>MySQL锁的比较</h3><p>相对于其他的数据库而言，MySQL的锁机制比较简单，最显著的特点就是不同的存储引擎支持不同的锁机制。根据不同的存储引擎，MySQL中锁的特性可以大致归纳如下：</p>
+<table>
+<thead>
+<tr>
+<th>引擎类型</th>
+<th>表锁</th>
+<th>行锁</th>
+<th>页锁</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>MyiSAM</td>
+<td>支持</td>
+<td>X</td>
+<td>X</td>
+</tr>
+<tr>
+<td>BDB</td>
+<td>支持</td>
+<td>X</td>
+<td>支持</td>
+</tr>
+<tr>
+<td>InnoDB</td>
+<td>支持</td>
+<td>支持</td>
+<td>X</td>
+</tr>
+</tbody>
+</table>
+<p>开销、加锁速度、死锁、粒度、并发性能比较</p>
+<table>
+<thead>
+<tr>
+<th>锁类型</th>
+<th>开销</th>
+<th>加锁速度</th>
+<th>死锁</th>
+<th>粒度</th>
+<th>并发性能</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>表锁</td>
+<td>小</td>
+<td>快</td>
+<td>不会</td>
+<td>锁定力度大，发生锁冲突概率高</td>
+<td>低</td>
+</tr>
+<tr>
+<td>行锁</td>
+<td>大</td>
+<td>慢</td>
+<td>会</td>
+<td>锁定粒度小，发生锁冲突的概率低</td>
+<td>高</td>
+</tr>
+<tr>
+<td>页锁</td>
+<td>两者之间</td>
+<td>两者之间</td>
+<td>会</td>
+<td>两者之间</td>
+<td>两者之间</td>
+</tr>
+</tbody>
+</table>
+<p>表锁更适用于以查询为主，只有少量按索引条件更新数据的应用；行锁更适用于有大量按索引条件并发更新少量不同数据，同时又有并发查询的应用。（PS：由于<code>BDB</code>已经被<code>InnoDB</code>所取代，我们只讨论<code>MyISAM</code>表锁和<code>InnoDB</code>行锁的问题）</p>
+<h2 id="MyiSAM：表锁"><a href="#MyiSAM：表锁" class="headerlink" title="MyiSAM：表锁"></a>MyiSAM：表锁</h2><p>MyISAM存储引擎只支持表锁，这也是MySQL开始几个版本中唯一支持的锁类型。随着应用对事务完整性和并发性要求的不断提高，MySQL才开始开发基于事务的存储引擎，后来慢慢出现了支持页锁的BDB存储引擎和支持行锁的InnoDB存储引擎（实际 InnoDB是单独的一个公司，现在已经被Oracle公司收购）。但是MyISAM的表锁依然是使用最为广泛的锁类型。本节将详细介绍MyISAM表锁的使用。</p>
+<h3 id="锁兼容【重点】"><a href="#锁兼容【重点】" class="headerlink" title="锁兼容【重点】"></a>锁兼容【重点】</h3><p>MySQL的表级锁有两种模式：<strong>表共享读锁</strong><code>（Table Read Lock）</code>和<strong>表独占写锁</strong><code>（Table Write Lock）</code>。锁模式的兼容性如下表所示：</p>
+<table>
+<thead>
+<tr>
+<th>锁模式\请求锁模式是否兼容当前锁</th>
+<th>无锁</th>
+<th>读锁</th>
+<th>写锁</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>表共享读锁</td>
+<td>兼容</td>
+<td>兼容</td>
+<td>冲突</td>
+</tr>
+<tr>
+<td>表独占写锁</td>
+<td>兼容</td>
+<td>冲突</td>
+<td>冲突</td>
+</tr>
+</tbody>
+</table>
+<p>可见，对MyISAM表的读操作，不会阻塞其他用户对同一表的读请求，但会阻塞对同一表的写请求；对 MyISAM表的写操作，则会阻塞其他用户对同一表的读和写操作；MyISAM表的读操作与写操作之间，以及写操作之间是串行的！根据如下表所示的例子可以知道，当一个线程获得对一个表的写锁后，只有持有锁的线程可以对表进行更新操作。其他线程的读、写操作都会等待，直到锁被释放为止</p>
+<h3 id="写阻塞读demo"><a href="#写阻塞读demo" class="headerlink" title="写阻塞读demo"></a>写阻塞读demo</h3><table>
+<thead>
+<tr>
+<th>session_1</th>
+<th>session_2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>获取写锁：<code>lock table t_test write</code></td>
+<td></td>
+</tr>
+<tr>
+<td>执行查询/添加/更新/删除语句：select/insert/update/delete</td>
+<td>执行查询【等待】</td>
+</tr>
+<tr>
+<td>释放写锁：<code>unlock tables</code></td>
+<td>【等待】</td>
+</tr>
+<tr>
+<td></td>
+<td>获得锁，查询返回</td>
+</tr>
+</tbody>
+</table>
+<p><code>MyISAM</code>在执行查询语句<code>（SELECT）</code>前，会<strong>自动给涉及的所有表加读锁</strong>，在执行更新操作<code>（UPDATE、DELETE、INSERT等）</code>前，会<strong>自动给涉及的表加写锁</strong>，这个过程并不需要用户干预，因此，用户一般不需要直接用<code>LOCK TABLE</code>命令给<code>MyISAM</code>表显式加锁。在本示例中，显式加锁基本上都是为了方便而已，并非必须如此。</p>
+<h3 id="读阻塞写demo"><a href="#读阻塞写demo" class="headerlink" title="读阻塞写demo"></a>读阻塞写demo</h3><table>
+<thead>
+<tr>
+<th>session_1</th>
+<th>session_2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>获取读锁：<code>lock table t_test read</code></td>
+<td></td>
+</tr>
+<tr>
+<td>执行查询该表</td>
+<td>其他session也可以查询该表的记录</td>
+</tr>
+<tr>
+<td>执行查询其他表【Error：需要获取其他表的锁】</td>
+<td>其他session可以查询或者更新未锁定的表</td>
+</tr>
+<tr>
+<td>执行添加/更新/删除【Error：需要获取写锁】</td>
+<td>其他session更新锁定的表会等待【等待】</td>
+</tr>
+<tr>
+<td>释放读锁：<code>unlock tables</code></td>
+<td>【等待】</td>
+</tr>
+<tr>
+<td></td>
+<td>该session获得锁，更新操作完成</td>
+</tr>
+</tbody>
+</table>
+<h3 id="并发插入（Concurrent-Inserts）"><a href="#并发插入（Concurrent-Inserts）" class="headerlink" title="并发插入（Concurrent Inserts）"></a>并发插入（Concurrent Inserts）</h3><p>上文提到过<code>MyISAM</code>表的读和写是串行的，但这是就总体而言的。在一定条件下，<code>MyISAM</code>表也支持查询和插入操作的并发进行。<code>MyISAM</code>存储引擎有一个系统变量<code>concurrent_insert</code>，专门用以控制其并发插入的行为，其值分别可以为0、1或2。</p>
+<ul>
+<li>当<code>concurrent_insert</code>设置为0时，不允许并发插入。</li>
+<li>当<code>concurrent_insert</code>设置为1时，如果MyISAM表中没有空洞（即表的中间没有被删除的行），MyISAM允许在一个进程读表的同时，另一个进程从表尾插入记录。这也是MySQL的默认设置。</li>
+<li>当<code>concurrent_insert</code>设置为2时，无论MyISAM表中有没有空洞，都允许在表尾并发插入记录。</li>
+</ul>
+<h3 id="写优先调度机制"><a href="#写优先调度机制" class="headerlink" title="写优先调度机制"></a>写优先调度机制</h3><p><code>MyISAM</code>存储引擎的读锁和写锁是互斥的，读写操作是串行的。那么，一个进程请求某个<code>MyISAM</code>表的读锁，同时另一个进程也请求同一表的写锁，<code>MySQL</code>如何处理呢？答案是<strong>写进程先获得锁</strong>。不仅如此，即使读请求先到锁等待队列，写请求后到，写锁也会插到读锁请求之前！这是因为<code>MySQL</code>认为<strong>写请求一般比读请求要重要</strong>。这也正是<code>MyISAM</code>表不太适合于有大量更新操作和查询操作应用的原因，因为，大量的更新操作会造成查询操作很难获得读锁，从而可能永远阻塞。这种情况有时可能会变得非常糟糕！幸好我们可以通过一些设置来调节<code>MyISAM</code>的调度行为。</p>
+<ul>
+<li>通过指定启动参数<code>low-priority-updates</code>，使<code>MyISAM</code>引擎默认给予读请求以优先的权利。</li>
+<li>通过执行命令<code>SET LOW_PRIORITY_UPDATES=1</code>，使该连接发出的更新请求优先级降低。</li>
+<li>通过指定<code>INSERT、UPDATE、DELETE</code>语句的<code>LOW_PRIORITY</code>属性，降低该语句的优先级</li>
+</ul>
+<p>上面已经讨论了<strong>写优先调度机制</strong>带来的问题和解决办法。这里还要强调一点：<code>一些需要长时间运行的查询操作，也会使写进程“饿死”！</code>因此，应用中应尽量避免出现长时间运行的查询操作，不要总想用一条SELECT语句来解决问题，因为这种看似巧妙的SQL语句，往往比较复杂，执行时间较长，在可能的情况下可以通过使用中间表等措施对SQL语句做一定的“分解”，使每一步查询都能在较短时间完成，从而减少锁冲突。如果复杂查询不可避免，应尽量安排在数据库空闲时段执行，比如一些定期统计可以安排在夜间执行。</p>
+<h2 id="InnoDB：行锁"><a href="#InnoDB：行锁" class="headerlink" title="InnoDB：行锁"></a>InnoDB：行锁</h2><p>InnoDB实现了以下两种类型的行锁及其意向锁：</p>
+<ul>
+<li><strong>共享锁（S）</strong>：允许一个事务去读一行，阻止其他事务获得相同数据集的排他锁。</li>
+<li><strong>排他锁（X）</strong>：允许获得排他锁的事务更新数据，阻止其他事务取得相同数据集的共享读锁和排他写锁。另外，为了允许行锁和表锁共存，实现多粒度锁机制，InnoDB还有两种内部使用的意向锁（Intention Locks），这两种意向锁都是表锁。</li>
+<li>意向共享锁（IS）：事务打算给数据行加行共享锁，事务在给一个数据行加共享锁前必须先取得该表的IS锁。</li>
+<li>意向排他锁（IX）：事务打算给数据行加行排他锁，事务在给一个数据行加排他锁前必须先取得该表的IX锁。</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th>当前锁模式\请求锁模式是否兼容</th>
+<th>X</th>
+<th>IX</th>
+<th>S</th>
+<th>IS</th>
+<th>无锁</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>X</td>
+<td>冲突</td>
+<td>冲突</td>
+<td>冲突</td>
+<td>冲突</td>
+<td>兼容</td>
+</tr>
+<tr>
+<td>IX</td>
+<td>冲突</td>
+<td>兼容</td>
+<td>冲突</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+<tr>
+<td>S</td>
+<td>冲突</td>
+<td>冲突</td>
+<td>兼容</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+<tr>
+<td>IS</td>
+<td>冲突</td>
+<td>兼容</td>
+<td>兼容</td>
+<td>兼容</td>
+<td>兼容</td>
+</tr>
+</tbody>
+</table>
+<p>如果一个事务请求的锁模式与当前的锁兼容，<code>InnoDB</code>就将请求的锁授予该事务；反之，如果两者不兼容，该事务就要等待锁释放。意向锁是<code>InnoDB</code>自动加的，不需用户干预。<code>对于UPDATE、DELETE和INSERT语句，InnoDB会自动给涉及数据集加排他锁（X)</code>；对于普通SELECT语句，InnoDB不会加任何锁；事务可以通过以下语句显示给记录集加共享锁或排他锁：</p>
+<ul>
+<li>共享锁（S）：SELECT * FROM table_name WHERE … <code>LOCK IN SHARE MODE</code></li>
+<li>排他锁（X）：SELECT * FROM table_name WHERE … <code>FOR UPDATE</code></li>
+</ul>
+<p>用<code>SELECT ... IN SHARE MODE</code>获得共享锁，主要用在需要数据依存关系时来确认某行记录是否存在，并确保没有人对这个记录进行UPDATE或者DELETE操作。但是如果当前事务也需要对该记录进行更新操作，则很有可能造成<strong>死锁</strong>，对于锁定行记录后需要进行更新操作的应用，应该使用<code>SELECT... FOR UPDATE</code>方式获得排他锁</p>
+<h3 id="共享锁demo"><a href="#共享锁demo" class="headerlink" title="共享锁demo"></a>共享锁demo</h3><table>
+<thead>
+<tr>
+<th>session_1</th>
+<th>session_2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>获取共享锁：select * from t_test where id = 1 <code>lock in share mode</code></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>其他session仍然可以查询记录：select * from t_test where id = 1</td>
+</tr>
+<tr>
+<td></td>
+<td>可以获取共享锁：select * from t_test where id = 1 <code>lock in share mode</code></td>
+</tr>
+<tr>
+<td>对锁定的记录执行更新操作，等待锁：update t_test xx where id = 1【等待】</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>对锁定的记录执行更新操作，出现死锁异常退出：update t_test xx where id = 1【死锁】</td>
+</tr>
+<tr>
+<td>获得锁，更新成功</td>
+</tr>
+</tbody>
+</table>
+<blockquote>
+<p>死锁是如何发生的</p>
+</blockquote>
+<p>假设 T1 和 T2 同时达到 select，T1 对 table 加共享锁，T2 也对 table 加共享锁，当 T1 的 select 执行完，准备执行 update 时，根据锁机制，T1 的共享锁需要升级到排他锁才能执行接下来的 update.在升级排他锁前，必须等 table 上的其它共享锁（T2）释放，同理，T2 也在等 T1 的共享锁释放。于是产生<strong>死锁</strong>。</p>
+<h3 id="排他锁demo"><a href="#排他锁demo" class="headerlink" title="排他锁demo"></a>排他锁demo</h3><table>
+<thead>
+<tr>
+<th>session_1</th>
+<th>session_2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>获取排他锁：select * from t_test where id = 1 <code>for update</code></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>其他session仍然可以查询记录：select * from t_test where id = 1</td>
+</tr>
+<tr>
+<td></td>
+<td>对该记录获取共享锁：select * from t_test where id = 1 <code>lock in share mode</code>【等待】</td>
+</tr>
+<tr>
+<td>对锁定的记录执行更新操作，更新后释放锁：update t_test xx where id = 1</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>获得锁，得到其他session提交的记录</td>
+</tr>
+</tbody>
+</table>
+<h3 id="InnoDB行锁实现方式：只给索引项加锁"><a href="#InnoDB行锁实现方式：只给索引项加锁" class="headerlink" title="InnoDB行锁实现方式：只给索引项加锁"></a>InnoDB行锁实现方式：只给索引项加锁</h3><p><code>InnoDB</code>行锁是通过给索引上的<strong>索引项加锁</strong>来实现的，这一点MySQL与Oracle不同，后者是通过在数据块中对相应数据行加锁来实现的。InnoDB这种行锁实现特点意味着：<code>只有通过索引条件检索数据，InnoDB才使用行级锁，否则，InnoDB将使用表锁！</code>，在实际应用中，要特别注意InnoDB行锁的这一特性，不然的话，可能导致大量的锁冲突，从而影响并发性能</p>
+<h3 id="在不通过索引条件查询的时候加行锁，InnoDB使用的是表锁，而不是行锁"><a href="#在不通过索引条件查询的时候加行锁，InnoDB使用的是表锁，而不是行锁" class="headerlink" title="在不通过索引条件查询的时候加行锁，InnoDB使用的是表锁，而不是行锁"></a>在不通过索引条件查询的时候加行锁，InnoDB使用的是表锁，而不是行锁</h3><p>设置表<code>t_test（id,name）</code>，id为主键索引，name是普通字段</p>
+<table>
+<thead>
+<tr>
+<th>session_1</th>
+<th>session_2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>获取排他锁（实际获取的是表锁）：select * from t_test where name = ‘1’ <code>for update</code></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>获取排他锁，等待表锁释放：select * from t_test where name = ‘2’ <code>for update</code>【等待】</td>
+</tr>
+</tbody>
+</table>
+<h3 id="在通过索引条件查询的时候加行锁，InnoDB使用的是行锁"><a href="#在通过索引条件查询的时候加行锁，InnoDB使用的是行锁" class="headerlink" title="在通过索引条件查询的时候加行锁，InnoDB使用的是行锁"></a>在通过索引条件查询的时候加行锁，InnoDB使用的是行锁</h3><p>设置表<code>t_test（id,name）</code>，id为主键索引，name是普通字段</p>
+<table>
+<thead>
+<tr>
+<th>session_1</th>
+<th>session_2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>获取排他锁：select * from t_test where id = 1 <code>for update</code></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>获取排他锁：select * from t_test where id = 2 <code>for update</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="使用相同索引键的阻塞demo"><a href="#使用相同索引键的阻塞demo" class="headerlink" title="使用相同索引键的阻塞demo"></a>使用相同索引键的阻塞demo</h3><p><code>由于MySQL的行锁是针对索引加的锁，不是针对记录加的锁，所以虽然是访问不同行的记录，但是如果是使用相同的索引键，是会出现锁冲突的</code></p>
+<p>设置表<code>t_test（id,name）</code>，id为主键索引，name是普通字段，包含数据(1,1)(1,2)</p>
+<table>
+<thead>
+<tr>
+<th>session_1</th>
+<th>session_2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>获取排他锁：select * from t_test where id = 1 and name = ‘1’ <code>for update</code></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>获取排他锁，<strong>由于索引键被锁</strong>，等待行锁释放：select * from t_test where id = 1 and name = ‘2’ <code>for update</code>【等待】</td>
+</tr>
+</tbody>
+</table>
+<h3 id="使用不同索引的阻塞例子"><a href="#使用不同索引的阻塞例子" class="headerlink" title="使用不同索引的阻塞例子"></a>使用不同索引的阻塞例子</h3><p>当表有多个索引的时候，不同的事务可以使用不同的索引锁定不同的行，另外，不论是使用主键索引、唯一索引或普通索引，InnoDB都会使用行锁来对数据加锁</p>
+<p>设置表<code>t_test（id,name）</code>，id为主键索引，name是普通索引，包含数据(1,1)(1,4)(2,2)</p>
+<table>
+<thead>
+<tr>
+<th>session_1</th>
+<th>session_2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>获取排他锁：select * from t_test where id = 1 <code>for update</code></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>获取排他锁：select * from t_test name = ‘2’ <code>for update</code></td>
+</tr>
+<tr>
+<td></td>
+<td>获取排他锁，<strong>由于索引键被锁导致记录被锁</strong>，等待行锁释放：select * from t_test name = ‘4’ <code>for update</code>【等待】</td>
+</tr>
+</tbody>
+</table>
+<h3 id="在分析锁冲突时，先检查SQL的执行计划"><a href="#在分析锁冲突时，先检查SQL的执行计划" class="headerlink" title="在分析锁冲突时，先检查SQL的执行计划"></a>在分析锁冲突时，先检查SQL的执行计划</h3><p>即便在条件中使用了索引字段，但是否使用索引来检索数据是由MySQL通过判断不同执行计划的代价来决定的，如果MySQL认为全表扫描效率更高，比如对一些很小的表，它就不会使用索引，这种情况下InnoDB将使用表锁，而不是行锁。因此，<code>在分析锁冲突时，别忘了检查SQL的执行计划，以确认是否真正使用了索引</code></p>
+<h2 id="InnoDB：间隙锁（Next-Key锁）"><a href="#InnoDB：间隙锁（Next-Key锁）" class="headerlink" title="InnoDB：间隙锁（Next-Key锁）"></a>InnoDB：间隙锁（Next-Key锁）</h2><p>当我们用范围条件而不是相等条件检索数据，并请求共享或排他锁时，InnoDB会给符合条件的已有数据记录的索引项加锁；对于键值在条件范围内但并不存在的记录，叫做“<strong>间隙（GAP)</strong>”，InnoDB也会对这个“间隙”加锁，这种锁机制就是所谓的<strong>间隙锁（Next-Key锁）</strong></p>
+<p>举例来说，假如emp表中只有<code>101</code>条记录，其empid的值分别是<code>1,2,...,100,101</code>，下面的SQL：<br><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span>  emp <span class="keyword">where</span> empid &gt; <span class="number">100</span> <span class="keyword">for</span> <span class="keyword">update</span></span><br></pre></td></tr></table></figure></p>
+<p>这是一个范围条件的检索，<code>InnoDB</code>不仅会对符合条件的<code>empid=101</code>的记录加锁，也会对<code>empid&gt;101</code>（这些记录并不存在）的“间隙”加锁。</p>
+<p><code>InnoDB</code>使用间隙锁的目的，一方面是为了<strong>防止幻读</strong>，以满足相关隔离级别的要求，对于上面的例子，要是不使用间隙锁，如果其他事务插入了empid大于100的任何记录，那么本事务如果再次执行上述语句，就会发生幻读；另外一方面，是为了<strong>满足其恢复和复制的需要</strong>。</p>
+<p>很显然，在使用范围条件检索并锁定记录时，<code>InnoDB</code>这种加锁机制会阻塞符合条件范围内键值的并发插入，这往往会造成严重的锁等待。因此，在实际应用开发中，尤其是并发插入比较多的应用，我们要尽量优化业务逻辑，尽量使用相等条件来访问更新数据，<strong>避免使用范围条件</strong>。</p>
+<p>还要特别说明的是，<code>InnoDB</code>除了通过范围条件加锁时使用间隙锁外，如果使用<strong>相等条件</strong>请求给一个<strong>不存在</strong>的记录加锁，InnoDB也会使用间隙锁！</p>
+<p>设置表<code>t_test（id）</code>，id为主键索引，包含数据<code>1,2,......,100,101</code>共101条数据</p>
+<table>
+<thead>
+<tr>
+<th>session_1</th>
+<th>session_2</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>获取排他锁（对不存在的数据加锁，即为间隙锁）：select * from t_test where id = 102 <code>for update</code></td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>插入新数据（由于间隙锁，阻塞等待）：insert into t_test(id) values(102)【等待】</td>
+</tr>
+<tr>
+<td>回滚：<code>rollback</code>（释放间隙锁）</td>
+<td></td>
+</tr>
+<tr>
+<td></td>
+<td>插入成功</td>
+</tr>
+</tbody>
+</table>
+<h2 id="什么时候使用表锁"><a href="#什么时候使用表锁" class="headerlink" title="什么时候使用表锁"></a>什么时候使用表锁</h2><p>对于<code>InnoDB</code>表，在绝大部分情况下都应该使用行级锁，因为事务和行锁往往是我们之所以选择<code>InnoDB</code>表的理由。但在个别特殊事务中，也可以考虑使用表级锁：</p>
+<ul>
+<li><p>第一种情况是：事务需要更新大部分或全部数据，表又比较大，如果使用默认的行锁，不仅这个事务执行效率低，而且可能造成其他事务长时间锁等待和锁冲突，这种情况下可以考虑使用表锁来提高该事务的执行速度。</p>
+</li>
+<li><p>第二种情况是：事务涉及多个表，比较复杂，很可能引起死锁，造成大量事务回滚。这种情况也可以考虑一次性锁定事务涉及的表，从而避免死锁、减少数据库因事务回滚带来的开销。</p>
+</li>
+</ul>
+<p>当然，应用中这两种事务不能太多，否则，就应该考虑使用MyISAM表了。在InnoDB下，使用表锁要注意以下两点：</p>
+<ul>
+<li><p>使用<code>LOCK TABLES</code>虽然可以给<code>InnoDB</code>加表级锁，但必须说明的是，表锁不是由<code>InnoDB</code>存储引擎层管理的，而是由其上一层<code>MySQL Server</code>负责的，仅当<code>autocommit=0、innodb_table_locks=1</code>（默认设置）时，<code>InnoDB</code>层才能知道MySQL加的表锁，<code>MySQL Server</code>也才能感知<code>InnoDB</code>加的行锁，这种情况下，<code>InnoDB</code>才能自动识别涉及表级锁的死锁；否则，<code>InnoDB</code>将无法自动检测并处理这种死锁</p>
+</li>
+<li><p>在用<code>LOCK TABLES</code>对<code>InnoDB</code>表加锁时要注意，要将<code>AUTOCOMMIT</code>设为<code>0</code>，否则<code>MySQL</code>不会给表加锁；事务结束前，不要用<code>UNLOCK TABLES</code>释放表锁，因为<code>UNLOCK TABLES</code>会隐含地提交事务；<code>COMMIT</code>或<code>ROLLBACK</code>并不能释放用<code>LOCK TABLES</code>加的表级锁，必须用<code>UNLOCK TABLES</code>释放表</p>
+</li>
+</ul>
+<h2 id="死锁、活锁与饿死"><a href="#死锁、活锁与饿死" class="headerlink" title="死锁、活锁与饿死"></a>死锁、活锁与饿死</h2><blockquote>
+<p>什么是饿死</p>
+</blockquote>
+<p>饿死<code>（starvation）</code>是一个线程长时间得不到需要的资源而不能执行的现象。有人饿死并不代表着出现了死锁。</p>
+<blockquote>
+<p>什么是死锁</p>
+</blockquote>
+<p>两个线程相互竞争资源，线程A等线程B释放，线程B等线程A释放，产生死锁</p>
+<blockquote>
+<p>什么是活锁</p>
+</blockquote>
+<p>两个线程相互礼让资源，线程A让线程B先用，线程B让线程A先用，产生活锁</p>
+<h3 id="关于死锁"><a href="#关于死锁" class="headerlink" title="关于死锁"></a>关于死锁</h3><p><code>MyISAM</code>表锁是<code>deadlock free</code>的，这是因为<code>MyISAM</code>总是一次获得所需的全部锁，要么全部满足，要么等待，因此不会出现死锁。但在<code>InnoDB</code>中，除单个SQL组成的事务外，锁是逐步获得的，这就决定了在<code>InnoDB</code>中发生死锁是可能</p>
+<p>发生死锁后，<code>InnoDB</code>一般都能<strong>自动检测</strong>到，并<code>使一个事务释放锁并回退，另一个事务获得锁</code>，继续完成事务。但在涉及外部锁，或涉及表锁的情况下，<code>InnoDB</code>并不能完全自动检测到死锁，这需要通过设置锁等待超时参数 <code>innodb_lock_wait_timeout</code>来解决。需要说明的是，这个参数并不是只用来解决死锁问题，在并发访问比较高的情况下，如果大量事务因无法立即获得所需的锁而挂起，会占用大量计算机资源，造成严重性能问题，甚至拖跨数据库。我们通过设置合适的锁等待超时阈值，可以避免这种情况发生</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><ul>
+<li><a href="https://www.cnblogs.com/wlwl/p/9465583.html" target="_blank" rel="noopener">mysql索引实现原理</a></li>
+<li><a href="https://blog.csdn.net/m0_37962600/article/details/81005191" target="_blank" rel="noopener">深入了解MySQL存储引擎：InnoDB</a></li>
+<li><a href="https://www.iteye.com/blog/uule-2422193" target="_blank" rel="noopener">MYSQL数据库死锁的原因和解决方法</a></li>
+<li><a href="https://blog.csdn.net/mysteryhaohao/article/details/51669741" target="_blank" rel="noopener">MySQL学习之——锁(行锁、表锁、页锁、乐观锁、悲观锁等)</a></li>
+<li><a href="https://blog.crcms.cn/2018/06/02/mysql-e5-85-b1-e4-ba-ab-e9-94-81lock-in-share-mode-ef-bc-8c-e6-8e-92-e4-bb-96-e9-94-81for-update/" target="_blank" rel="noopener">Mysql 共享锁(lock in share mode)，排他锁(for update)</a></li>
+</ul>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2019/08/20/Choerodon：分布式webSocket/" rel="next" title="Choerodon：分布式webSocket">
+                <i class="fa fa-chevron-left"></i> Choerodon：分布式webSocket
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">37</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是索引"><span class="nav-number">1.</span> <span class="nav-text">什么是索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引类型"><span class="nav-number">2.</span> <span class="nav-text">索引类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FULLTEXT"><span class="nav-number">2.1.</span> <span class="nav-text">FULLTEXT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HASH"><span class="nav-number">2.2.</span> <span class="nav-text">HASH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BTREE"><span class="nav-number">2.3.</span> <span class="nav-text">BTREE</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储引擎"><span class="nav-number">3.</span> <span class="nav-text">存储引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MyiSAM引擎：非聚集索引"><span class="nav-number">3.1.</span> <span class="nav-text">MyiSAM引擎：非聚集索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InnoDB引擎：聚集索引"><span class="nav-number">3.2.</span> <span class="nav-text">InnoDB引擎：聚集索引</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MyiSAM引擎和InnoDB引擎的区别"><span class="nav-number">4.</span> <span class="nav-text">MyiSAM引擎和InnoDB引擎的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Tree与B-Tree"><span class="nav-number">5.</span> <span class="nav-text">B-Tree与B+Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#B-Tree（平衡多路查找树）"><span class="nav-number">5.1.</span> <span class="nav-text">B-Tree（平衡多路查找树）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-Tree"><span class="nav-number">5.2.</span> <span class="nav-text">B+Tree</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁"><span class="nav-number">6.</span> <span class="nav-text">锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是锁"><span class="nav-number">6.1.</span> <span class="nav-text">什么是锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL锁的比较"><span class="nav-number">6.2.</span> <span class="nav-text">MySQL锁的比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MyiSAM：表锁"><span class="nav-number">7.</span> <span class="nav-text">MyiSAM：表锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#锁兼容【重点】"><span class="nav-number">7.1.</span> <span class="nav-text">锁兼容【重点】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写阻塞读demo"><span class="nav-number">7.2.</span> <span class="nav-text">写阻塞读demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读阻塞写demo"><span class="nav-number">7.3.</span> <span class="nav-text">读阻塞写demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并发插入（Concurrent-Inserts）"><span class="nav-number">7.4.</span> <span class="nav-text">并发插入（Concurrent Inserts）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写优先调度机制"><span class="nav-number">7.5.</span> <span class="nav-text">写优先调度机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB：行锁"><span class="nav-number">8.</span> <span class="nav-text">InnoDB：行锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#共享锁demo"><span class="nav-number">8.1.</span> <span class="nav-text">共享锁demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排他锁demo"><span class="nav-number">8.2.</span> <span class="nav-text">排他锁demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InnoDB行锁实现方式：只给索引项加锁"><span class="nav-number">8.3.</span> <span class="nav-text">InnoDB行锁实现方式：只给索引项加锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在不通过索引条件查询的时候加行锁，InnoDB使用的是表锁，而不是行锁"><span class="nav-number">8.4.</span> <span class="nav-text">在不通过索引条件查询的时候加行锁，InnoDB使用的是表锁，而不是行锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在通过索引条件查询的时候加行锁，InnoDB使用的是行锁"><span class="nav-number">8.5.</span> <span class="nav-text">在通过索引条件查询的时候加行锁，InnoDB使用的是行锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用相同索引键的阻塞demo"><span class="nav-number">8.6.</span> <span class="nav-text">使用相同索引键的阻塞demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用不同索引的阻塞例子"><span class="nav-number">8.7.</span> <span class="nav-text">使用不同索引的阻塞例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在分析锁冲突时，先检查SQL的执行计划"><span class="nav-number">8.8.</span> <span class="nav-text">在分析锁冲突时，先检查SQL的执行计划</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB：间隙锁（Next-Key锁）"><span class="nav-number">9.</span> <span class="nav-text">InnoDB：间隙锁（Next-Key锁）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么时候使用表锁"><span class="nav-number">10.</span> <span class="nav-text">什么时候使用表锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#死锁、活锁与饿死"><span class="nav-number">11.</span> <span class="nav-text">死锁、活锁与饿死</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关于死锁"><span class="nav-number">11.1.</span> <span class="nav-text">关于死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">12.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2019</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共112k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
