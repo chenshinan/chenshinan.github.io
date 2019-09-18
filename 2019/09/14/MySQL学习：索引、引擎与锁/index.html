@@ -90,7 +90,8 @@
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915115747.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915195839.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915201305.png">
-<meta property="og:updated_time" content="2019-09-16T13:01:07.529Z">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190917174215.png">
+<meta property="og:updated_time" content="2019-09-18T01:35:08.427Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="MySQL学习：索引、引擎与锁">
 <meta name="twitter:description" content="什么是索引索引是一种高效获取数据的存储结构，例：hash、 二叉、 红黑，索引的建立对于MySQL的高效运行是很重要的，索引可以大大提高MySQL的检索速度  Mysql为什么不用上面三种数据结构而采用B+Tree ？  若仅仅是select * from table where id=1, 上面三种算法可以轻易实现，但若是select * from table where id&amp;lt;6, 就不">
@@ -305,7 +306,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  6.6k 字
+                  8.7k 字
                 </span>
               
 
@@ -318,7 +319,7 @@
                   <span class="post-meta-item-text">阅读时长 </span>
                 
                 <span title="阅读时长">
-                  23 分钟
+                  31 分钟
                 </span>
               
             </div>
@@ -351,7 +352,7 @@
 <p>建议</p>
 </blockquote>
 <p>通常我们对查询次数比较频繁，值比较多的列才建索引</p>
-<h2 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h2><p>MySQL支持两种存储引擎，<code>MyiSAM</code>引擎和<code>InnoDB</code>引擎</p>
+<h2 id="存储引擎"><a href="#存储引擎" class="headerlink" title="存储引擎"></a>存储引擎</h2><p>MySQL支持两种存储引擎，<code>MyiSAM</code>引擎和<code>InnoDB</code>引擎，均采用<code>B+Tree</code>作为索引结构</p>
 <h3 id="MyiSAM引擎：非聚集索引"><a href="#MyiSAM引擎：非聚集索引" class="headerlink" title="MyiSAM引擎：非聚集索引"></a>MyiSAM引擎：非聚集索引</h3><p>若以这个引擎创建数据库表<code>create table user ...</code>，它实际是生成三个文件</p>
 <pre><code>user.myi    索引文件
 user.myd    数据文件
@@ -364,7 +365,8 @@ user.frm    数据结构类型
 <h3 id="InnoDB引擎：聚集索引"><a href="#InnoDB引擎：聚集索引" class="headerlink" title="InnoDB引擎：聚集索引"></a>InnoDB引擎：聚集索引</h3><p>若以这个引擎创建数据库表<code>create table user...</code>，它实际是生成两个文件：</p>
 <pre><code>user.ibd    索引数据文件
 user.frm    数据结构类型
-</code></pre><p><code>InnoDB</code>与<code>MyiSAM</code>最大的区别是将<strong>整条数据存在叶子节点</strong>，而不是地址。(叶子节点存的是主键索引和数据信息)，若此时，你在其他列创建索引例如name，它就会在idb中创建一个以name为索引的索引树，(叶子节点存的是索引和主键索引)</p>
+</code></pre><p><code>InnoDB</code>与<code>MyiSAM</code>最大的区别是将<strong>整条数据存在叶子节点</strong>，而不是地址。(叶子节点存的是<strong>主键索引</strong>和数据信息，因此<code>InnoDB</code>表必须要有主键)，若此时，你在其他列创建索引例如name，它就会在idb中创建一个以name为索引的索引树，<strong>(叶子节点存的是索引和主键索引)</strong></p>
+<p>聚集索引这种实现方式使得按主键的搜索十分高效，但是辅助索引搜索需要<strong>检索两遍</strong>索引：首先检索辅助索引获得主键，然后用主键到主索引中检索获得记录</p>
 <p>如下图：当我们执行<code>select * from user where name = ‘test’</code>的时候，它的执行流程。</p>
 <pre><code>1、找到name索引树
 2、根据name的值找到该树下叶子的name索引和主键值
@@ -404,10 +406,12 @@ user.frm    数据结构类型
 <p>建议</p>
 </blockquote>
 <p>不用事务的时候，<code>count</code>计算多的时候适合<code>MyiSAM</code>引擎。对可靠性要求高就是用<code>InnoDB</code>引擎。<strong>推荐</strong>用<code>InnoDB</code>引擎</p>
-<h2 id="B-Tree与B-Tree"><a href="#B-Tree与B-Tree" class="headerlink" title="B-Tree与B+Tree"></a>B-Tree与B+Tree</h2><h3 id="B-Tree（平衡多路查找树）"><a href="#B-Tree（平衡多路查找树）" class="headerlink" title="B-Tree（平衡多路查找树）"></a>B-Tree（平衡多路查找树）</h3><p>为磁盘等外存储设备设计的一种平衡查找树，系统从磁盘读取数据到内存时是以磁盘块位基本单位的，位于同一磁盘块中的数据会被一次性读取出来，而不是按需读取。<code>B-Tree</code>结构的数据可以让系统高效的找到数据所在的磁盘块。</p>
+<h2 id="B-Tree与B-Tree"><a href="#B-Tree与B-Tree" class="headerlink" title="B-Tree与B+Tree"></a>B-Tree与B+Tree</h2><p>考虑到磁盘<code>I/O</code>是非常高昂代价的操作，计算机系统做了一些优化，当一次<code>I/O</code>时，不光会把当前磁盘地址的数据读取到内存中，而且会把相邻的数据也读取到内存缓冲区中，因为局部预读性原理告诉我们，当计算机访问一个地址的数据的时候，与其相邻的数据也会很快访问到。</p>
+<p>因此索引的数据结构，要把磁盘<code>I/O</code>次数限制在一个很小的数量级，最好是一个常量数量级，B+Tree应运而生</p>
+<h3 id="B-Tree（平衡多路查找树）"><a href="#B-Tree（平衡多路查找树）" class="headerlink" title="B-Tree（平衡多路查找树）"></a>B-Tree（平衡多路查找树）</h3><p>为磁盘等外存储设备设计的一种平衡查找树，系统从磁盘读取数据到内存时是以磁盘块位基本单位的，位于同一磁盘块中的数据会被一次性读取出来，而不是按需读取。<code>B-Tree</code>结构的数据可以让系统高效的找到数据所在的磁盘块。</p>
 <p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190915195839.png" alt="image"></p>
 <p>每个节点占用一个盘块的磁盘空间，一个节点上有两个升序排序的关键字和三个指向子树根节点的指针，指针存储的是子节点所在磁盘块的地址。MySQL的<code>InnoDB</code>存储引擎在设计时是将<strong>根节点常驻内存的</strong>，因此力求达到<strong>树的深度不超过3</strong>，也就是<strong>I/O不需要超过三次</strong>；</p>
-<p>由于内存中的关键字是一个有序表结构，可以利用二分法查找提高效率；而三次磁盘I/O操作时影响整个B-Tree查找效率的决定因素。</p>
+<p>由于内存中的关键字是一个有序表结构，可以利用二分法查找提高效率；而三次磁盘I/O操作是影响整个B-Tree查找效率的决定因素。</p>
 <h3 id="B-Tree"><a href="#B-Tree" class="headerlink" title="B+Tree"></a>B+Tree</h3><p><code>B+Tree</code>是在<code>B-Tree</code>基础上的一种优化，使其更适合实现外存储索引结构，<code>B-Tree</code>中每个节点中有<code>key</code>，也有<code>data</code>，而每一页的存储空间是有限的，如果data数据较大时将会导致每个节点（即一个页）能存储的key的数量很小。当存储的数据量很大时同样会导致B-Tree的深度较大，增大查询时的磁盘I/O次数，进而影响查询效率。</p>
 <p>在B+Tree中<strong>所有数据记录节点都是按照键值大小顺序存放在同一层的叶子节点上</strong>，而<strong>非叶子节点上只存储key值信息</strong>，这样可以大大加大每个节点存储的key值数量，降低B+Tree的高度；</p>
 <blockquote>
@@ -431,6 +435,61 @@ user.frm    数据结构类型
 <li>叶子节点形成有序链表，便于执行范围操作。</li>
 <li>聚集索引中，叶子节点的data直接包含数据；非聚集索引中，叶子节点存储数据地址的指针。</li>
 </ul>
+<blockquote>
+<p>其他<strong>辅助索引</strong>的B+Tree的表现形式</p>
+</blockquote>
+<p>这里辅助索引，也称为二级索引，<code>叶节点储存的信息是主键的信息</code>。如图：</p>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190917174215.png" alt="image"></p>
+<p><code>InnoDB</code>辅助索引不存储数据的信息（或者索引）就是为了避免数据地址发生迁移的时候不会跟着修改辅助索引的叶节点信息</p>
+<h3 id="B-Tree关键性质"><a href="#B-Tree关键性质" class="headerlink" title="B+Tree关键性质"></a>B+Tree关键性质</h3><ul>
+<li><p><code>I/O</code>的次数取决于<code>B+Tree</code>的高度H，假设当前数据表的数据为N，每个磁盘块的数据项的数量是M，则有：<code>H=log(M+1)N</code>，当数据量N一定的情况下，M越大，H越小；而M=磁盘块大小/数据项大小，磁盘块大小也就是一个数据页的大小，是固定的，如果数据项占的空间越小，数据项的数量越多，树的高度也就越低。这也就是为什么每个数据项，即索引字段要尽量的小，比如int占4个字节，要比bigint的8个字节小一半。<strong>这也是为什么B+Tree要求把真实数据放在叶子节点内而不是内层节点内</strong>，一旦放到内层节点内，磁盘块的数据项会大幅度的下降，导致树层级的增高。当数据项为1时，<code>B+Tree</code>会退化成线性表</p>
+</li>
+<li><p><code>B+Tree</code>的数据项是复合性数据结构，比如<code>复合索引（name，age，gender）</code>的时候，<code>B+Tree</code>是按照从左到右的顺序来建立搜索树的，比如当<code>（小张，22，女）</code>这样的数据来检索的时候，<code>B+Tree</code>会优先比较name来确定下一步的搜索方向，如果name相同再依次比较age和gender，最后得到检索的数据。但是，当<code>（22，女）</code>这样没有name的数据来的时候，<code>B+Tree</code>就不知道下一步该查哪个节点，因为建立搜索树的时候，name就是第一个比较因子，必须根据name来搜索才知道下一步去哪里查询。比如，当<code>（小张，男）</code>这样的数据来检索时，<code>B+Tree</code>就可以根据name来指定搜索方向，但下一字段age缺失，所以只能把名字是“小张”的所有数据都找到，然后再匹配性别是“男”的数据了。这个是非常重要的一条性质，即索引的<strong>最左匹配特性</strong></p>
+</li>
+</ul>
+<h2 id="建立索引的原则"><a href="#建立索引的原则" class="headerlink" title="建立索引的原则"></a>建立索引的原则</h2><ul>
+<li><strong>最左前缀匹配原则【重要】</strong></li>
+</ul>
+<p>最左前缀匹配原则：当建立了复合索引<code>(A、B、C)</code>（相当于创建了<strong>索引A、AB、ABC</strong>），在sql中<code>where A = x</code>会用到索引A，<code>where B = x,C = x</code>不会用到索引，<code>where A = x,C = x</code>会用到索引A</p>
+<p>MySQL会一直向右匹配直到遇到范围查询<code>（&gt;,&lt;,BETWEEN,LIKE）</code>就停止匹配，比如：<code>a = 1 AND b = 2 AND c &gt; 3 AND d = 4</code>，如果建立<code>（a,b,c,d）</code>顺序的索引，d是用不到索引的，如果建立<code>（a,b,d,c）</code>的索引，则都可以用到，<code>a,b,d</code>的顺序可以任意调整</p>
+<p>参考文献：<a href="https://www.kancloud.cn/kancloud/theory-of-mysql-index/41857" target="_blank" rel="noopener">最左前缀原理与相关优化</a></p>
+<ul>
+<li><p>等于<code>=</code>和<code>in</code>可以乱序。比如<code>a = 1 AND b = 2 AND c = 3</code>建立<code>（a,b,c）</code>索引可以任意顺序，MySQL的查询优化器会帮你优化成索引可以识别的模式</p>
+</li>
+<li><p>尽量选择区分度高的列作为索引【重要】</p>
+</li>
+<li><p>索引列不能参与计算</p>
+</li>
+<li><p>单个多列组合索引和多个单列索引的检索查询效果不同，因为在执行SQL时，MySQL只能使用一个索引，会从多个单列索引中选择一个限制最为严格的索引</p>
+</li>
+</ul>
+<h2 id="索引的优化方法"><a href="#索引的优化方法" class="headerlink" title="索引的优化方法"></a>索引的优化方法</h2><ul>
+<li>索引不会包含有NULL值的列</li>
+</ul>
+<p>只要列中包含有NULL值，都将不会被包含在索引中，组合索引中只要有一列有NULL值，那么这一列对于此条组合索引就是无效的。所以我们在数据库设计时，不要让索引字段的默认值为NULL</p>
+<ul>
+<li>使用短索引</li>
+</ul>
+<p>假设，如果有一个数据类型为CHAR(255)的列，在前10个或20个字符内，绝大部分数据的值是唯一的，那么就不要对整个列进行索引。短索引不仅可以提高查询速度而且可以节省I/O操作</p>
+<ul>
+<li>索引列排序</li>
+</ul>
+<p>MySQL查询只使用一个索引，因此如果WHERE子句中已经使用了索引的话，那么ORDER BY中的列是不会使用索引的。因此数据库默认排序可以符合要求的情况下，不要使用排序操作；尽量不要包含多个列的排序，如果需要，最好给这些列也创建组合索引</p>
+<ul>
+<li>LIKE语句操作</li>
+</ul>
+<p>一般情况下，不建议使用LIKE操作；如果非使用不可，如何使用也是一个研究的课题。LIKE “%aaaaa%”不会使用索引，但是LIKE “aaa%”却可以使用索引</p>
+<h2 id="聚集索引和非聚集索引"><a href="#聚集索引和非聚集索引" class="headerlink" title="聚集索引和非聚集索引"></a>聚集索引和非聚集索引</h2><ul>
+<li>聚集索引</li>
+</ul>
+<p>该索引中键值的逻辑顺序决定了表中相应行的物理顺序。即：只要索引是相邻的，那么对应的数据一定也是相邻地存放在磁盘上的。聚集索引确定表中数据的物理顺序。由于聚集索引规定数据在表中的物理存储顺序，因此一个表只能包含一个聚集索引。但该索引可以包含多个列（组合索引）</p>
+<ul>
+<li>非聚集索引</li>
+</ul>
+<p>非聚集索引，必须先查到目录中查到每一项数据对应的页码，然后再根据页码查到具体内容，该索引中索引的逻辑顺序与磁盘上行的物理存储顺序不同。记录的物理顺序与逻辑顺序没有必然的联系</p>
+<p>对于<code>B+Tree</code>的数据结构来说，聚集索引：叶节点是数据节点。非聚簇索引：叶节点是指向数据库的地址</p>
+<h3 id="分析【重要】"><a href="#分析【重要】" class="headerlink" title="分析【重要】"></a>分析【重要】</h3><p>每个表只能有一个聚簇索引，因为一个表中的记录只能以一种物理顺序存放。但是，一个表可以有不止一个非聚簇索引。聚集索引一张表只能创建一个，非聚集索引一张表可以创建多个，在<code>mysql</code>中<code>InnoDB</code>引擎是唯一支持聚集索引的存储引擎。<code>InnoDB</code>按照主键<code>（Primary Key）</code>进行聚集，如果没有定义主键，InnoDB会试着使用唯一的非空索引来代替。如果没有这种索引，<code>InnoDB</code>就会定义隐藏的主键然后在上面进行聚集</p>
+<p>非聚簇索引需要大量的硬盘空间和内存。另外，虽然非聚簇索引可以提高从表中取数据的速度，它也会降低向表中插入和更新数据的速度。每当你改变了一个建立了非聚簇索引的表中的数据时，必须同时更新索引。如果你预计一个表需要频繁地更新数据，那么不要对它建立太多非聚簇索引。另外，如果硬盘和内存空间有限，也应该限制使用非聚簇索引的数量</p>
 <h2 id="锁"><a href="#锁" class="headerlink" title="锁"></a>锁</h2><h3 id="什么是锁"><a href="#什么是锁" class="headerlink" title="什么是锁"></a>什么是锁</h3><p>锁，在现实生活中是为我们想要隐藏于外界所使用的一种工具。在计算机中，是协调多个进程或县城并发访问某一资源的一种机制。在数据库当中，除了传统的计算资源（CPU、RAM、I/O等等）的争用之外，数据也是一种供许多用户共享访问的资源。如何保证数据并发访问的一致性、有效性，是所有数据库必须解决的一个问题，锁的冲突也是影响数据库并发访问性能的一个重要因素。从这一角度来说，锁对于数据库而言就显得尤为重要</p>
 <h3 id="MySQL锁的比较"><a href="#MySQL锁的比较" class="headerlink" title="MySQL锁的比较"></a>MySQL锁的比较</h3><p>相对于其他的数据库而言，MySQL的锁机制比较简单，最显著的特点就是不同的存储引擎支持不同的锁机制。根据不同的存储引擎，MySQL中锁的特性可以大致归纳如下：</p>
 <table>
@@ -881,6 +940,10 @@ user.frm    数据结构类型
 <li><a href="https://www.iteye.com/blog/uule-2422193" target="_blank" rel="noopener">MYSQL数据库死锁的原因和解决方法</a></li>
 <li><a href="https://blog.csdn.net/mysteryhaohao/article/details/51669741" target="_blank" rel="noopener">MySQL学习之——锁(行锁、表锁、页锁、乐观锁、悲观锁等)</a></li>
 <li><a href="https://blog.crcms.cn/2018/06/02/mysql-e5-85-b1-e4-ba-ab-e9-94-81lock-in-share-mode-ef-bc-8c-e6-8e-92-e4-bb-96-e9-94-81for-update/" target="_blank" rel="noopener">Mysql 共享锁(lock in share mode)，排他锁(for update)</a></li>
+<li><a href="https://www.jianshu.com/p/a287afb5d5ba" target="_blank" rel="noopener">MySQL加锁分析与死锁解读</a></li>
+<li><a href="https://blog.csdn.net/mysteryhaohao/article/details/51719871#comments" target="_blank" rel="noopener">索引建立原则与优化</a></li>
+<li><a href="https://www.kancloud.cn/kancloud/theory-of-mysql-index/41857" target="_blank" rel="noopener">最左前缀原理与相关优化</a></li>
+<li><a href="https://blog.csdn.net/qq_22238021/article/details/80918070" target="_blank" rel="noopener">MySql索引分析【推荐阅读】</a></li>
 </ul>
 
       
@@ -1040,7 +1103,7 @@ user.frm    数据结构类型
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是索引"><span class="nav-number">1.</span> <span class="nav-text">什么是索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引类型"><span class="nav-number">2.</span> <span class="nav-text">索引类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FULLTEXT"><span class="nav-number">2.1.</span> <span class="nav-text">FULLTEXT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HASH"><span class="nav-number">2.2.</span> <span class="nav-text">HASH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BTREE"><span class="nav-number">2.3.</span> <span class="nav-text">BTREE</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储引擎"><span class="nav-number">3.</span> <span class="nav-text">存储引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MyiSAM引擎：非聚集索引"><span class="nav-number">3.1.</span> <span class="nav-text">MyiSAM引擎：非聚集索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InnoDB引擎：聚集索引"><span class="nav-number">3.2.</span> <span class="nav-text">InnoDB引擎：聚集索引</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MyiSAM引擎和InnoDB引擎的区别"><span class="nav-number">4.</span> <span class="nav-text">MyiSAM引擎和InnoDB引擎的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Tree与B-Tree"><span class="nav-number">5.</span> <span class="nav-text">B-Tree与B+Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#B-Tree（平衡多路查找树）"><span class="nav-number">5.1.</span> <span class="nav-text">B-Tree（平衡多路查找树）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-Tree"><span class="nav-number">5.2.</span> <span class="nav-text">B+Tree</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁"><span class="nav-number">6.</span> <span class="nav-text">锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是锁"><span class="nav-number">6.1.</span> <span class="nav-text">什么是锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL锁的比较"><span class="nav-number">6.2.</span> <span class="nav-text">MySQL锁的比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MyiSAM：表锁"><span class="nav-number">7.</span> <span class="nav-text">MyiSAM：表锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#锁兼容【重点】"><span class="nav-number">7.1.</span> <span class="nav-text">锁兼容【重点】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写阻塞读demo"><span class="nav-number">7.2.</span> <span class="nav-text">写阻塞读demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读阻塞写demo"><span class="nav-number">7.3.</span> <span class="nav-text">读阻塞写demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并发插入（Concurrent-Inserts）"><span class="nav-number">7.4.</span> <span class="nav-text">并发插入（Concurrent Inserts）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写优先调度机制"><span class="nav-number">7.5.</span> <span class="nav-text">写优先调度机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB：行锁"><span class="nav-number">8.</span> <span class="nav-text">InnoDB：行锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#共享锁demo"><span class="nav-number">8.1.</span> <span class="nav-text">共享锁demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排他锁demo"><span class="nav-number">8.2.</span> <span class="nav-text">排他锁demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InnoDB行锁实现方式：只给索引项加锁"><span class="nav-number">8.3.</span> <span class="nav-text">InnoDB行锁实现方式：只给索引项加锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在不通过索引条件查询的时候加行锁，InnoDB使用的是表锁，而不是行锁"><span class="nav-number">8.4.</span> <span class="nav-text">在不通过索引条件查询的时候加行锁，InnoDB使用的是表锁，而不是行锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在通过索引条件查询的时候加行锁，InnoDB使用的是行锁"><span class="nav-number">8.5.</span> <span class="nav-text">在通过索引条件查询的时候加行锁，InnoDB使用的是行锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用相同索引键的阻塞demo"><span class="nav-number">8.6.</span> <span class="nav-text">使用相同索引键的阻塞demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用不同索引的阻塞例子"><span class="nav-number">8.7.</span> <span class="nav-text">使用不同索引的阻塞例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在分析锁冲突时，先检查SQL的执行计划"><span class="nav-number">8.8.</span> <span class="nav-text">在分析锁冲突时，先检查SQL的执行计划</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB：间隙锁（Next-Key锁）"><span class="nav-number">9.</span> <span class="nav-text">InnoDB：间隙锁（Next-Key锁）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么时候使用表锁"><span class="nav-number">10.</span> <span class="nav-text">什么时候使用表锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#死锁、活锁与饿死"><span class="nav-number">11.</span> <span class="nav-text">死锁、活锁与饿死</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关于死锁"><span class="nav-number">11.1.</span> <span class="nav-text">关于死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">12.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#什么是索引"><span class="nav-number">1.</span> <span class="nav-text">什么是索引</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引类型"><span class="nav-number">2.</span> <span class="nav-text">索引类型</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#FULLTEXT"><span class="nav-number">2.1.</span> <span class="nav-text">FULLTEXT</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#HASH"><span class="nav-number">2.2.</span> <span class="nav-text">HASH</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BTREE"><span class="nav-number">2.3.</span> <span class="nav-text">BTREE</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#存储引擎"><span class="nav-number">3.</span> <span class="nav-text">存储引擎</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#MyiSAM引擎：非聚集索引"><span class="nav-number">3.1.</span> <span class="nav-text">MyiSAM引擎：非聚集索引</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InnoDB引擎：聚集索引"><span class="nav-number">3.2.</span> <span class="nav-text">InnoDB引擎：聚集索引</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MyiSAM引擎和InnoDB引擎的区别"><span class="nav-number">4.</span> <span class="nav-text">MyiSAM引擎和InnoDB引擎的区别</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#B-Tree与B-Tree"><span class="nav-number">5.</span> <span class="nav-text">B-Tree与B+Tree</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#B-Tree（平衡多路查找树）"><span class="nav-number">5.1.</span> <span class="nav-text">B-Tree（平衡多路查找树）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-Tree"><span class="nav-number">5.2.</span> <span class="nav-text">B+Tree</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#B-Tree关键性质"><span class="nav-number">5.3.</span> <span class="nav-text">B+Tree关键性质</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#建立索引的原则"><span class="nav-number">6.</span> <span class="nav-text">建立索引的原则</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#索引的优化方法"><span class="nav-number">7.</span> <span class="nav-text">索引的优化方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#聚集索引和非聚集索引"><span class="nav-number">8.</span> <span class="nav-text">聚集索引和非聚集索引</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#分析【重要】"><span class="nav-number">8.1.</span> <span class="nav-text">分析【重要】</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#锁"><span class="nav-number">9.</span> <span class="nav-text">锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是锁"><span class="nav-number">9.1.</span> <span class="nav-text">什么是锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MySQL锁的比较"><span class="nav-number">9.2.</span> <span class="nav-text">MySQL锁的比较</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#MyiSAM：表锁"><span class="nav-number">10.</span> <span class="nav-text">MyiSAM：表锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#锁兼容【重点】"><span class="nav-number">10.1.</span> <span class="nav-text">锁兼容【重点】</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写阻塞读demo"><span class="nav-number">10.2.</span> <span class="nav-text">写阻塞读demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#读阻塞写demo"><span class="nav-number">10.3.</span> <span class="nav-text">读阻塞写demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#并发插入（Concurrent-Inserts）"><span class="nav-number">10.4.</span> <span class="nav-text">并发插入（Concurrent Inserts）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#写优先调度机制"><span class="nav-number">10.5.</span> <span class="nav-text">写优先调度机制</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB：行锁"><span class="nav-number">11.</span> <span class="nav-text">InnoDB：行锁</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#共享锁demo"><span class="nav-number">11.1.</span> <span class="nav-text">共享锁demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#排他锁demo"><span class="nav-number">11.2.</span> <span class="nav-text">排他锁demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#InnoDB行锁实现方式：只给索引项加锁"><span class="nav-number">11.3.</span> <span class="nav-text">InnoDB行锁实现方式：只给索引项加锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在不通过索引条件查询的时候加行锁，InnoDB使用的是表锁，而不是行锁"><span class="nav-number">11.4.</span> <span class="nav-text">在不通过索引条件查询的时候加行锁，InnoDB使用的是表锁，而不是行锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在通过索引条件查询的时候加行锁，InnoDB使用的是行锁"><span class="nav-number">11.5.</span> <span class="nav-text">在通过索引条件查询的时候加行锁，InnoDB使用的是行锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用相同索引键的阻塞demo"><span class="nav-number">11.6.</span> <span class="nav-text">使用相同索引键的阻塞demo</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#使用不同索引的阻塞例子"><span class="nav-number">11.7.</span> <span class="nav-text">使用不同索引的阻塞例子</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在分析锁冲突时，先检查SQL的执行计划"><span class="nav-number">11.8.</span> <span class="nav-text">在分析锁冲突时，先检查SQL的执行计划</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#InnoDB：间隙锁（Next-Key锁）"><span class="nav-number">12.</span> <span class="nav-text">InnoDB：间隙锁（Next-Key锁）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#什么时候使用表锁"><span class="nav-number">13.</span> <span class="nav-text">什么时候使用表锁</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#死锁、活锁与饿死"><span class="nav-number">14.</span> <span class="nav-text">死锁、活锁与饿死</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#关于死锁"><span class="nav-number">14.1.</span> <span class="nav-text">关于死锁</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">15.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -1081,7 +1144,7 @@ user.frm    数据结构类型
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共112k字</span>
+  <span class="post-count">博客全站共114.5k字</span>
 </div>
 
 

@@ -86,6 +86,7 @@
 <meta property="og:site_name" content="大艺术家_SN">
 <meta property="og:description" content="追本溯源Lamport在1990年提出了一个理论上的一致性解决方案，同时给出了严谨的数学证明。为描述 Paxos 算法，Lamport 虚拟了一个叫做 Paxos 的希腊小岛：岛上采用议会的形式来通过法令，议会中的议员通过信使进行消息的传递，而议员和信使都是兼职的，他们随时有可能离开议会厅，并且信使可能会重复的传递消息，也可能一去不复返，此处假设没有拜占庭将军问题（消息不会被篡改）。这样的环境下，">
 <meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190918193529.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190912170548.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190912170558.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190912170605.png">
@@ -95,11 +96,11 @@
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190912170633.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190912170637.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190912170646.png">
-<meta property="og:updated_time" content="2019-09-12T09:51:37.087Z">
+<meta property="og:updated_time" content="2019-09-18T11:49:53.701Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="Paxos算法分析">
 <meta name="twitter:description" content="追本溯源Lamport在1990年提出了一个理论上的一致性解决方案，同时给出了严谨的数学证明。为描述 Paxos 算法，Lamport 虚拟了一个叫做 Paxos 的希腊小岛：岛上采用议会的形式来通过法令，议会中的议员通过信使进行消息的传递，而议员和信使都是兼职的，他们随时有可能离开议会厅，并且信使可能会重复的传递消息，也可能一去不复返，此处假设没有拜占庭将军问题（消息不会被篡改）。这样的环境下，">
-<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190912170548.png">
+<meta name="twitter:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190918193529.png">
 
 
 
@@ -310,7 +311,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  3k 字
+                  3.4k 字
                 </span>
               
 
@@ -323,7 +324,7 @@
                   <span class="post-meta-item-text">阅读时长 </span>
                 
                 <span title="阅读时长">
-                  11 分钟
+                  12 分钟
                 </span>
               
             </div>
@@ -430,7 +431,22 @@
 <p>一句话总结</p>
 </blockquote>
 <pre><code>如果在集群中一个题案A（pid，value）会被通过，让集群中超过半数的人达成一致，那么小于该题案编号的题案会被拒绝，大于该题案编号的题案的值为该题案的值
-</code></pre><h2 id="思考与总结"><a href="#思考与总结" class="headerlink" title="思考与总结"></a>思考与总结</h2><h3 id="如何理解一致性"><a href="#如何理解一致性" class="headerlink" title="如何理解一致性"></a>如何理解一致性</h3><p>集群中所有存活的节点对某个值达成一致（v=a），而不能出现某个节点认为v=b，</p>
+</code></pre><h2 id="关于脑裂"><a href="#关于脑裂" class="headerlink" title="关于脑裂"></a>关于脑裂</h2><h3 id="什么是脑裂"><a href="#什么是脑裂" class="headerlink" title="什么是脑裂"></a>什么是脑裂</h3><p>脑裂<code>(split-brain)</code>就是“大脑分裂”，也就是本来一个“大脑”被拆分了两个或多个“大脑”，我们都知道，如果一个人有多个大脑，并且相互独立的话，那么会导致人体“手舞足蹈”，“不听使唤</p>
+<p>脑裂通常会出现在集群环境中，比如<code>ElasticSearch、Zookeeper</code>集群，而这些集群环境有一个统一的特点，就是它们有一个大脑，比如<code>ElasticSearch</code>集群中有<code>Master</code>节点，<code>Zookeeper</code>集群中有<code>Leader</code>节点</p>
+<h3 id="如何避免脑裂"><a href="#如何避免脑裂" class="headerlink" title="如何避免脑裂"></a>如何避免脑裂</h3><p>在集群中，通常需要选举出一个<code>leader</code>，选举需要采用<strong>过半机制</strong>，集群中如果有<strong>奇数</strong>个，例如<code>7</code>个，最多可以挂掉<code>3</code>个。集群中如果有<strong>偶数</strong>个，例如<code>8</code>个，最多可以挂掉<code>3</code>个，存活数量<code>5</code>个&gt;<code>8/2</code>，才可以选举成功</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">集群的容灾数量 = 集群总节点数/2-1（偶数）</span><br><span class="line">集群的容灾数量 =（集群总节点数-1）/2（奇数）</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>如果是可以挂掉4个，则可能会产生脑裂（两个<code>leader</code>）</p>
+</blockquote>
+<p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190918193529.png" alt="image"></p>
+<blockquote>
+<p>7个最多挂3个，8个也是最多挂3个</p>
+</blockquote>
+<p>由此可以看出，<strong>奇数</strong>个节点的集群可以满足相同容灾数量，用更少的节点，所以通常集群的节点数都为奇数</p>
+<blockquote>
+<p>由此可得构建一个集群至少需要<code>3</code>个节点</p>
+</blockquote>
+<h2 id="思考与总结"><a href="#思考与总结" class="headerlink" title="思考与总结"></a>思考与总结</h2><h3 id="如何理解一致性"><a href="#如何理解一致性" class="headerlink" title="如何理解一致性"></a>如何理解一致性</h3><p>集群中所有存活的节点对某个值达成一致（v=a），而不能出现某个节点认为v=b，</p>
 <h3 id="为什么需要预提案"><a href="#为什么需要预提案" class="headerlink" title="为什么需要预提案"></a>为什么需要预提案</h3><p>一致性需要满足<strong>安全性</strong>（一旦v就某个值达成了一致，那么v不能对另一个值再次达成一致），如果只有提案阶段，由于先后问题，P1先令P3的v=a，P2再令P3的v=b，这个过程出现两次一致的情况（认为超过半数对某个值达成一致），视为不安全。如果这里用了拒绝策略（根据提案id大小来拒绝），那么集群中存在P1的v=a，P2的v=b，视为不安全。</p>
 <h3 id="拒接策略为什么不能是先来后到"><a href="#拒接策略为什么不能是先来后到" class="headerlink" title="拒接策略为什么不能是先来后到"></a>拒接策略为什么不能是先来后到</h3><p>如果使用先来后到的拒接策略的话，那么在集群中如果P1、P2、P3都尝试修改v的值，会导致永远不会出现两个进程的v值相等的情况</p>
 <h3 id="流程示例"><a href="#流程示例" class="headerlink" title="流程示例"></a>流程示例</h3><p>集群中有三个节点，P1（<code>Proposer、Acceptor、Learner</code>），P2（<code>Proposer、Acceptor、Learner</code>）,P3（<code>Acceptor、Learner</code>），这里分析一下P3如何处理P1和P2的提案的</p>
@@ -451,6 +467,7 @@
 <li><a href="https://www.zhihu.com/question/19787937/answer/82340987" target="_blank" rel="noopener">如何浅显易懂地解说 Paxos 的算法</a></li>
 <li><a href="https://zh.wikipedia.org/zh-cn/Paxos%E7%AE%97%E6%B3%95" target="_blank" rel="noopener">维基百科</a></li>
 <li><a href="https://blog.csdn.net/qq_35440678/article/details/78080431" target="_blank" rel="noopener">理解这两点，也就理解了paxos协议的精髓</a></li>
+<li><a href="https://cloud.tencent.com/developer/article/1475225" target="_blank" rel="noopener">脑裂是什么？Zookeeper是如何解决的？</a></li>
 </ul>
 
       
@@ -614,7 +631,7 @@
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#追本溯源"><span class="nav-number">1.</span> <span class="nav-text">追本溯源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos是什么"><span class="nav-number">2.</span> <span class="nav-text">Paxos是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos解决什么"><span class="nav-number">3.</span> <span class="nav-text">Paxos解决什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关概念"><span class="nav-number">4.</span> <span class="nav-text">相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#角色"><span class="nav-number">4.1.</span> <span class="nav-text">角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提案"><span class="nav-number">4.2.</span> <span class="nav-text">提案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选定提案"><span class="nav-number">4.3.</span> <span class="nav-text">选定提案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推导过程"><span class="nav-number">5.</span> <span class="nav-text">推导过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#核心原理"><span class="nav-number">5.1.</span> <span class="nav-text">核心原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推导过程-1"><span class="nav-number">5.2.</span> <span class="nav-text">推导过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos协议流程"><span class="nav-number">6.</span> <span class="nav-text">Paxos协议流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思考与总结"><span class="nav-number">7.</span> <span class="nav-text">思考与总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何理解一致性"><span class="nav-number">7.1.</span> <span class="nav-text">如何理解一致性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么需要预提案"><span class="nav-number">7.2.</span> <span class="nav-text">为什么需要预提案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拒接策略为什么不能是先来后到"><span class="nav-number">7.3.</span> <span class="nav-text">拒接策略为什么不能是先来后到</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流程示例"><span class="nav-number">7.4.</span> <span class="nav-text">流程示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#P3先收到P1的预提案"><span class="nav-number">7.4.1.</span> <span class="nav-text">P3先收到P1的预提案</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流程示例：P3先收到P2的预提案"><span class="nav-number">7.5.</span> <span class="nav-text">流程示例：P3先收到P2的预提案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">8.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#追本溯源"><span class="nav-number">1.</span> <span class="nav-text">追本溯源</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos是什么"><span class="nav-number">2.</span> <span class="nav-text">Paxos是什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos解决什么"><span class="nav-number">3.</span> <span class="nav-text">Paxos解决什么</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#相关概念"><span class="nav-number">4.</span> <span class="nav-text">相关概念</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#角色"><span class="nav-number">4.1.</span> <span class="nav-text">角色</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#提案"><span class="nav-number">4.2.</span> <span class="nav-text">提案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#选定提案"><span class="nav-number">4.3.</span> <span class="nav-text">选定提案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#推导过程"><span class="nav-number">5.</span> <span class="nav-text">推导过程</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#核心原理"><span class="nav-number">5.1.</span> <span class="nav-text">核心原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#推导过程-1"><span class="nav-number">5.2.</span> <span class="nav-text">推导过程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Paxos协议流程"><span class="nav-number">6.</span> <span class="nav-text">Paxos协议流程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#关于脑裂"><span class="nav-number">7.</span> <span class="nav-text">关于脑裂</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#什么是脑裂"><span class="nav-number">7.1.</span> <span class="nav-text">什么是脑裂</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#如何避免脑裂"><span class="nav-number">7.2.</span> <span class="nav-text">如何避免脑裂</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#思考与总结"><span class="nav-number">8.</span> <span class="nav-text">思考与总结</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#如何理解一致性"><span class="nav-number">8.1.</span> <span class="nav-text">如何理解一致性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#为什么需要预提案"><span class="nav-number">8.2.</span> <span class="nav-text">为什么需要预提案</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拒接策略为什么不能是先来后到"><span class="nav-number">8.3.</span> <span class="nav-text">拒接策略为什么不能是先来后到</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流程示例"><span class="nav-number">8.4.</span> <span class="nav-text">流程示例</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#P3先收到P1的预提案"><span class="nav-number">8.4.1.</span> <span class="nav-text">P3先收到P1的预提案</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#流程示例：P3先收到P2的预提案"><span class="nav-number">8.5.</span> <span class="nav-text">流程示例：P3先收到P2的预提案</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">9.</span> <span class="nav-text">参考文献</span></a></li></ol></div>
             
 
           </div>
@@ -655,7 +672,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共112k字</span>
+  <span class="post-count">博客全站共114.5k字</span>
 </div>
 
 
