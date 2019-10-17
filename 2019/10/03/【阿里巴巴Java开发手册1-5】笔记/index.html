@@ -87,7 +87,7 @@
 <meta property="og:description" content="本篇博文记录的是我阅读【阿里巴巴Java开发手册1.5】后，对于重点知识的记录与部分分析 编程规约命名风格8.【强制】POJO类中布尔类型变量都不要加is前缀，否则部分框架解析会引起序列化错误。 9.【强制】包名统一使用小写，点分隔符之间有且仅有一个自然语义的英语单词。包名统一使用单数形式，但是类名如果有复数含义，类名可以使用复数形式。 15.【推荐】接口类中的方法和属性不要加任何修饰符号(pub">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20191013114611.png">
-<meta property="og:updated_time" content="2019-10-13T06:55:54.162Z">
+<meta property="og:updated_time" content="2019-10-17T06:48:57.428Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【阿里巴巴Java开发手册1.5】笔记">
 <meta name="twitter:description" content="本篇博文记录的是我阅读【阿里巴巴Java开发手册1.5】后，对于重点知识的记录与部分分析 编程规约命名风格8.【强制】POJO类中布尔类型变量都不要加is前缀，否则部分框架解析会引起序列化错误。 9.【强制】包名统一使用小写，点分隔符之间有且仅有一个自然语义的英语单词。包名统一使用单数形式，但是类名如果有复数含义，类名可以使用复数形式。 15.【推荐】接口类中的方法和属性不要加任何修饰符号(pub">
@@ -302,7 +302,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  8.4k 字
+                  8.5k 字
                 </span>
               
 
@@ -315,7 +315,7 @@
                   <span class="post-meta-item-text">阅读时长 </span>
                 
                 <span title="阅读时长">
-                  30 分钟
+                  31 分钟
                 </span>
               
             </div>
@@ -431,8 +431,9 @@
 <p>15.【推荐】避免 Random 实例被多线程使用，虽然共享该实例是线程安全的，但会因竞争同一 seed 导致的性能下降。</p>
 <p>正例:在 JDK7 之后，可以直接使用 API ThreadLocalRandom，而在 JDK7 之前，需要编码保证每个线 程持有一个实例。</p>
 <p>18.【参考】HashMap 在容量不够进行 resize 时由于高并发可能出现死链，导致 CPU 飙升，在开发过程中可以使用其它数据结构或加锁来规避此风险。</p>
-<p>【待关注】19.【参考】ThreadLocal 对象使用 static 修饰，ThreadLocal 无法解决共享对象的更新问题。 </p>
+<p>19.【参考】ThreadLocal 对象使用 static 修饰，ThreadLocal 无法解决共享对象的更新问题。</p>
 <p>说明:这个变量是针对一个线程内所有操作共享的，所以设置为静态变量，所有此类实例共享此静态变量，也就是说在类第一次被使用时装载，只分配一块存储空间，所有此类的对象(只要是这个线程内定义 的)都可以操控这个变量。</p>
+<p><strong>注意</strong>：每个线程往threadlocal中读取数据都是线程隔离，互相之间不影响，所以threadlocal无法解决共享对象的更新问题。由于不需要共享信息，自然不存在竞争问题了，从而保证了某些情况下线程安全问题，以及避免了某些情况必须要考虑线程安全必须同步带来的性能损失</p>
 <h3 id="控制语句"><a href="#控制语句" class="headerlink" title="控制语句"></a>控制语句</h3><p>2.【强制】当switch括号内的变量类型为String并且此变量为外部参数时，必须先进行null 判断。</p>
 <p>4.【强制】在高并发场景中，避免使用“等于”判断作为中断或退出的条件</p>
 <p>说明:如果并发控制没有处理好，容易产生等值判断被“击穿”的情况，使用大于或小于的区间判断条件<br>来代替。</p>
@@ -604,6 +605,10 @@ SQL 注入
 
           <div class="post-nav-prev post-nav-item">
             
+              <a href="/2019/10/17/深入理解ThreadLocal/" rel="prev" title="深入理解ThreadLocal">
+                深入理解ThreadLocal <i class="fa fa-chevron-right"></i>
+              </a>
+            
           </div>
         </div>
       
@@ -681,7 +686,7 @@ SQL 注入
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">39</span>
+                  <span class="site-state-item-count">40</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -769,7 +774,7 @@ SQL 注入
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共131.3k字</span>
+  <span class="post-count">博客全站共137.1k字</span>
 </div>
 
 
