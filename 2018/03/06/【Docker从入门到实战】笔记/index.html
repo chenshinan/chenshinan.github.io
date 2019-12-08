@@ -135,7 +135,7 @@
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190221140628.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190221170727.png">
 <meta property="og:image" content="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190221170812.png">
-<meta property="og:updated_time" content="2019-02-21T09:28:39.063Z">
+<meta property="og:updated_time" content="2019-10-21T03:41:21.721Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="【Docker从入门到实战】笔记">
 <meta name="twitter:description" content="什么是dockerDocker 是一个开源的应用容器引擎，让开发者可以打包他们的应用以及依赖包到一个可移植的容器中，然后发布到任何流行的Linux机器上，也可以实现虚拟化，容器是完全使用沙箱机制，相互之间不会有任何接口。 Docker采用 C/S架构 Docker daemon 作为服务端接受来自客户的请求，并处理这些请求（创建、运行、分发容器）。 客户端和服务端既可以运行在一个机器上，也可通过">
@@ -350,7 +350,7 @@
                   <span class="post-meta-item-text">字数统计 </span>
                 
                 <span title="字数统计">
-                  3.6k 字
+                  3.7k 字
                 </span>
               
 
@@ -401,7 +401,7 @@
 </ul>
 <p>需要注意的是，列表中的镜像体积总和并非是所有镜像实际硬盘消耗。由于Docker镜像是<code>多层存储结构</code>，并且可以继承、复用，因此不同镜像可能会因为 使用相同的基础镜像，从而拥有共同的层。由于Docker使用Union FS，相同的层只需要保 存一份即可，因此实际镜像硬盘占用空间很可能要比这个列表镜像大小的总和要小的多</p>
 <ul>
-<li>虚悬镜像：拉新镜像时，原有镜像名已存在则会被覆盖为新的，旧的就成为虚悬镜像<none>，可以用下面命令删除这类镜像</none></li>
+<li>虚悬镜像：拉新镜像时，原有镜像名已存在则会被覆盖为新的，旧的就成为虚悬镜像\<none>，可以用下面命令删除这类镜像</none></li>
 </ul>
 <figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker rmi $(docker images -q -f dangling=true)</span><br></pre></td></tr></table></figure>
 <ul>
@@ -460,6 +460,10 @@
 <p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190219001009.png" alt="image"></p>
 <p>还可以将CMD作为参数传递给ENTRYPOINT</p>
 <p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190219001230.png" alt="image"></p>
+<blockquote>
+<p>注意</p>
+</blockquote>
+<p>在镜像中，ENTRYPOINT只生效最后一个，之前的会被覆盖，而CMD可以存在多个</p>
 <h3 id="ENV-设置环境变量"><a href="#ENV-设置环境变量" class="headerlink" title="ENV 设置环境变量"></a>ENV 设置环境变量</h3><p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190219093402.png" alt="image"></p>
 <p><img src="https://csn-images.oss-cn-shenzhen.aliyuncs.com/markdown/20190219093428.png" alt="image"></p>
 <h3 id="ARG-构建参数"><a href="#ARG-构建参数" class="headerlink" title="ARG 构建参数"></a>ARG 构建参数</h3><p>构建参数和 ENV 的效果一样，都是设置环境变量。所不同的是，ARG 所设置的构建环境的 环境变量，在将来容器运行时是不会存在这些环境变量的</p>
@@ -655,7 +659,7 @@
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">40</span>
+                  <span class="site-state-item-count">41</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -743,7 +747,7 @@
 </div>
 <div class="theme-info">
   <div class="powered-by"></div>
-  <span class="post-count">博客全站共137.1k字</span>
+  <span class="post-count">博客全站共138k字</span>
 </div>
 
 
