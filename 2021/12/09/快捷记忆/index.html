@@ -1,0 +1,936 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next pisces use-motion" lang="zh-Hans">
+<head><meta name="generator" content="Hexo 3.8.0">
+  <meta charset="UTF-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform">
+<meta http-equiv="Cache-Control" content="no-siteapp">
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css">
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/icon.jpg?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT">
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="快捷记忆JAVA1.数字格式化DecimalFormat format = new DecimalFormat(&amp;quot;000&amp;quot;); 2.Logger日志输出以这种方式logger.info(&amp;quot;=== 消息队列接收信息 : {}&amp;quot;, msg); 3.Jackson 高性能的JSON处理 ObjectMapper可以把json转换成各种对象，各种对象转json，可以">
+<meta property="og:type" content="article">
+<meta property="og:title" content="快捷记忆">
+<meta property="og:url" content="http://chenshinan.github.io/2021/12/09/快捷记忆/index.html">
+<meta property="og:site_name" content="大艺术家_SN">
+<meta property="og:description" content="快捷记忆JAVA1.数字格式化DecimalFormat format = new DecimalFormat(&amp;quot;000&amp;quot;); 2.Logger日志输出以这种方式logger.info(&amp;quot;=== 消息队列接收信息 : {}&amp;quot;, msg); 3.Jackson 高性能的JSON处理 ObjectMapper可以把json转换成各种对象，各种对象转json，可以">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:updated_time" content="2021-12-09T15:10:19.872Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="快捷记忆">
+<meta name="twitter:description" content="快捷记忆JAVA1.数字格式化DecimalFormat format = new DecimalFormat(&amp;quot;000&amp;quot;); 2.Logger日志输出以这种方式logger.info(&amp;quot;=== 消息队列接收信息 : {}&amp;quot;, msg); 3.Jackson 高性能的JSON处理 ObjectMapper可以把json转换成各种对象，各种对象转json，可以">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Pisces',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":5,"b2t":true,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+  <script>
+  (function(i,s,o,g,r,a,m){i["DaoVoiceObject"]=r;i[r]=i[r]||function(){(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;a.charset="utf-8";m.parentNode.insertBefore(a,m)})(window,document,"script",('https:' == document.location.protocol ? 'https:' : 'http:') + "//widget.daovoice.io/widget/0f81ff2f.js","daovoice")
+  daovoice('init', {
+      app_id: "2e062b52"
+    });
+  daovoice('update');
+  </script>
+
+
+
+
+  <link rel="canonical" href="http://chenshinan.github.io/2021/12/09/快捷记忆/">
+
+
+
+
+
+  <title>快捷记忆 | 大艺术家_SN</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope="" itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope="" itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/" class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">大艺术家_SN</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">事在人为，为者终成，生死之外又有什么是一定办不到的呢</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br>
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br>
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope="" itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="http://chenshinan.github.io/2021/12/09/快捷记忆/">
+
+    <span hidden itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="chenshinan">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.jpg">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope="" itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="大艺术家_SN">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">快捷记忆</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2021-12-09T23:08:28+08:00">
+                2021-12-09
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+            <div class="post-wordcount">
+              
+                
+                
+                  <span class="post-meta-item-text">字数统计 </span>
+                
+                <span title="字数统计">
+                  5.4k 字
+                </span>
+              
+
+              
+                <span class="post-meta-divider">|</span>
+              
+
+              
+                
+                  <span class="post-meta-item-text">阅读时长 </span>
+                
+                <span title="阅读时长">
+                  21 分钟
+                </span>
+              
+            </div>
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <h1 id="快捷记忆"><a href="#快捷记忆" class="headerlink" title="快捷记忆"></a>快捷记忆</h1><h2 id="JAVA"><a href="#JAVA" class="headerlink" title="JAVA"></a>JAVA</h2><h3 id="1-数字格式化"><a href="#1-数字格式化" class="headerlink" title="1.数字格式化"></a>1.数字格式化</h3><p><code>DecimalFormat format = new DecimalFormat(&quot;000&quot;);</code></p>
+<h3 id="2-Logger日志输出以这种方式"><a href="#2-Logger日志输出以这种方式" class="headerlink" title="2.Logger日志输出以这种方式"></a>2.Logger日志输出以这种方式</h3><p><code>logger.info(&quot;=== 消息队列接收信息 : {}&quot;, msg);</code></p>
+<h3 id="3-Jackson-高性能的JSON处理-ObjectMapper"><a href="#3-Jackson-高性能的JSON处理-ObjectMapper" class="headerlink" title="3.Jackson 高性能的JSON处理 ObjectMapper"></a>3.Jackson 高性能的JSON处理 ObjectMapper</h3><p>可以把json转换成各种对象，各种对象转json，可以用于消息队列的传递</p>
+<p>前端传一个map，map的一个key对应的value是List对象，后台拿到map怎么转</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">private</span> ObjectMapper mapper = <span class="keyword">new</span> ObjectMapper();</span><br><span class="line">JavaType cjavaType = mapper.getTypeFactory().constructParametricType(ArrayList.class, Classify.class);</span><br><span class="line">classifies = mapper.readValue(mapper.writeValueAsString(classifies),cjavaType);</span><br></pre></td></tr></table></figure>
+<h3 id="4-线程安全队列"><a href="#4-线程安全队列" class="headerlink" title="4.线程安全队列"></a>4.线程安全队列</h3><p>一个线程安全的队列实现方式有两种：1是使用阻塞方法、2是使用非阻塞。阻塞就是加锁，非阻塞采用循环CAS的方式实现</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ConcurrentLinkedQueue是一个基于链接节点的无界线程安全队列，它采用先进先出的规则对节点进行排序，当我们添加一个元素的时候，它会添加到队列的尾部，当我们获取一个元素时，它会返回队列头部的元素。</span><br></pre></td></tr></table></figure>
+<h3 id="5-SpringBoot定时任务"><a href="#5-SpringBoot定时任务" class="headerlink" title="5.SpringBoot定时任务"></a>5.SpringBoot定时任务</h3><p>定时任务：@Scheduled \<br>fixedRate 任务两次执行时间间隔是任务的开始点 \<br>fixedDelay 的间隔是前次任务的结束与下次任务的开始 \<br>cron 表达式</p>
+<h3 id="6-RandomAccessFiles随机流"><a href="#6-RandomAccessFiles随机流" class="headerlink" title="6.RandomAccessFiles随机流"></a>6.RandomAccessFiles随机流</h3><p>针对文件内容进行操作，完成随机读取功能，可以读取指定位置的内容</p>
+<h3 id="7-求日期相差天数"><a href="#7-求日期相差天数" class="headerlink" title="7.求日期相差天数"></a>7.求日期相差天数</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> day = (<span class="keyword">int</span>) ((x.getDeadline().getTime() - <span class="keyword">new</span> Date().getTime()) / (<span class="number">1000</span> * <span class="number">3600</span> * <span class="number">24</span>));</span><br></pre></td></tr></table></figure>
+<h3 id="8-排序"><a href="#8-排序" class="headerlink" title="8.排序"></a>8.排序</h3><p>list.sort(Comparator.comparing(x-&gt;x.getId));</p>
+<h3 id="9-SpringBoot项目打成jar后获取classpath下文件"><a href="#9-SpringBoot项目打成jar后获取classpath下文件" class="headerlink" title="9.SpringBoot项目打成jar后获取classpath下文件"></a>9.SpringBoot项目打成jar后获取classpath下文件</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">ClassPathResource resource = <span class="keyword">new</span> ClassPathResource(<span class="string">"application.yml"</span>);</span><br><span class="line">InputStream inputStream = resource.getInputStream();</span><br><span class="line">File file = <span class="keyword">new</span> File(inputStream);</span><br></pre></td></tr></table></figure>
+<h3 id="ModelMapper：对象与DTO转换"><a href="#ModelMapper：对象与DTO转换" class="headerlink" title="ModelMapper：对象与DTO转换"></a>ModelMapper：对象与DTO转换</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">IssueDTO issueDTO = modelMapper.map(issue,IssueDTO.class);</span><br></pre></td></tr></table></figure>
+<h3 id="ResponseEntity：封装返回的HttpStatus，可定义"><a href="#ResponseEntity：封装返回的HttpStatus，可定义" class="headerlink" title="ResponseEntity：封装返回的HttpStatus，可定义"></a>ResponseEntity：封装返回的HttpStatus，可定义</h3><h3 id="bootstrap-和-application-的区别"><a href="#bootstrap-和-application-的区别" class="headerlink" title="bootstrap 和 application 的区别"></a>bootstrap 和 application 的区别</h3><p>和application 配置文件相比，bootstrap 配置文件具有以下几个特性：</p>
+<ul>
+<li><p>bootstrap 由父ApplicationContext加载，比application优先加载；</p>
+</li>
+<li><p>bootstrap里面的属性不能被覆盖</p>
+</li>
+</ul>
+<h3 id="开启线程"><a href="#开启线程" class="headerlink" title="开启线程"></a>开启线程</h3><p>1）extends <code>Thread</code>重写run方法<br>2）implements <code>Runabled</code>实现run方法，.start()开启</p>
+<h3 id="悲观锁与乐观锁"><a href="#悲观锁与乐观锁" class="headerlink" title="悲观锁与乐观锁"></a>悲观锁与乐观锁</h3><ul>
+<li>悲观锁</li>
+</ul>
+<p>总是假设最坏的情况，每次取数据时都认为其他线程会修改，所以都会加锁（读锁、写锁、行锁等），当其他线程想要访问数据时，都需要阻塞挂起。可以依靠数据库实现，如行锁、读锁和写锁等，都是在操作之前加锁，在Java中，synchronized的思想也是悲观锁</p>
+<ul>
+<li>乐观锁</li>
+</ul>
+<p>总是认为不会产生并发问题，每次去取数据的时候总认为不会有其他线程对数据进行修改，因此不会上锁，但是在更新时会判断其他线程在这之前有没有对数据进行修改，一般会使用版本号version机制或CAS操作实现。</p>
+<h3 id="Java-transient关键字"><a href="#Java-transient关键字" class="headerlink" title="Java transient关键字"></a>Java transient关键字</h3><p>java 的transient关键字为我们提供了便利，你只需要实现Serilizable接口，将不需要序列化的属性前添加关键字transient，序列化对象的时候，这个属性就不会序列化到指定的目的地中。<code>序列化指的是通过实现Serializable接口后的自动序列化</code></p>
+<ul>
+<li><p>一旦变量被transient修饰，变量将不再是对象持久化的一部分，该变量内容在序列化后无法获得访问。</p>
+</li>
+<li><p>transient关键字只能修饰变量，而不能修饰方法和类。注意，本地变量是不能被transient关键字修饰的。变量如果是用户自定义类变量，则该类需要实现Serializable接口。</p>
+</li>
+<li><p>被transient关键字修饰的变量不再能被序列化，一个静态变量不管是否被transient修饰，均不能被序列化</p>
+</li>
+</ul>
+<h3 id="String的几种类型"><a href="#String的几种类型" class="headerlink" title="String的几种类型"></a>String的几种类型</h3><ul>
+<li><p>String 字符串常量，不可变</p>
+</li>
+<li><p>StringBuffer 字符串变量（线程安全），可变</p>
+</li>
+<li><p>StringBuilder 字符串变量（非线程安全），可变</p>
+</li>
+</ul>
+<h3 id="Integer是不可变类，进入一个方法后，在里面的值的改变不会影响方法外的引用"><a href="#Integer是不可变类，进入一个方法后，在里面的值的改变不会影响方法外的引用" class="headerlink" title="Integer是不可变类，进入一个方法后，在里面的值的改变不会影响方法外的引用"></a>Integer是不可变类，进入一个方法后，在里面的值的改变不会影响方法外的引用</h3><p>基本类型的变体引用类型和String都不能直接当纯引用类型来用，比如Integer,Double等都是int与double的引用类型，但是你不能像普通引用类型那样直接对他的值做改变，因为在他们里面封装的原始int与double都用了final进行声明。所以你就算重新赋值了原始的int与double都不会改变</p>
+<h3 id="RxJava异步框架"><a href="#RxJava异步框架" class="headerlink" title="RxJava异步框架"></a>RxJava异步框架</h3><p>相当于观察者模式，异步线程去执行代码，可以使用该异步框架实现：</p>
+<pre><code>1、失败重试机制（当短时间内，比如发消息的方式，发生大量的数据库操作，可能导致数据库被锁而执行失败）
+2、异步执行
+3、观察者模式
+</code></pre><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">Observable.just(stateMachineId)</span><br><span class="line">                .map(t -&gt; &#123;</span><br><span class="line">                    stateMachineService.deploy(organizationId, stateMachine.getId(), <span class="keyword">false</span>);</span><br><span class="line">                    <span class="keyword">return</span> t;</span><br><span class="line">                &#125;)</span><br><span class="line">                .retryWhen(x -&gt; x.zipWith(Observable.range(<span class="number">1</span>, <span class="number">10</span>),</span><br><span class="line">                        (t, retryCount) -&gt; &#123;</span><br><span class="line">                            <span class="keyword">if</span> (retryCount &gt;= <span class="number">10</span>) &#123;</span><br><span class="line">                                logger.warn(<span class="string">"error.stateMachine.deploy.error,stateMachineId:&#123;&#125;"</span>, stateMachineId);</span><br><span class="line">                            &#125;</span><br><span class="line">                            <span class="keyword">return</span> retryCount;</span><br><span class="line">                        &#125;).flatMap(y -&gt; Observable.timer(<span class="number">2</span>, TimeUnit.SECONDS)))</span><br><span class="line">                .subscribeOn(Schedulers.io())</span><br><span class="line">                .subscribe((Long id) -&gt; &#123;</span><br><span class="line">                &#125;);</span><br></pre></td></tr></table></figure>
+<h3 id="Spring工具类"><a href="#Spring工具类" class="headerlink" title="Spring工具类"></a>Spring工具类</h3><ul>
+<li><p>AntPathMatcher：路径匹配工具</p>
+</li>
+<li><p>ApplicationContextHelper：获取注入的对象</p>
+</li>
+</ul>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ApplicationContextHelper.getSpringFactory().getBean(xx.class)</span><br></pre></td></tr></table></figure>
+<h3 id="Java泛型"><a href="#Java泛型" class="headerlink" title="Java泛型"></a>Java泛型</h3><p>泛型：即“参数化类型”。一提到参数，最熟悉的就是定义方法时有形参，然后调用此方法时传递实参。那么参数化类型怎么理解呢？顾名思义，就是将类型由原来的具体的类型参数化，类似于方法中的变量参数，此时类型也定义成参数形式（可以称之为类型形参），然后在使用/调用时传入具体的类型（类型实参）</p>
+<p>在泛型接口、泛型类和泛型方法的定义过程中，我们常见的如T、E、K、V等形式的参数常用于表示泛型形参，由于接收来自外部使用时候传入的类型实参。<strong>泛型类型在逻辑上看以看成是多个不同的类型，实际上都是相同的基本类型</strong><code>（即class是同一个，泛型参数在编译期会被擦除）</code></p>
+<ul>
+<li>上限与下限</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">&lt;? extends T&gt;表示该通配符所代表的类型是T类型的子类</span><br><span class="line">&lt;? super T&gt;表示该通配符所代表的类型是T类型的父类</span><br></pre></td></tr></table></figure>
+<p>参考文献：<a href="https://www.cnblogs.com/lwbqqyumidi/p/3837629.html" target="_blank" rel="noopener">Java总结篇系列：Java泛型</a></p>
+<h3 id="在方法上加final"><a href="#在方法上加final" class="headerlink" title="在方法上加final"></a>在方法上加final</h3><p>该方法无法被重写或覆盖</p>
+<h3 id="好用的java类库"><a href="#好用的java类库" class="headerlink" title="好用的java类库"></a>好用的java类库</h3><ul>
+<li>guava：谷歌开源的java库，提供用于集合，缓存，支持原语，并发性，常见注解，字符串处理，I/O和验证的实用方法</li>
+</ul>
+<blockquote>
+<p><a href="https://www.yiibai.com/guava" target="_blank" rel="noopener">Guava教程</a></p>
+</blockquote>
+<h3 id="代码规范"><a href="#代码规范" class="headerlink" title="代码规范"></a>代码规范</h3><h4 id="Spring中用构造注入方式替代-Autowired"><a href="#Spring中用构造注入方式替代-Autowired" class="headerlink" title="Spring中用构造注入方式替代@Autowired"></a>Spring中用构造注入方式替代<code>@Autowired</code></h4><h3 id="Java序列化的三种方式"><a href="#Java序列化的三种方式" class="headerlink" title="Java序列化的三种方式"></a>Java序列化的三种方式</h3><ul>
+<li>实现<code>Serializable</code>接口(隐式序列化)：自动序列化非static和非transient的成员变量</li>
+<li>实现<code>Externalizable</code>接口(显式序列化)：Externalizable接口继承自Serializable, 我们在实现该接口时，必须实现writeExternal()和readExternal()方法</li>
+<li>实现<code>Serializable</code>接口+添加<code>writeObject()</code>和<code>readObject()</code>方法。(显+隐序列化)：添加writeObject()和readObject()方法，方法必须要被private修饰，第一行调用默认的defaultRead/WriteObject();</li>
+</ul>
+<h3 id="java文本转义"><a href="#java文本转义" class="headerlink" title="java文本转义"></a>java文本转义</h3><p><code>URLDecoder.decode(text,&quot;UTF-8&quot;)</code></p>
+<h3 id="java执行命令行语句"><a href="#java执行命令行语句" class="headerlink" title="java执行命令行语句"></a>java执行命令行语句</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">String [] cmd=&#123;<span class="string">"cmd"</span>,<span class="string">"/C"</span>,<span class="string">"copy exe1 exe2"</span>&#125;; </span><br><span class="line">Process proc =Runtime.getRuntime().exec(cmd);</span><br></pre></td></tr></table></figure>
+<h2 id="git"><a href="#git" class="headerlink" title="git"></a>git</h2><h3 id="1-想要查看最新的远程分支必须先pull新的master"><a href="#1-想要查看最新的远程分支必须先pull新的master" class="headerlink" title="1.想要查看最新的远程分支必须先pull新的master"></a>1.想要查看最新的远程分支必须先pull新的master</h3><h3 id="2-查看远程仓库地址"><a href="#2-查看远程仓库地址" class="headerlink" title="2.查看远程仓库地址"></a>2.查看远程仓库地址</h3><p><code>git remote -v</code></p>
+<h3 id="3-git缓存区"><a href="#3-git缓存区" class="headerlink" title="3.git缓存区"></a>3.git缓存区</h3><ul>
+<li>git stash save xxx 保存stash有名字</li>
+<li>git stash clear 清空缓存</li>
+<li>git stash list 缓存列表</li>
+<li>git stash apply stash@{0} 应用缓存</li>
+</ul>
+<h3 id="4-版本回退"><a href="#4-版本回退" class="headerlink" title="4.版本回退"></a>4.版本回退</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git log</span><br><span class="line">git reset --hard HEAD^ //删除工作空间改动代码，撤销commit，撤销git add</span><br><span class="line">git reset --soft HEAD^ //撤回commit，代码仍然在add中</span><br><span class="line">git reset --mixed HEAD^ //不删除工作空间改动代码，撤销commit，并且撤销git add</span><br></pre></td></tr></table></figure>
+<h3 id="5-分支强行替换名字"><a href="#5-分支强行替换名字" class="headerlink" title="5.分支强行替换名字"></a>5.分支强行替换名字</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">git branch -m master old-master</span><br><span class="line">git branch -m develop master</span><br><span class="line">git push -f origin master</span><br></pre></td></tr></table></figure>
+<p><code>在新master直接push时会提示当前分支的引用并非与服务器上的master相同，执行它提示的命令即可更换新的引用</code></p>
+<h3 id="6-rebase-变基"><a href="#6-rebase-变基" class="headerlink" title="6.rebase 变基"></a>6.rebase 变基</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br></pre></td><td class="code"><pre><span class="line">git rebase</span><br><span class="line">把一个分支中的修改整合到另一个分支的办法有两种： merge 和 rebase 。 rebase 可以把在一个分支里提交的改变移到另一个分支里重放一遍。</span><br><span class="line">rebase 的操作不当，可能导致原分支被修改等后果。作为一个危险操作，需要慎重。</span><br><span class="line">变基操作解决冲突后应执行 git add . 和 git rebase --continue ，而不是 git commit 命令</span><br><span class="line">A分支切出来一个B分支，当前在B分支，已经做了两个提交，切回A分支也做了两个提交，再切回B分支</span><br><span class="line"># B分支合并A分支的提交记录</span><br><span class="line">git rebase A</span><br><span class="line"># 处理完冲突继续合并</span><br><span class="line">git add .</span><br><span class="line">git rebase –continue</span><br><span class="line"># 跳过</span><br><span class="line">git rebase –skip</span><br><span class="line"># 取消合并</span><br><span class="line">git rebase –abort</span><br><span class="line"># 最后再切回A分支，A merge B，这样A中的提交记录就是整洁的了（没有merge记录）</span><br></pre></td></tr></table></figure>
+<blockquote>
+<p>若出现重复的提交记录，可以在推到仓库的自己分支增加–force强推，覆盖自己之前push的记录</p>
+</blockquote>
+<h3 id="git忽略提交"><a href="#git忽略提交" class="headerlink" title="git忽略提交"></a>git忽略提交</h3><ul>
+<li>在项目根目录，创建.gitignore（该文件会传至仓库与大家共享），配置忽略的文件</li>
+</ul>
+<p>需要让gitignore生效，需要<code>git rm -r --cached . // 删除本地缓存</code></p>
+<ul>
+<li>在项目下，.git/info/exclude文件中添加本地提交要忽略的文件，不与仓库共享</li>
+</ul>
+<h3 id="根据tag切分支"><a href="#根据tag切分支" class="headerlink" title="根据tag切分支"></a>根据tag切分支</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git branch &lt;new-branch-name&gt; &lt;tag-name&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="删除tag"><a href="#删除tag" class="headerlink" title="删除tag"></a>删除tag</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git tag -d [tag];</span><br><span class="line">git push origin :[tag]</span><br></pre></td></tr></table></figure>
+<h3 id="git初始化仓库"><a href="#git初始化仓库" class="headerlink" title="git初始化仓库"></a>git初始化仓库</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">git remote add origin git@github.com:chenshinan/111.git</span><br><span class="line">git push -u origin master</span><br></pre></td></tr></table></figure>
+<h3 id="常用命令"><a href="#常用命令" class="headerlink" title="常用命令"></a>常用命令</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">git branch -a #查看本地和远程所有的分支</span><br><span class="line">git branch -r #查看所有远程分支</span><br><span class="line">git fetch #将本地分支与远程保持同步</span><br><span class="line">git fetch -p 获取远程仓库的新分支以及删除远程仓库已删除的分支</span><br></pre></td></tr></table></figure>
+<h2 id="sql"><a href="#sql" class="headerlink" title="sql"></a>sql</h2><h3 id="根据日期拉取报表"><a href="#根据日期拉取报表" class="headerlink" title="根据日期拉取报表"></a>根据日期拉取报表</h3><p><code>SELECT  COUNT(*), DATE(CreateTime) FROM event_order WHERE YEAR(CreateTime) = &#39;2016&#39; GROUP BY DAY(CreateTime)</code> \<br>详细可见：<a href="http://blog.csdn.net/jiang_2992/article/details/73801366" target="_blank" rel="noopener">http://blog.csdn.net/jiang_2992/article/details/73801366</a></p>
+<h3 id="拼接、截取、分组拼接"><a href="#拼接、截取、分组拼接" class="headerlink" title="拼接、截取、分组拼接"></a>拼接、截取、分组拼接</h3><p>拼接：<code>CONCAT(&#39;yykj&#39;,code)</code> \<br>截取：<code>right(str,index)、substring(str,index)</code> \<br>分组拼接：<code>select name,group_concat(id) from tab group by name</code> 结果：小明 ｜ 1,3,5</p>
+<h3 id="连接查询"><a href="#连接查询" class="headerlink" title="连接查询"></a>连接查询</h3><ul>
+<li>left join(左联接) 返回包括左表中的所有记录和右表中联结字段相等的记录</li>
+<li>right join(右联接) 返回包括右表中的所有记录和左表中联结字段相等的记录</li>
+<li>inner join(等值连接) 只返回两个表中联结字段相等的行</li>
+</ul>
+<h3 id="给用户添加数据库权限"><a href="#给用户添加数据库权限" class="headerlink" title="给用户添加数据库权限"></a>给用户添加数据库权限</h3><p><code>grant all privileges on state_machine_service.* to &#39;choerodon&#39;@&#39;%&#39;;</code></p>
+<h3 id="删除表、清空表"><a href="#删除表、清空表" class="headerlink" title="删除表、清空表"></a>删除表、清空表</h3><p>存在则删除：drop table if exists 表名 \<br>删除表：delete from 表名 \<br>清空表：truncate table 表名</p>
+<h3 id="mysql-workbench-的安全模式"><a href="#mysql-workbench-的安全模式" class="headerlink" title="mysql workbench 的安全模式"></a>mysql workbench 的安全模式</h3><p><code>SET SQL_SAFE_UPDATES = 0;</code></p>
+<h3 id="SQL最后一行求总和"><a href="#SQL最后一行求总和" class="headerlink" title="SQL最后一行求总和"></a>SQL最后一行求总和</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">SELECT</span></span><br><span class="line">    <span class="keyword">IFNULL</span>(u.status, <span class="string">'合计'</span>) 状态, <span class="keyword">COUNT</span>(*)</span><br><span class="line"><span class="keyword">FROM</span></span><br><span class="line">    <span class="keyword">user</span> u</span><br><span class="line"><span class="keyword">GROUP</span> <span class="keyword">BY</span> u.status <span class="keyword">WITH</span> <span class="keyword">ROLLUP</span></span><br></pre></td></tr></table></figure>
+<h3 id="ALTER语句"><a href="#ALTER语句" class="headerlink" title="ALTER语句"></a>ALTER语句</h3><p>添加列：<br>ALTER TABLE test ADD (c1 char(1),c2 char(1));<br>ALTER TABLE test ADD COLUMN (c1 char(1),c2 char(1));<br>ALTER TABLE test ADD c1 char(1),ADD c2 char(1);<br>修改列：<br>ALTER TABLE test CHANGE c1 c3 char(1),CHANGE c2 c4 char(1);<br>ALTER TABLE test CHANGE COLUMN c1 c3 char(1),CHANGE COLUMN c2 c4 char(1);<br>删除列：<br>ALTER TABLE test DROP c1,drop c2;<br>ALTER TABLE test DROP COLUMN c1,DROP COLUMN c2;</p>
+<h3 id="对于获取组织和组织的用户人数，推荐的优化方式是先通过groupby用户，再join组织表"><a href="#对于获取组织和组织的用户人数，推荐的优化方式是先通过groupby用户，再join组织表" class="headerlink" title="对于获取组织和组织的用户人数，推荐的优化方式是先通过groupby用户，再join组织表"></a>对于获取组织和组织的用户人数，推荐的优化方式是先通过groupby用户，再join组织表</h3><h3 id="select-for-update"><a href="#select-for-update" class="headerlink" title="select for update"></a>select for update</h3><p>概念：<code>该语句用来锁定特定的行（如果有where子句，就是满足where条件的那些行）。当这些行被锁定后，其他会话可以选择这些行，但不能更改或删除这些行，直到该语句的事务被commit语句或rollback语句结束为止</code>，防止select之后，update之前，数据已经发送改变导致再update出现错误数据</p>
+<p>在select…for update之后，可以使用of子句选择对select的特定数据表进行加锁操作。默认情况下，不使用of子句表示在select所有的数据表中加锁。</p>
+<h3 id="更新判断语句"><a href="#更新判断语句" class="headerlink" title="更新判断语句"></a>更新判断语句</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> agile_issue</span><br><span class="line"><span class="keyword">set</span> apply_type = (</span><br><span class="line"> <span class="keyword">case</span> <span class="keyword">when</span> type_code <span class="keyword">IN</span></span><br><span class="line"> (<span class="string">'task'</span>,<span class="string">'bug'</span>,<span class="string">'sub_task'</span>,<span class="string">'story'</span>,<span class="string">'issue_epic'</span>)</span><br><span class="line"> <span class="keyword">then</span> <span class="string">'agile'</span></span><br><span class="line"> <span class="keyword">else</span> <span class="string">'test'</span> <span class="keyword">end</span></span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="insert-into-select（查询到的数据插入）"><a href="#insert-into-select（查询到的数据插入）" class="headerlink" title="insert into select（查询到的数据插入）"></a>insert into select（查询到的数据插入）</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Insert</span> <span class="keyword">into</span> Table2(field1,field2,...) <span class="keyword">select</span> value1,value2,... <span class="keyword">from</span> Table1</span><br><span class="line"><span class="keyword">Insert</span> <span class="keyword">into</span> Table2 <span class="keyword">select</span>  *  <span class="keyword">from</span> Table1</span><br></pre></td></tr></table></figure>
+<h3 id="insert-ignore-into（存在则忽略）"><a href="#insert-ignore-into（存在则忽略）" class="headerlink" title="insert ignore into（存在则忽略）"></a>insert ignore into（存在则忽略）</h3><h3 id="order-by-case-的用法"><a href="#order-by-case-的用法" class="headerlink" title="order by case 的用法"></a>order by case 的用法</h3><p>当进行<code>order by</code>排序时，需要安装特定的顺序排序，则有<code>case ... when ... then ... end</code>的用法</p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">id</span>,<span class="keyword">name</span> <span class="keyword">from</span> <span class="keyword">priority</span></span><br><span class="line"><span class="keyword">order</span> <span class="keyword">by</span></span><br><span class="line"><span class="keyword">CASE</span> <span class="keyword">name</span></span><br><span class="line"><span class="keyword">when</span> <span class="string">'高'</span> <span class="keyword">then</span> <span class="number">1</span></span><br><span class="line"><span class="keyword">when</span> <span class="string">'中'</span> <span class="keyword">then</span> <span class="number">2</span></span><br><span class="line"><span class="keyword">when</span> <span class="string">'低'</span> <span class="keyword">then</span> <span class="number">3</span></span><br><span class="line"><span class="keyword">else</span> <span class="number">0</span></span><br><span class="line"><span class="keyword">END</span></span><br></pre></td></tr></table></figure>
+<h3 id="update-select"><a href="#update-select" class="headerlink" title="update + select"></a>update + select</h3><figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> kb_page_content,kb_page</span><br><span class="line"><span class="keyword">set</span> kb_page_content.title= kb_page.title</span><br><span class="line"><span class="keyword">where</span> kb_page.id = kb_page_content.PAGE_ID</span><br></pre></td></tr></table></figure>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">update</span> kb_page_content pc <span class="keyword">set</span> pc.title= (</span><br><span class="line"><span class="keyword">select</span> p.title <span class="keyword">from</span> kb_page p <span class="keyword">where</span> p.id = pc.PAGE_ID</span><br><span class="line">)</span><br></pre></td></tr></table></figure>
+<h3 id="mysql用命令运行大sql文件"><a href="#mysql用命令运行大sql文件" class="headerlink" title="mysql用命令运行大sql文件"></a>mysql用命令运行大sql文件</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#</span> 进入mysql</span><br><span class="line">mysql -u $&#123;数据库用户名&#125; -p</span><br><span class="line"><span class="meta">#</span> 切换数据库</span><br><span class="line">use $&#123;数据库名&#125;</span><br><span class="line"><span class="meta">#</span> 运行sql文件</span><br><span class="line">source $&#123;文件位置/文件名&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="sql正则表达式"><a href="#sql正则表达式" class="headerlink" title="sql正则表达式"></a>sql正则表达式</h3><p>context可以选多值，用“,”分隔，sql可以用REGEXP匹配，注意使用的是<code>${xx}</code></p>
+<figure class="highlight sql"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">select</span> * <span class="keyword">from</span> <span class="keyword">field</span></span><br><span class="line"><span class="keyword">where</span> <span class="keyword">context</span> REGEXP <span class="string">'^$&#123;context&#125;,|,$&#123;context&#125;,|^$&#123;context&#125;$|,$&#123;context&#125;$'</span></span><br></pre></td></tr></table></figure>
+<h3 id="数据库连接池大小的设置"><a href="#数据库连接池大小的设置" class="headerlink" title="数据库连接池大小的设置"></a>数据库连接池大小的设置</h3><blockquote>
+<p>连接数 = ((核心数 * 2) + 有效磁盘数)</p>
+</blockquote>
+<p>如果说你的服务器CPU是4核i7的，连接池大小应该为((4*2)+1)=9，即使有 10000 个并发访问，同样只需要10个线程这样数据库的吞吐量最高。<a href="https://mp.weixin.qq.com/s?__biz=MzU4MDUyMDQyNQ==&amp;mid=2247483806&amp;idx=1&amp;sn=0f6134e651cadbf03693992a642d5098&amp;chksm=fd54d118ca23580ed50468e676c7f0580f614a72d3cad374c20b3c49643e72f62504a680de3b&amp;token=322268889&amp;lang=zh_CN#rd" target="_blank" rel="noopener">参考文献</a></p>
+<h2 id="mybatis"><a href="#mybatis" class="headerlink" title="mybatis"></a>mybatis</h2><h3 id="循环数组判断为空"><a href="#循环数组判断为空" class="headerlink" title="循环数组判断为空"></a>循环数组判断为空</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">&lt;if test=&quot;userIds != null and userIds.size()&gt;0&quot;&gt;</span><br><span class="line">    AND mm.user_id IN</span><br><span class="line">    &lt;foreach item=&quot;item&quot; index=&quot;index&quot; collection=&quot;userIds&quot; open=&quot;(&quot; separator=&quot;,&quot; close=&quot;)&quot;&gt;</span><br><span class="line">        #&#123;item&#125;</span><br><span class="line">    &lt;/foreach&gt;</span><br><span class="line">&lt;/if&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="if-other"><a href="#if-other" class="headerlink" title="if other"></a>if other</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&lt;choose&gt;</span><br><span class="line">    &lt;when test=&quot;searchDTO.otherArgs.resolution == &apos;true&apos;&quot;&gt;</span><br><span class="line">        and ais.is_completed = 1</span><br><span class="line">    &lt;/when&gt;</span><br><span class="line">    &lt;otherwise&gt;</span><br><span class="line">        and ais.is_completed = 0</span><br><span class="line">    &lt;/otherwise&gt;</span><br><span class="line">&lt;/choose&gt;</span><br></pre></td></tr></table></figure>
+<h3 id="resultMap的用法"><a href="#resultMap的用法" class="headerlink" title="resultMap的用法"></a>resultMap的用法</h3><ul>
+<li><p>association：一对一/多对一</p>
+</li>
+<li><p>collection：一对多/多对多</p>
+</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">resultMap</span> <span class="attr">id</span>=<span class="string">"boardDependInfo"</span> <span class="attr">type</span>=<span class="string">"io.choerodon.agile.api.dto.BoardDependInfoDTO"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">"id"</span> <span class="attr">column</span>=<span class="string">"id"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">"boardFeatureId"</span> <span class="attr">column</span>=<span class="string">"board_feature_id"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">association</span> <span class="attr">property</span>=<span class="string">"boardFeature"</span> <span class="attr">columnPrefix</span>=<span class="string">"origin_"</span> <span class="attr">javaType</span>=<span class="string">"io.choerodon.agile.api.dto.BoardFeatureInfoDTO"</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">id</span> <span class="attr">property</span>=<span class="string">"id"</span> <span class="attr">column</span>=<span class="string">"id"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"featureId"</span> <span class="attr">column</span>=<span class="string">"feature_id"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"sprintId"</span> <span class="attr">column</span>=<span class="string">"sprint_id"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"piId"</span> <span class="attr">column</span>=<span class="string">"pi_id"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"teamProjectId"</span> <span class="attr">column</span>=<span class="string">"team_project_id"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"rank"</span> <span class="attr">column</span>=<span class="string">"rank"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">result</span> <span class="attr">property</span>=<span class="string">"programId"</span> <span class="attr">column</span>=<span class="string">"program_id"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">association</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">collection</span> <span class="attr">property</span>=<span class="string">"subBugDOList"</span> <span class="attr">column</span>=<span class="string">"issue_id"</span></span></span><br><span class="line"><span class="tag">                    <span class="attr">ofType</span>=<span class="string">"io.choerodon.agile.infra.dataobject.IssueDetailDO"</span></span></span><br><span class="line"><span class="tag">                    <span class="attr">select</span>=<span class="string">"querySubBugByIssueId"</span>/&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">resultMap</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<h3 id="mybatis的缓存"><a href="#mybatis的缓存" class="headerlink" title="mybatis的缓存"></a>mybatis的缓存</h3><p>一级缓存：是<code>SQlSession</code>级别的缓存。在操作数据库时需要构造 SqlSession 对象，在对象中有一个数据结构（HashMap）用于存储缓存数据。不同的 SqlSession 之间的缓存数据区域（HashMap）是互相不影响的</p>
+<p>二级缓存：是<code>mapper</code>级别的缓存，多个 SqlSession 去操作同一个mapper的sql语句，多个 SqlSession 可以共用二级缓存，二级缓存是跨 SqlSession 的，<code>当某一个作用域(一级缓存Session/二级缓存Namespaces)的进行了 C/U/D 操作后，默认该作用域下所有 select 中的缓存将被clear</code></p>
+<p>工作机制：</p>
+<ul>
+<li><p>一个会话, 查询一条数据, 这个数据就会被保存在当前会话的一次缓存（SqlSession）中</p>
+</li>
+<li><p>如果关闭会话, 那么一次缓存中的数据就会被保存到二级缓存（namespace）中，新的会话查询的内容, 就可以参照二级缓存</p>
+</li>
+<li><p>一个 xxxMapper 对应一个 namespace, 不同的 namespace 查出的数据会保存在自己对应的二级缓存中</p>
+</li>
+<li><p>查出的数据会先被保存在一级缓存中, 只有会话关闭或者提交之后, 以及缓存中的数据才会被转移到二级缓存</p>
+</li>
+</ul>
+<h3 id="Mybatis中-与-的区别"><a href="#Mybatis中-与-的区别" class="headerlink" title="Mybatis中$与#的区别"></a>Mybatis中$与#的区别</h3><p>#是将传入的值当做字符串的形式，$是将传入的数据直接显示生成sql语句</p>
+<h2 id="docker"><a href="#docker" class="headerlink" title="docker"></a>docker</h2><h3 id="删除未启动的容器：docker-rm-docker-ps-a-q"><a href="#删除未启动的容器：docker-rm-docker-ps-a-q" class="headerlink" title="删除未启动的容器：docker rm $(docker ps -a -q)"></a>删除未启动的容器：docker rm $(docker ps -a -q)</h3><h3 id="运行docker-compose：-docker-compose-up-d（在docker-compose-yml所在目录，-d是指后台运行）"><a href="#运行docker-compose：-docker-compose-up-d（在docker-compose-yml所在目录，-d是指后台运行）" class="headerlink" title="运行docker-compose：$ docker-compose up -d（在docker-compose.yml所在目录，-d是指后台运行）"></a>运行docker-compose：$ docker-compose up -d（在docker-compose.yml所在目录，-d是指后台运行）</h3><h3 id="复制容器中的文件到宿主机"><a href="#复制容器中的文件到宿主机" class="headerlink" title="复制容器中的文件到宿主机"></a>复制容器中的文件到宿主机</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker cp 71e53ddad89f:/usr/local/tomcat/bin/catalina.sh tomcat-conf/</span><br></pre></td></tr></table></figure>
+<h3 id="查看容器中运行的进程信息"><a href="#查看容器中运行的进程信息" class="headerlink" title="查看容器中运行的进程信息"></a>查看容器中运行的进程信息</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker top mymysql</span><br></pre></td></tr></table></figure>
+<h2 id="maven"><a href="#maven" class="headerlink" title="maven"></a>maven</h2><h3 id="查看依赖树"><a href="#查看依赖树" class="headerlink" title="查看依赖树"></a>查看依赖树</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mvn dependency:tree &gt;&gt; /tree.txt;</span><br></pre></td></tr></table></figure>
+<h2 id="dockerfile"><a href="#dockerfile" class="headerlink" title="dockerfile"></a>dockerfile</h2><h3 id="安装vim"><a href="#安装vim" class="headerlink" title="安装vim"></a>安装vim</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">RUN apt-get update &amp;&amp; apt-get install vim -y</span><br></pre></td></tr></table></figure>
+<h2 id="mysqldump的使用"><a href="#mysqldump的使用" class="headerlink" title="mysqldump的使用"></a>mysqldump的使用</h2><ul>
+<li>备份命令：mysqldump -h主机名 -P端口 -u用户名 -p密码 –database 数据库名 &gt; 文件名.sql</li>
+<li>备份压缩：mysqldump -h主机名 -P端口 -u用户名 -p密码 –database 数据库名 | gzip &gt; 文件名.sql.gz</li>
+<li>同时备份多个库：mysqldump -h主机名 -P端口 -u用户名 -p密码 –databases 数据库名1 数据库名2 数据库名3 &gt; 文件名.sql</li>
+<li>备份实例上所有的数据库：mysqldump -h主机名 -P端口 -u用户名 -p密码 –all-databases &gt; 文件名.sql</li>
+<li>备份数据库结构，不备份数据：mysqldump -h主机名 -P端口 -u用户名 -p密码 –no-data 数据库名1 数据库名2 数据库名3 &gt; 文件名.sql</li>
+</ul>
+<h2 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h2><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">lsof -i tcp:6479  查看端口号对应的进程</span><br><span class="line">kill -9 pid  杀死pid的进程</span><br><span class="line">ps -A | grep redis 搜索进程名</span><br><span class="line">ps -ef | grep redis  搜索进程名，并显示所有信息，-e显示所有进程，-f全格式</span><br><span class="line">tail -n 1000 error.log | grep -10 hello  搜索带有hello关键词并显示关键字所在行及上下各3行的内容</span><br><span class="line">curl cip.cc 在命令行中查询当前网络的公网出口IP</span><br></pre></td></tr></table></figure>
+<h2 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h2><h3 id="IDEA快捷键"><a href="#IDEA快捷键" class="headerlink" title="IDEA快捷键"></a>IDEA快捷键</h3><ul>
+<li>Alt+ left/right 切换代码视图</li>
+<li>Alt+ Up/Down 在方法间快速移动定位</li>
+<li>Ctrl+Shift+Up/Down 整行代码向上/下移动。</li>
+<li>Ctrl+D 复制行</li>
+<li>Ctrl+X 删除行</li>
+<li>快速展示类的元素: Ctrl + F12</li>
+<li>实现接口或抽象类的方法: Ctrl + I</li>
+<li>向类中插入getter, setter方法: Alt +　Insert</li>
+<li>打开接口的实现类: Ctrl + H</li>
+<li>导包: alt+enter</li>
+</ul>
+<h3 id="工具"><a href="#工具" class="headerlink" title="工具"></a>工具</h3><ul>
+<li><p>热部署工具：JRebel、Spring Loaded、spring-boot-devtools</p>
+</li>
+<li><p>代码构建工具：maven、apache ant</p>
+</li>
+<li><p>Arthas 是Alibaba开源的Java诊断工具：</p>
+</li>
+</ul>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">trace -j io.choerodon.issue.api.service.impl.ProjectConfigServiceImpl queryTransformsByProjectId</span><br></pre></td></tr></table></figure>
+<h3 id="excel导入"><a href="#excel导入" class="headerlink" title="excel导入"></a>excel导入</h3><h4 id="导入内容包含回车换行问题"><a href="#导入内容包含回车换行问题" class="headerlink" title="导入内容包含回车换行问题"></a>导入内容包含回车换行问题</h4><p>10:Line Feed (馈行)、11:Vertical Tab (垂直制表)、12:Form Feed (馈页)、13:Carriage Return (回车)，此处换行字符需要</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">for</span>(<span class="keyword">int</span> i=<span class="number">10</span>;i&lt;<span class="number">14</span>;i++)&#123;</span><br><span class="line">   str = str.replaceAll(String.valueOf((<span class="keyword">char</span>)i), <span class="string">"\\\\n"</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h4 id="获取时间为数值问题"><a href="#获取时间为数值问题" class="headerlink" title="获取时间为数值问题"></a>获取时间为数值问题</h4><p>方法1：获取后处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Calendar c = <span class="keyword">new</span> GregorianCalendar(<span class="number">1900</span>,<span class="number">0</span>,-<span class="number">1</span>);</span><br><span class="line">Date d = c.getTime();</span><br><span class="line">Date date = DateUtils.addDays(d, <span class="number">42605</span>);  <span class="comment">//42605是距离1900年1月1日的天数</span></span><br></pre></td></tr></table></figure>
+<p>方法2：获取时处理</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">case</span> NUMERIC:</span><br><span class="line">        <span class="keyword">if</span> (DateUtil.isCellDateFormatted(cell)) &#123;</span><br><span class="line">            Date theDate = cell.getDateCellValue();</span><br><span class="line">            ret = simpleDateFormat.format(theDate);</span><br><span class="line">        &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">            ret = NumberToTextConverter.toText(cell.getNumericCellValue());</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">break</span>;</span><br></pre></td></tr></table></figure>
+<h4 id="获取百分比"><a href="#获取百分比" class="headerlink" title="获取百分比"></a>获取百分比</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">cell.setCellType(Cell.CELL_TYPE_NUMERIC);</span><br><span class="line">String v=<span class="string">""</span>;</span><br><span class="line"><span class="keyword">if</span>(cell.getNumericCellValue()==<span class="number">0</span>)&#123;</span><br><span class="line">v=<span class="string">"0"</span>;</span><br><span class="line">&#125;<span class="keyword">else</span>&#123;</span><br><span class="line">v=String.valueOf(cell.getNumericCellValue()*<span class="number">100</span>);</span><br><span class="line"><span class="keyword">if</span>(v.endsWith(<span class="string">".0"</span>))&#123;</span><br><span class="line">v=v.substring(<span class="number">0</span>, v.length()-<span class="number">2</span>);</span><br><span class="line">&#125;</span><br><span class="line">v=v+<span class="string">'%'</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="导出excel"><a href="#导出excel" class="headerlink" title="导出excel"></a>导出excel</h3><h4 id="文本换行"><a href="#文本换行" class="headerlink" title="文本换行"></a>文本换行</h4><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="number">1</span>.设置自动换行样式</span><br><span class="line">HSSFCellStyle bodyStyle = workbook.createCellStyle();</span><br><span class="line">bodyStyle.setWrapText(<span class="keyword">true</span>);</span><br><span class="line"><span class="number">2</span>.文本值换行</span><br><span class="line">String strText = <span class="string">"你是乱世的烟火\r\n你是寒夜的湖泊"</span>;</span><br><span class="line"><span class="number">3</span>.设置列的值和样式，使用HSSFRichTextString()处理文本值</span><br><span class="line">cellNum.setCellStyle(bodyStyle);</span><br><span class="line">cellNum.setCellValue(<span class="keyword">new</span> HSSFRichTextString(strText));</span><br></pre></td></tr></table></figure>
+<h3 id="Spring-security"><a href="#Spring-security" class="headerlink" title="Spring security"></a>Spring security</h3><p><code>Spring Security是基于spring的应用程序提供声明式安全保护的安全性框架，它提供了完整的安全性解决方案，能够在web请求级别和方法调用级别
+处理身份证验证和授权．它充分使用了依赖注入和面向切面的技术．</code></p>
+<p>Spring security主要是从两个方面解决安全性问题：</p>
+<ul>
+<li><p>web请求级别：使用servlet过滤器保护web请求并限制URL级别的访问</p>
+</li>
+<li><p>方法调用级别：使用Spring AOP保护方法调用，确保具有适当权限的用户采用访问安全保护的方法．</p>
+</li>
+</ul>
+<p>在Spring Security中，认证过程称之为Authentication(验证)，指的是建立系统使用者信息( principal )的过程。使用者可以是一个用户、设备、或者其他可以在我们的应用中执行某种操作的其他系统。<br>Authorization（授权）指的是判断某个 principal 在我们的应用是否允许执行某个操作。在 进行授权判断之前，要求其所要使用到的规则必须在验证过程中已经建立好了。</p>
+<p>最基础的对象是 SecurityContextHolder，这是我们在应用中存储当前安全细节的地方，包含了当前在应用中使用到的principal细节。<br>默认情况下， <code>SecurityContextHolder 使用一个 ThreadLocal 对象来存储这些细节</code>，这表示对于在同一个线程中执行的方法，安全上下文(security context)都是可用的，即使安全上下文没有显式的当做方法的参数进行传递。<br>通过这种方式使用 ThreadLocal 是很安全的，如果当前使用到的规则需要在请求处理完之后被清空。<br>当然，Spring Security帮你自动的处理了这些，你不需要考虑。</p>
+<h3 id="Spock集成单元测试"><a href="#Spock集成单元测试" class="headerlink" title="Spock集成单元测试"></a>Spock集成单元测试</h3><ul>
+<li><p>重名校验记得取的id即为当前名字的id</p>
+</li>
+<li><p>调用controller方法失败（格式错误等），entity为空，actRequest为false</p>
+</li>
+<li><p>调用成功，执行controller方法时抛出异常，未处理的异常，entity返回值非200，actRequest为false</p>
+</li>
+<li><p>调用成功，执行controller方法时抛出异常，被捕获，entity返回值为200，actRequest为true</p>
+</li>
+<li><p>在path和param中的参数均有null校验，若传null，调用成功，被spring抛出异常，被捕获，entity返回值为200，actRequest为true</p>
+</li>
+</ul>
+<h3 id="spring基础"><a href="#spring基础" class="headerlink" title="spring基础"></a>spring基础</h3><h4 id="bean的作用域"><a href="#bean的作用域" class="headerlink" title="bean的作用域"></a>bean的作用域</h4><ul>
+<li>singleton：只有一个实例，也即是单例模式</li>
+<li>prototype：访问一次创建一个实例，相当于new</li>
+</ul>
+<h4 id="bootstrap-yml与application-yml"><a href="#bootstrap-yml与application-yml" class="headerlink" title="bootstrap.yml与application.yml"></a>bootstrap.yml与application.yml</h4><p>bootstrap.yml先加载application.yml后加载，bootstrap.yml用于应用程序上下文的引导阶段</p>
+<p>一旦bootStrap.yml 被加载，则内容不会被覆盖，即便后期加载的application.yml的内容标签与bootstrap的标签一致，application 也不会覆盖bootstrap，而application.yml 里面的内容可以动态替换。</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2020/07/19/Java开发效能/" rel="next" title="Java开发效能">
+                <i class="fa fa-chevron-left"></i> Java开发效能
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope="" itemtype="http://schema.org/Person">
+            
+              <img class="site-author-image" itemprop="image" src="/images/avatar.jpg" alt="chenshinan">
+            
+              <p class="site-author-name" itemprop="name">chenshinan</p>
+              <p class="site-description motion-element" itemprop="description">Painting talent persisted in playing music, but also dreamed of becoming a director and finally becoming a programmer's great artist.</p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">43</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+
+            
+
+          </nav>
+
+          
+
+          
+            <div class="links-of-author motion-element">
+                
+                  <span class="links-of-author-item">
+                    <a href="https://github.com/chenshinan" target="_blank" title="GitHub">
+                      
+                        <i class="fa fa-fw fa-github"></i>GitHub</a>
+                  </span>
+                
+            </div>
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#快捷记忆"><span class="nav-number">1.</span> <span class="nav-text">快捷记忆</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#JAVA"><span class="nav-number">1.1.</span> <span class="nav-text">JAVA</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-数字格式化"><span class="nav-number">1.1.1.</span> <span class="nav-text">1.数字格式化</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-Logger日志输出以这种方式"><span class="nav-number">1.1.2.</span> <span class="nav-text">2.Logger日志输出以这种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-Jackson-高性能的JSON处理-ObjectMapper"><span class="nav-number">1.1.3.</span> <span class="nav-text">3.Jackson 高性能的JSON处理 ObjectMapper</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-线程安全队列"><span class="nav-number">1.1.4.</span> <span class="nav-text">4.线程安全队列</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-SpringBoot定时任务"><span class="nav-number">1.1.5.</span> <span class="nav-text">5.SpringBoot定时任务</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-RandomAccessFiles随机流"><span class="nav-number">1.1.6.</span> <span class="nav-text">6.RandomAccessFiles随机流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#7-求日期相差天数"><span class="nav-number">1.1.7.</span> <span class="nav-text">7.求日期相差天数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#8-排序"><span class="nav-number">1.1.8.</span> <span class="nav-text">8.排序</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#9-SpringBoot项目打成jar后获取classpath下文件"><span class="nav-number">1.1.9.</span> <span class="nav-text">9.SpringBoot项目打成jar后获取classpath下文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ModelMapper：对象与DTO转换"><span class="nav-number">1.1.10.</span> <span class="nav-text">ModelMapper：对象与DTO转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ResponseEntity：封装返回的HttpStatus，可定义"><span class="nav-number">1.1.11.</span> <span class="nav-text">ResponseEntity：封装返回的HttpStatus，可定义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#bootstrap-和-application-的区别"><span class="nav-number">1.1.12.</span> <span class="nav-text">bootstrap 和 application 的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#开启线程"><span class="nav-number">1.1.13.</span> <span class="nav-text">开启线程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#悲观锁与乐观锁"><span class="nav-number">1.1.14.</span> <span class="nav-text">悲观锁与乐观锁</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java-transient关键字"><span class="nav-number">1.1.15.</span> <span class="nav-text">Java transient关键字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#String的几种类型"><span class="nav-number">1.1.16.</span> <span class="nav-text">String的几种类型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Integer是不可变类，进入一个方法后，在里面的值的改变不会影响方法外的引用"><span class="nav-number">1.1.17.</span> <span class="nav-text">Integer是不可变类，进入一个方法后，在里面的值的改变不会影响方法外的引用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#RxJava异步框架"><span class="nav-number">1.1.18.</span> <span class="nav-text">RxJava异步框架</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring工具类"><span class="nav-number">1.1.19.</span> <span class="nav-text">Spring工具类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java泛型"><span class="nav-number">1.1.20.</span> <span class="nav-text">Java泛型</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#在方法上加final"><span class="nav-number">1.1.21.</span> <span class="nav-text">在方法上加final</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#好用的java类库"><span class="nav-number">1.1.22.</span> <span class="nav-text">好用的java类库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#代码规范"><span class="nav-number">1.1.23.</span> <span class="nav-text">代码规范</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Spring中用构造注入方式替代-Autowired"><span class="nav-number">1.1.23.1.</span> <span class="nav-text">Spring中用构造注入方式替代@Autowired</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java序列化的三种方式"><span class="nav-number">1.1.24.</span> <span class="nav-text">Java序列化的三种方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java文本转义"><span class="nav-number">1.1.25.</span> <span class="nav-text">java文本转义</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#java执行命令行语句"><span class="nav-number">1.1.26.</span> <span class="nav-text">java执行命令行语句</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#git"><span class="nav-number">1.2.</span> <span class="nav-text">git</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-想要查看最新的远程分支必须先pull新的master"><span class="nav-number">1.2.1.</span> <span class="nav-text">1.想要查看最新的远程分支必须先pull新的master</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-查看远程仓库地址"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.查看远程仓库地址</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-git缓存区"><span class="nav-number">1.2.3.</span> <span class="nav-text">3.git缓存区</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-版本回退"><span class="nav-number">1.2.4.</span> <span class="nav-text">4.版本回退</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-分支强行替换名字"><span class="nav-number">1.2.5.</span> <span class="nav-text">5.分支强行替换名字</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-rebase-变基"><span class="nav-number">1.2.6.</span> <span class="nav-text">6.rebase 变基</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git忽略提交"><span class="nav-number">1.2.7.</span> <span class="nav-text">git忽略提交</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#根据tag切分支"><span class="nav-number">1.2.8.</span> <span class="nav-text">根据tag切分支</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除tag"><span class="nav-number">1.2.9.</span> <span class="nav-text">删除tag</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#git初始化仓库"><span class="nav-number">1.2.10.</span> <span class="nav-text">git初始化仓库</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#常用命令"><span class="nav-number">1.2.11.</span> <span class="nav-text">常用命令</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#sql"><span class="nav-number">1.3.</span> <span class="nav-text">sql</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#根据日期拉取报表"><span class="nav-number">1.3.1.</span> <span class="nav-text">根据日期拉取报表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#拼接、截取、分组拼接"><span class="nav-number">1.3.2.</span> <span class="nav-text">拼接、截取、分组拼接</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#连接查询"><span class="nav-number">1.3.3.</span> <span class="nav-text">连接查询</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#给用户添加数据库权限"><span class="nav-number">1.3.4.</span> <span class="nav-text">给用户添加数据库权限</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#删除表、清空表"><span class="nav-number">1.3.5.</span> <span class="nav-text">删除表、清空表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql-workbench-的安全模式"><span class="nav-number">1.3.6.</span> <span class="nav-text">mysql workbench 的安全模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#SQL最后一行求总和"><span class="nav-number">1.3.7.</span> <span class="nav-text">SQL最后一行求总和</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ALTER语句"><span class="nav-number">1.3.8.</span> <span class="nav-text">ALTER语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#对于获取组织和组织的用户人数，推荐的优化方式是先通过groupby用户，再join组织表"><span class="nav-number">1.3.9.</span> <span class="nav-text">对于获取组织和组织的用户人数，推荐的优化方式是先通过groupby用户，再join组织表</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#select-for-update"><span class="nav-number">1.3.10.</span> <span class="nav-text">select for update</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#更新判断语句"><span class="nav-number">1.3.11.</span> <span class="nav-text">更新判断语句</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#insert-into-select（查询到的数据插入）"><span class="nav-number">1.3.12.</span> <span class="nav-text">insert into select（查询到的数据插入）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#insert-ignore-into（存在则忽略）"><span class="nav-number">1.3.13.</span> <span class="nav-text">insert ignore into（存在则忽略）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#order-by-case-的用法"><span class="nav-number">1.3.14.</span> <span class="nav-text">order by case 的用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#update-select"><span class="nav-number">1.3.15.</span> <span class="nav-text">update + select</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mysql用命令运行大sql文件"><span class="nav-number">1.3.16.</span> <span class="nav-text">mysql用命令运行大sql文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#sql正则表达式"><span class="nav-number">1.3.17.</span> <span class="nav-text">sql正则表达式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#数据库连接池大小的设置"><span class="nav-number">1.3.18.</span> <span class="nav-text">数据库连接池大小的设置</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mybatis"><span class="nav-number">1.4.</span> <span class="nav-text">mybatis</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#循环数组判断为空"><span class="nav-number">1.4.1.</span> <span class="nav-text">循环数组判断为空</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#if-other"><span class="nav-number">1.4.2.</span> <span class="nav-text">if other</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#resultMap的用法"><span class="nav-number">1.4.3.</span> <span class="nav-text">resultMap的用法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#mybatis的缓存"><span class="nav-number">1.4.4.</span> <span class="nav-text">mybatis的缓存</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mybatis中-与-的区别"><span class="nav-number">1.4.5.</span> <span class="nav-text">Mybatis中$与#的区别</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#docker"><span class="nav-number">1.5.</span> <span class="nav-text">docker</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#删除未启动的容器：docker-rm-docker-ps-a-q"><span class="nav-number">1.5.1.</span> <span class="nav-text">删除未启动的容器：docker rm $(docker ps -a -q)</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#运行docker-compose：-docker-compose-up-d（在docker-compose-yml所在目录，-d是指后台运行）"><span class="nav-number">1.5.2.</span> <span class="nav-text">运行docker-compose：$ docker-compose up -d（在docker-compose.yml所在目录，-d是指后台运行）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#复制容器中的文件到宿主机"><span class="nav-number">1.5.3.</span> <span class="nav-text">复制容器中的文件到宿主机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#查看容器中运行的进程信息"><span class="nav-number">1.5.4.</span> <span class="nav-text">查看容器中运行的进程信息</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#maven"><span class="nav-number">1.6.</span> <span class="nav-text">maven</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#查看依赖树"><span class="nav-number">1.6.1.</span> <span class="nav-text">查看依赖树</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#dockerfile"><span class="nav-number">1.7.</span> <span class="nav-text">dockerfile</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#安装vim"><span class="nav-number">1.7.1.</span> <span class="nav-text">安装vim</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#mysqldump的使用"><span class="nav-number">1.8.</span> <span class="nav-text">mysqldump的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Linux"><span class="nav-number">1.9.</span> <span class="nav-text">Linux</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#其他"><span class="nav-number">1.10.</span> <span class="nav-text">其他</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#IDEA快捷键"><span class="nav-number">1.10.1.</span> <span class="nav-text">IDEA快捷键</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#工具"><span class="nav-number">1.10.2.</span> <span class="nav-text">工具</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#excel导入"><span class="nav-number">1.10.3.</span> <span class="nav-text">excel导入</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#导入内容包含回车换行问题"><span class="nav-number">1.10.3.1.</span> <span class="nav-text">导入内容包含回车换行问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取时间为数值问题"><span class="nav-number">1.10.3.2.</span> <span class="nav-text">获取时间为数值问题</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#获取百分比"><span class="nav-number">1.10.3.3.</span> <span class="nav-text">获取百分比</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#导出excel"><span class="nav-number">1.10.4.</span> <span class="nav-text">导出excel</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#文本换行"><span class="nav-number">1.10.4.1.</span> <span class="nav-text">文本换行</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spring-security"><span class="nav-number">1.10.5.</span> <span class="nav-text">Spring security</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Spock集成单元测试"><span class="nav-number">1.10.6.</span> <span class="nav-text">Spock集成单元测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#spring基础"><span class="nav-number">1.10.7.</span> <span class="nav-text">spring基础</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#bean的作用域"><span class="nav-number">1.10.7.1.</span> <span class="nav-text">bean的作用域</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#bootstrap-yml与application-yml"><span class="nav-number">1.10.7.2.</span> <span class="nav-text">bootstrap.yml与application.yml</span></a></li></ol></li></ol></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+        <div class="back-to-top">
+          <i class="fa fa-arrow-up"></i>
+          
+        </div>
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <script async src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+<div class="copyright">&copy; <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-snowflake-o"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">chenshinan</span>
+
+  
+</div>
+<div class="powered-by">
+<i class="fa fa-user-md"></i><span id="busuanzi_container_site_pv">
+  本站访客数:<span id="busuanzi_value_site_pv"></span>
+</span>
+</div>
+<div class="theme-info">
+  <div class="powered-by"></div>
+  <span class="post-count">博客全站共144.4k字</span>
+</div>
+
+
+
+
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+
+  <script type="text/javascript" src="/js/src/affix.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/schemes/pisces.js?v=5.1.4"></script>
+
+
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+
+  
+
+  
+
+</body>
+</html>
